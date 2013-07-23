@@ -1,5 +1,5 @@
-Example 1 - Device Info
-=======================
+Exercise 1 - Device Info
+========================
 
 Goal
 ----
