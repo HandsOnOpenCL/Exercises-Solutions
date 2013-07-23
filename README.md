@@ -10,7 +10,7 @@ The Exercises directory contains all the code
 needed to be handed out at the start of the
 tutorial for the exercises to be completed.
 
-The Solution directory contains sample code
+The Solutions directory contains sample code
 providing an example implementation which
 solves the exercises in the lecture notes.
 
