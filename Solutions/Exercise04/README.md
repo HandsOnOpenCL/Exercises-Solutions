@@ -1,2 +1,2 @@
-Exercise 04 - Chaining vector add kernels
+Exercise 4 - Chaining vector add kernels
 =========================================
