@@ -1,0 +1,2 @@
+Exercise A - Vectorized Pi
+==========================
