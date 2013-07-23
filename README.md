@@ -1,7 +1,18 @@
 Source Code for the Exercises and Solutions
 ==========================================
 
+Pre-requisites
+--------------
 
+* OpenCL 1.1 (or greater)
+* Python 2.7 (or greater)
+* C99 compiler (we use gcc)
+* C++11 compiler (we use g++)
+
+Need help setting up OpenCL?
+Check out the first section in the lecture slides for information
+about setting up OpenCL on Linux for AMD (CPU, GPU, APU),
+Intel CPUs and NVIDIA GPUs.
 
 Directory structure
 -------------------
