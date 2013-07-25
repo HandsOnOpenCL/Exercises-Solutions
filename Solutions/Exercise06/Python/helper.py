@@ -1,5 +1,6 @@
 
 from definitions import *
+import numpy
 
 #  Function to compute the matrix product (sequential algorithm, dot prod)
 def seq_mat_mul_sdot(Mdim, Ndim, Pdim, A, B, C):
@@ -26,5 +27,5 @@ def results(Mdim, Ndim, Pdim, C, run_time):
     mflops = 2.0 * Mdim * Ndim * Pdim/(1000000.0* run_time)
     print run_time, "seconds at", mflops, "MFLOPS"
     errsq = error(Mdim, Ndim, Pdim, C)
-    if (errsq > TOL):
+    if numpy.isnan(errsq) or errsq > TOL:
         print "Errors in multiplication:", errsq
