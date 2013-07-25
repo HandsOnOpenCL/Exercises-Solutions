@@ -76,7 +76,6 @@ int main(int argc, char** argv)
     unsigned int correct;           // number of correct results  
 
     size_t global;                  // global domain size  
-    size_t local;                   // local  domain size  
 
     cl_device_id     device_id;     // compute device id 
     cl_context       context;       // compute context
