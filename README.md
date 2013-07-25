@@ -6,7 +6,7 @@ Pre-requisites
 
 * OpenCL 1.1 (or greater)
 * Python 2.7 (or greater)
-* C99 compiler (we use gcc)
+* C99 compiler (we use gcc) with OpenMP support (used for timing the runs [optional])
 * C++11 compiler (we use g++)
 
 Need help setting up OpenCL?
