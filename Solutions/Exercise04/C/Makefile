@@ -12,4 +12,4 @@ vadd_chain: vadd_chain.c $(COMMON_DIR)/err_code.c $(COMMON_DIR)/device_info.c
 
 
 clean:
-	rm -f vadd
+	rm -f vadd_chain
