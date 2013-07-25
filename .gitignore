@@ -1,3 +1,9 @@
 # Python
 
 *.pyc
+
+# C
+
+# Produced binarys
+Exercises/Exercise02/C/vadd
+
