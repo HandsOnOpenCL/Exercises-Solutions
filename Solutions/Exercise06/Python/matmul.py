@@ -73,6 +73,7 @@ for i in range(COUNT):
     h_C.fill(0.0)
     start_time = time()
 
+    # Warning: this method takes a while to run, comment it out when developing your OpenCL Kernel!
     seq_mat_mul_sdot(Mdim, Ndim, Pdim, h_A, h_B, h_C)
 
     run_time = time() - start_time
@@ -104,7 +105,10 @@ for i in range(COUNT):
     h_C.fill(0.0)
     start_time = time()
 
-    program.mmul(queue, (Ndim, Mdim), None, numpy.int32(Mdim), numpy.int32(Ndim), numpy.int32(Pdim), d_a, d_b, d_c)
+    globalrange = (Ndim, Mdim)
+    localrange = None
+
+    program.mmul(queue, globalrange, localrange, numpy.int32(Mdim), numpy.int32(Ndim), numpy.int32(Pdim), d_a, d_b, d_c)
     queue.finish()
 
     run_time = time() - start_time
