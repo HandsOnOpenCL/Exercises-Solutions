@@ -126,7 +126,7 @@ void results(int Mdim, int Ndim, int Pdim, float *C, double run_time)
     mflops = 2.0 * Mdim * Ndim * Pdim/(1000000.0* run_time);
     printf(" %.2f seconds at %.1f MFLOPS \n",  run_time,mflops);
     errsq = error(Mdim, Ndim, Pdim, C);
-    if (errsq > TOL)
-           printf("\n Errors in multiplication: %f",errsq);
+    if (isnan(errsq) || errsq > TOL)
+           printf("\n Errors in multiplication: %f\n",errsq);
 }
 
