@@ -275,6 +275,8 @@ int main(void)
     clReleaseMemObject(d_a);
     clReleaseMemObject(d_b);
     clReleaseMemObject(d_c);
+    clReleaseProgram(program);
+    clReleaseKernel(kernel);
     clReleaseCommandQueue(commands);
     clReleaseContext(context);
 
