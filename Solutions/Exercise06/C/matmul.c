@@ -228,11 +228,11 @@ int main(void)
         // a dot product for each element of the product matrix.  The local work
         // group size is set to NULL ... so I'm telling the OpenCL runtime to
         // figure out a local work group size for me.
-        size_t global[2] = {Ndim, Mdim};
+        const size_t global[2] = {Ndim, Mdim};
         err = clEnqueueNDRangeKernel(
             commands,
             kernel,
-            1, NULL,
+            2, NULL,
             global, NULL,
             0, NULL, NULL);
         if (err != CL_SUCCESS)
