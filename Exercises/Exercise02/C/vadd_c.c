@@ -6,22 +6,19 @@
 //
 // HISTORY:    Written by Tim Mattson, December 2009
 //             Updated by Tom Deakin and Simon McIntosh-Smith, October 2012
+//             Updated by Tom Deakin, July 2013
 //             
 //------------------------------------------------------------------------------
 
 
-#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <math.h>
 #include <sys/types.h>
-#include <sys/stat.h>
 #ifdef APPLE
 #include <OpenCL/opencl.h>
 #include <unistd.h>
 #else
-#include "CL/cl.h"
+#include <CL/cl.h>
 #endif
 
 //pick up device type from compiler command line or from 
@@ -69,24 +66,24 @@ const char *KernelSource = "\n" \
 
 int main(int argc, char** argv)
 {
-    int          err;                   // error code returned from OpenCL calls
-    float        h_a[LENGTH];        // a vector 
-    float        h_b[LENGTH];        // b vector 
-    float        h_c [LENGTH];        // c vector (a+b) returned from the compute device
-    unsigned int correct;               // number of correct results  
+    int          err;               // error code returned from OpenCL calls
+    float        h_a[LENGTH];       // a vector 
+    float        h_b[LENGTH];       // b vector 
+    float        h_c[LENGTH];       // c vector (a+b) returned from the compute device
+    unsigned int correct;           // number of correct results  
 
-    size_t global;                      // global domain size  
-    size_t local;                       // local  domain size  
+    size_t global;                  // global domain size  
+    size_t local;                   // local  domain size  
 
-    cl_device_id     device_id;         // compute device id 
-    cl_context       context;           // compute context
-    cl_command_queue commands;          // compute command queue
-    cl_program       program;           // compute program
-    cl_kernel        ko_vadd;            // compute kernel
+    cl_device_id     device_id;     // compute device id 
+    cl_context       context;       // compute context
+    cl_command_queue commands;      // compute command queue
+    cl_program       program;       // compute program
+    cl_kernel        ko_vadd;       // compute kernel
     
-    cl_mem d_a;                        // device memory used for the input  a vector
-    cl_mem d_b;                        // device memory used for the input  b vector
-    cl_mem d_c;                       // device memory used for the output c vector
+    cl_mem d_a;                     // device memory used for the input  a vector
+    cl_mem d_b;                     // device memory used for the input  b vector
+    cl_mem d_c;                     // device memory used for the output c vector
     
     // Fill vectors a and b with random float values
     int i = 0;
@@ -169,7 +166,7 @@ int main(int argc, char** argv)
         printf("Error: Failed to build program executable!\n");
         clGetProgramBuildInfo(program, device_id, CL_PROGRAM_BUILD_LOG, sizeof(buffer), buffer, &len);
         printf("%s\n", buffer);
-        exit(1);
+        return EXIT_FAILURE;
     }
 
     // Create the compute kernel from the program 
@@ -177,12 +174,12 @@ int main(int argc, char** argv)
     if (!ko_vadd || err != CL_SUCCESS)
     {
         printf("Error: Failed to create compute kernel!\n");
-        exit(1);
+        return EXIT_FAILURE;
     }
 
-    // Create the input (a, b) and output (c) arrays in device memory  
-    d_a   = clCreateBuffer(context,  CL_MEM_READ_ONLY,  sizeof(float) * count, NULL, NULL);
-    d_b   = clCreateBuffer(context,  CL_MEM_READ_ONLY,  sizeof(float) * count, NULL, NULL);
+    // Create the input (a, b) and output (c) arrays in device memory
+    d_a  = clCreateBuffer(context,  CL_MEM_READ_ONLY,  sizeof(float) * count, NULL, NULL);
+    d_b  = clCreateBuffer(context,  CL_MEM_READ_ONLY,  sizeof(float) * count, NULL, NULL);
     d_c  = clCreateBuffer(context,  CL_MEM_WRITE_ONLY, sizeof(float) * count, NULL, NULL);
     if (!d_a || !d_b || !d_c)
     {
@@ -216,27 +213,19 @@ int main(int argc, char** argv)
         exit(1);
     }
 
-    // Get the maximum work group size for executing the kernel on the device
-    err = clGetKernelWorkGroupInfo(ko_vadd, device_id, CL_KERNEL_WORK_GROUP_SIZE, sizeof(local), &local, NULL);
-    if (err != CL_SUCCESS)
-    {
-        printf("Error: Failed to retrieve kernel work group info! %d\n", err);
-        exit(1);
-    }
-
     double rtime = wtime();
 	
     // Execute the kernel over the entire range of our 1d input data set
-    // using the maximum number of work group items for this device
+    // letting the OpenCL runtime choose the work-group size
     global = count;
-    err = clEnqueueNDRangeKernel(commands, ko_vadd, 1, NULL, &global, &local, 0, NULL, NULL);
+    err = clEnqueueNDRangeKernel(commands, ko_vadd, 1, NULL, &global, NULL, 0, NULL, NULL);
     if (err)
     {
         printf("Error: Failed to execute kernel!\n");
         return EXIT_FAILURE;
     }
 
-    // Wait for the commands to complete before reading back results
+    // Wait for the commands to complete before stopping the timer
     clFinish(commands);
     rtime = wtime() - rtime;
     printf("\nThe kernel ran in %lf seconds\n",rtime);
