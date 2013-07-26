@@ -24,6 +24,22 @@ Check out the first section in the lecture slides for information
 about setting up OpenCL on Linux for AMD (CPU, GPU, APU),
 Intel CPUs and NVIDIA GPUs.
 
+Building
+--------
+
+We assume here that your current working directory is the location of the source code;
+e.g. `/path/to/Exercises-Solutions/Solutions/Exercise04/C`
+
+**Python**
+
+Just run `python source.py` to run the code.
+
+**C**
+
+You must first run `make` to build the binary.
+We assume that your environment is set up to find the OpenCL library; if you have trouble
+try `export CPATH=/path/to/OpenCL/include` and `export LD_LIBRARY_PATH=/path/to/OpenCL/lib`.
+
 Directory structure
 -------------------
 
