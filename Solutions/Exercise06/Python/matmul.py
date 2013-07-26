@@ -73,11 +73,11 @@ for i in range(COUNT):
     h_C.fill(0.0)
     start_time = time()
 
-    # Warning: this method takes a while to run, comment it out when developing your OpenCL Kernel!
-    seq_mat_mul_sdot(Mdim, Ndim, Pdim, h_A, h_B, h_C)
+    print "Skipping as this takes a long time to run!"
+    #seq_mat_mul_sdot(Mdim, Ndim, Pdim, h_A, h_B, h_C)
 
     run_time = time() - start_time
-    results(Mdim, Ndim, Pdim, h_C, run_time)
+    #results(Mdim, Ndim, Pdim, h_C, run_time)
 
 
 # Set up OpenCL
