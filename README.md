@@ -1,6 +1,16 @@
 Source Code for the Exercises and Solutions
 ==========================================
 
+Introduction
+------------
+
+Please checkout the repository using git with the following command:
+
+`git clone git://github.com/HandsOnOpenCL/Exercises-Solutions.git`
+
+Found any issues or have some comments? Please submit a bug report in the
+[Issue tab](https://github.com/HandsOnOpenCL/Exercises-Solutions/issues).
+
 Pre-requisites
 --------------
 
