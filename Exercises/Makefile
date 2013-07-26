@@ -14,5 +14,4 @@ $(CEXES):
 
 .PHONY : clean
 clean:
-	rm -f $(CEXES)
-	rm -rf *.o
+	for e in $(CEXES); do $(MAKE) -C `dirname $$e` clean; done
