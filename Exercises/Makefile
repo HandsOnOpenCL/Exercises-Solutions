@@ -15,3 +15,4 @@ $(CEXES):
 .PHONY : clean
 clean:
 	rm -f $(CEXES)
+	rm -rf *.o
