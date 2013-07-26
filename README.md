@@ -40,6 +40,9 @@ You must first run `make` to build the binary.
 We assume that your environment is set up to find the OpenCL library; if you have trouble
 try `export CPATH=/path/to/OpenCL/include` and `export LD_LIBRARY_PATH=/path/to/OpenCL/lib`.
 
+You can also run `make` in the Examples/ and Solutions/ high-level directory;
+this calls all the sub-directory make files so all the examples can be built in one command.
+
 Directory structure
 -------------------
 
