@@ -17,7 +17,7 @@
 #ifdef APPLE
 #include <OpenCL/opencl.h>
 #else
-#include "CL/cl.h"
+#include <CL/cl.h>
 #endif
 //
 //  define VERBOSE if you want to print info about work groups sizes

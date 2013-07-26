@@ -16,7 +16,7 @@
 #ifdef APPLE
 #include <OpenCL/opencl.h>
 #else
-#include "CL/cl.h"
+#include <CL/cl.h>
 #endif
 
 int err_code (cl_int err_in)
