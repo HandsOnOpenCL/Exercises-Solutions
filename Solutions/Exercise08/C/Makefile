@@ -14,6 +14,11 @@ ifndef DEVICE
 	DEVICE = CL_DEVICE_TYPE_DEFAULT
 endif
 
+ifdef APPLE
+	CCFLAGS += -DAPPLE
+	LIBS = -framework OpenCL -fopenmp
+endif
+
 CCFLAGS += -D DEVICE=$(DEVICE)
 
 pi_ocl: pi_ocl.c $(COMMON_DIR)/wtime.c $(COMMON_DIR)/err_code.c $(COMMON_DIR)/device_info.c

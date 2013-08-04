@@ -24,6 +24,11 @@ ifndef DEVICE
 	DEVICE = CL_DEVICE_TYPE_DEFAULT
 endif
 
+ifdef APPLE
+	CCFLAGS += -DAPPLE
+	LIBS = -framework OpenCL -fopenmp
+endif
+
 CCFLAGS += -D DEVICE=$(DEVICE)
 
 all: $(EXEC)

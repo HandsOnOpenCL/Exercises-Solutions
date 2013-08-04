@@ -3,7 +3,7 @@ CC=gcc
 
 CCFLAGS=-O3 -lm
 
-LIBS = -lOpenCL
+LIBS = -lOpenCL -fopenmp
 
 COMMON_DIR = ../../C_common
 
@@ -12,6 +12,11 @@ COMMON_DIR = ../../C_common
 # edit the variable in the source.
 ifndef DEVICE
 	DEVICE = CL_DEVICE_TYPE_DEFAULT
+endif
+
+ifdef APPLE
+	CCFLAGS += -DAPPLE
+	LIBS = -framework OpenCL -fopenmp
 endif
 
 CCFLAGS += -D DEVICE=$(DEVICE)
