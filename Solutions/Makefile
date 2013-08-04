@@ -11,6 +11,13 @@ CEXES = Exercise04/C/vadd_chain Exercise05/C/vadd_abc \
 DEVICE = CL_DEVICE_TYPE_DEFAULT
 export DEVICE
 
+# Check our platform and make sure we define the APPLE variable
+PLATFORM = $(shell uname -s)
+ifeq ($(PLATFORM), Darwin)
+	APPLE = ''
+	export APPLE
+endif
+
 .PHONY : $(CEXES)
 
 all: $(CEXES)
