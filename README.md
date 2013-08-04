@@ -43,6 +43,13 @@ try `export CPATH=/path/to/OpenCL/include` and `export LD_LIBRARY_PATH=/path/to/
 You can also run `make` in the Examples/ and Solutions/ high-level directory;
 this calls all the sub-directory make files so all the examples can be built in one command.
 
+Define the variable `DEVICE` in the Makefiles to be one of the OpenCL device types to vary the device type the C applications use.
+This can be done easily in the two global Makefiles found in the Exercises and Solutions directories.
+To use a GPU, for example, change the line `DEVICE = CL_DEVICE_TYPE_DEFAULT` to `DEVICE=CL_DEVICE_TYPE_GPU`.
+
+Note: you can also edit each of the source files to use a specific device type, but we would recommend using the global Makefile method above.
+
+
 Directory structure
 -------------------
 
