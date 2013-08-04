@@ -16,6 +16,12 @@ from time import time
 
 num_steps = 100000000
 
+print "\nNote: Wanted to do", num_steps, "steps, but this is very slow in Python."
+
+num_steps = 1000000
+
+print "Doing", num_steps, "steps instead."
+
 integral_sum = 0.0
 
 step = 1.0/num_steps
