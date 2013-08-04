@@ -6,6 +6,11 @@ CEXES = Exercise01/C/DeviceInfo Exercise02/C/vadd \
 		Exercise04/C/vadd Exercise05/C/vadd \
 		Exercise06/C/mult Exercise08/C/pi
 
+# Change this variable to specify the device type in all
+# the Makefile to the OpenCL device type of choice
+DEVICE = CL_DEVICE_TYPE_DEFAULT
+export DEVICE
+
 .PHONY : $(CEXES)
 
 all: $(CEXES)
