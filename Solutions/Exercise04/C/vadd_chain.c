@@ -25,7 +25,7 @@
 //pick up device type from compiler command line or from 
 //the default type
 #ifndef DEVICE
-#define DEVICE CL_DEVICE_TYPE_GPU
+#define DEVICE CL_DEVICE_TYPE_DEFAULT
 #endif
 
 extern int output_device_info(cl_device_id );
