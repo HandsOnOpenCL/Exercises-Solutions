@@ -17,6 +17,14 @@ COMMON_DIR = ../../C_common
 MMUL_OBJS = matmul.o matrix_lib.o wtime.o err_code.o
 EXEC = mult
 
+# Change this variable to specify the device type
+# to the OpenCL device type of choice. You can also
+# edit the variable in the source.
+ifndef DEVICE
+	DEVICE = CL_DEVICE_TYPE_DEFAULT
+endif
+
+CCFLAGS += -D DEVICE=$(DEVICE)
 
 all: $(EXEC)
 
