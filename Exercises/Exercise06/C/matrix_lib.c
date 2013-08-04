@@ -28,15 +28,15 @@ void seq_mat_mul_sdot(int Mdim, int Ndim, int Pdim, float *A, float *B, float *C
     int i, j, k;
     float tmp;
 
-    for (i=0; i<Ndim; i++){
-        for (j=0; j<Mdim; j++){
-            tmp = 0.0;
-	    for(k=0;k<Pdim;k++){
-	         /* C(i,j) = sum(over k) A(i,k) * B(k,j) */
-		 tmp += *(A+(i*Ndim+k)) *  *(B+(k*Pdim+j));
-             }
-	     *(C+(i*Ndim+j)) = tmp;
-          }
+    for (i = 0; i < Ndim; i++) {
+        for (j = 0; j < Mdim; j++) {
+            tmp = 0.0f;
+            for (k = 0; k < Pdim; k++) {
+                /* C(i,j) = sum(over k) A(i,k) * B(k,j) */
+                tmp += A[i*Ndim+k] * B[k*Pdim+j];
+            }
+            C[i*Ndim+j] = tmp;
+        }
     }
 }
 
@@ -51,17 +51,17 @@ void initmat(int Mdim, int Ndim, int Pdim, float *A, float *B, float *C)
 
     /* Initialize matrices */
 
-	for (i=0; i<Ndim; i++)
-		for (j=0; j<Pdim; j++)
-			*(A+(i*Ndim+j)) = AVAL;
+	for (i = 0; i < Ndim; i++)
+		for (j = 0; j < Pdim; j++)
+			A[i*Ndim+j] = AVAL;
 
-	for (i=0; i<Pdim; i++)
-		for (j=0; j<Mdim; j++)
-			*(B+(i*Pdim+j)) = BVAL;
+	for (i = 0; i < Pdim; i++)
+		for (j = 0; j < Mdim; j++)
+			B[i*Pdim+j] = BVAL;
 
-	for (i=0; i<Ndim; i++)
-		for (j=0; j<Mdim; j++)
-			*(C+(i*Ndim+j)) = 0.0;
+	for (i = 0; i < Ndim; i++)
+		for (j = 0; j < Mdim; j++)
+			C[i*Ndim+j] = 0.0f;
 }
 
 //------------------------------------------------------------------------------
@@ -73,9 +73,9 @@ void zero_mat (int Ndim, int Mdim, float *C)
 {
     int i, j;
 
-	for (i=0; i<Ndim; i++)
-		for (j=0; j<Mdim; j++)
-			*(C+(i*Ndim+j)) = 0.0;
+	for (i = 0; i < Ndim; i++)
+		for (j = 0; j < Mdim; j++)
+			C[i*Ndim+j] = 0.0f;
 }
 
 //------------------------------------------------------------------------------
@@ -87,9 +87,9 @@ void trans(int Pdim, int Mdim, float *B, float *Btrans)
 {
     int i, j;
 
-	for (i=0; i<Pdim; i++)
-		for (j=0; j<Mdim; j++)
-		    *(Btrans+(j*Pdim+i)) = *(B+(i*Mdim+j));
+	for (i = 0; i < Pdim; i++)
+		for (j = 0; j < Mdim; j++)
+		    Btrans[j*Pdim+i] = B[i*Mdim+j];
 }
 
 //------------------------------------------------------------------------------
@@ -102,15 +102,15 @@ float error(int Mdim, int Ndim, int Pdim, float *C)
    int i,j;
    float cval, errsq, err;
    cval = (float) Pdim * AVAL * BVAL;
-   errsq = 0.0;
+   errsq = 0.0f;
 
-   for (i=0; i<Ndim; i++){
-       for (j=0; j<Mdim; j++){
-	    err = *(C+i*Ndim+j) - cval;
-	    errsq += err * err;
-       }
-   }
-   return errsq;
+    for (i = 0; i < Ndim; i++) {
+        for (j = 0; j < Mdim; j++) {
+            err = C[i*Ndim+j] - cval;
+            errsq += err * err;
+        }
+    }
+    return errsq;
 }
 
 //------------------------------------------------------------------------------
@@ -123,7 +123,7 @@ void results(int Mdim, int Ndim, int Pdim, float *C, double run_time)
 
     float mflops;
     float errsq;
-    mflops = 2.0 * Mdim * Ndim * Pdim/(1000000.0* run_time);
+    mflops = 2.0 * Mdim * Ndim * Pdim/(1000000.0f * run_time);
     printf(" %.2f seconds at %.1f MFLOPS \n",  run_time,mflops);
     errsq = error(Mdim, Ndim, Pdim, C);
     if (isnan(errsq) || errsq > TOL)
