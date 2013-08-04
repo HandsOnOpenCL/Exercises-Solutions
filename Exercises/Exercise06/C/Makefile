@@ -26,6 +26,11 @@ endif
 
 CCFLAGS += -D DEVICE=$(DEVICE)
 
+ifdef APPLE
+	CCFLAGS += -DAPPLE
+	LIBS = -framework OpenCL -fopenmp
+endif
+
 all: $(EXEC)
 
 mult: $(MMUL_OBJS)
