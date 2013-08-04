@@ -28,7 +28,7 @@
 //pick up device type from compiler command line or from 
 //the default type
 #ifndef DEVICE
-#define DEVICE CL_DEVICE_TYPE_GPU
+#define DEVICE CL_DEVICE_TYPE_DEFAULT
 #endif
 
 //------------------------------------------------------------------------------
