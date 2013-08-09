@@ -181,6 +181,6 @@ int err_code (cl_int err_in)
             break;
 
     }
-    return (int)err_int;
+    return (int)err_in;
 }
 
