@@ -8,9 +8,9 @@
 
 CC=gcc
 
-CCFLAGS=-O3 -lm -std=c99 -ffast-math
+CCFLAGS=-O3 -std=c99 -ffast-math
 
-LIBS = -lOpenCL -fopenmp
+LIBS = -lm -lOpenCL -fopenmp
 
 COMMON_DIR = ../../C_common
 
@@ -26,7 +26,7 @@ endif
 
 ifdef APPLE
 	CCFLAGS += -DAPPLE
-	LIBS = -framework OpenCL -fopenmp
+	LIBS = -lm -framework OpenCL -fopenmp
 endif
 
 CCFLAGS += -D DEVICE=$(DEVICE)
@@ -34,16 +34,16 @@ CCFLAGS += -D DEVICE=$(DEVICE)
 all: $(EXEC)
 
 mult: $(MMUL_OBJS)
-	$(CC) $(MMUL_OBJS) $(CCFLAGS) $(LIBS) -o $(EXEC)
+	$(CC) $(MMUL_OBJS) $(LIBS) -o $(EXEC)
 
 wtime.o: $(COMMON_DIR)/wtime.c
-	$(CC) -c $^ $(CCFLAGS) $(LIBS) -o $@
+	$(CC) -c $^ $(CCFLAGS) -o $@
 
 err_code.o: $(COMMON_DIR)/err_code.c
-	$(CC) -c $^ $(CCFLAGS) $(LIBS) -o $@
+	$(CC) -c $^ $(CCFLAGS) -o $@
 
 .c.o:
-	$(CC) -c $< $(CCFLAGS) $(LIBS) -o $@
+	$(CC) -c $< $(CCFLAGS) -o $@
 
 clean:
 	rm -f $(MMUL_OBJS) $(EXEC)
