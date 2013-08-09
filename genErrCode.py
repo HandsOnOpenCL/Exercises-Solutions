@@ -69,6 +69,6 @@ print '            printf("\\n unknown error. \\n");'
 print '            break;'
 print '''
     }
-    return (int)err_int;
+    return (int)err_in;
 }
 '''
