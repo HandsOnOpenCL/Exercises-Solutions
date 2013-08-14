@@ -14,7 +14,10 @@ ifndef DEVICE
 	DEVICE = CL_DEVICE_TYPE_DEFAULT
 endif
 
-ifdef APPLE
+# Check our platform and make sure we define the APPLE variable
+# and set up the right compiler flags and libraries
+PLATFORM = $(shell uname -s)
+ifeq ($(PLATFORM), Darwin)
 	CCFLAGS += -DAPPLE
 	LIBS = -framework OpenCL -fopenmp
 endif

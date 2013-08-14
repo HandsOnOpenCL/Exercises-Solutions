@@ -1,9 +1,9 @@
 
 CC=gcc
 
-CCFLAGS=-O3 -lm -std=c99
+CCFLAGS=-O3 -std=c99
 
-LIBS = -lOpenCL -fopenmp
+LIBS = -lOpenCL -fopenmp -lm
 
 COMMON_DIR = ../../C_common
 
@@ -14,9 +14,12 @@ ifndef DEVICE
 	DEVICE = CL_DEVICE_TYPE_DEFAULT
 endif
 
-ifdef APPLE
+# Check our platform and make sure we define the APPLE variable
+# and set up the right compiler flags and libraries
+PLATFORM = $(shell uname -s)
+ifeq ($(PLATFORM), Darwin)
 	CCFLAGS += -DAPPLE
-	LIBS = -framework OpenCL -fopenmp
+	LIBS = -framework OpenCL -fopenmp -lm
 endif
 
 CCFLAGS += -D DEVICE=$(DEVICE)
