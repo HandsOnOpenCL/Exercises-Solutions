@@ -15,9 +15,12 @@
 #define NX (17)
 #define NY (17)
 
+// Define the state of the cell
 #define DEAD  0
 #define ALIVE 1
 
+// Function to load in a file which lists the alive cells
+// Each line of the file is expected to be: x y 1
 void load_board(char* board, char* file)
 {
     FILE *fp = fopen(file, "r");
@@ -58,6 +61,9 @@ void load_board(char* board, char* file)
     fclose(fp);
 }
 
+// Function to print out the board to stdout
+// Alive cells are displayed as O
+// Dead cells are displayed as .
 void print_board(char* board)
 {
     for (unsigned int i = 0; i < NY; i++)
@@ -131,16 +137,18 @@ void accelerate_life(char* tick, char* tock)
     }
 }
 
+// Main function
 int main(int argc, void **argv)
 {
 
+    // Check we have a starting state file
     if (argc != 2)
     {
         printf("Usage:\n./gameoflife input.dat\n");
         return EXIT_FAILURE;
     }
 
-    // Arrays for boards
+    // Allocate memory for boards
     char* board_tick = (char *)calloc(NX * NY, sizeof(char));
     char* board_tock = (char *)calloc(NX * NY, sizeof(char));
 
@@ -150,11 +158,15 @@ int main(int argc, void **argv)
         return EXIT_FAILURE;
     }
 
-    // Load in the file
+    // Load in the starting state to board_tick
     load_board(board_tick, argv[1]);
 
+    // Display the starting state
     printf("Starting state\n");
     print_board(board_tick);
+
+    // Loop
+    // TODO
 
     accelerate_life(board_tick, board_tock);
     printf("Then:\n");
@@ -164,6 +176,7 @@ int main(int argc, void **argv)
     print_board(board_tick);
     accelerate_life(board_tick, board_tock);
 
+    // Display the final state
     printf("Finishing state\n");
     print_board(board_tock);
 
