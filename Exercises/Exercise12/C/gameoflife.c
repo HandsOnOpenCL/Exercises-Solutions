@@ -19,41 +19,29 @@
 #define DEAD  0
 #define ALIVE 1
 
+// Function declarations
+void die(const char* message, const int line, const char *file);
+
 // Function to load in a file which lists the alive cells
 // Each line of the file is expected to be: x y 1
 void load_board(char* board, char* file)
 {
     FILE *fp = fopen(file, "r");
     if (!fp)
-    {
-        printf("Error! Could not open input file.");
-        exit(EXIT_FAILURE);
-    }
+        die("Could not open input file.", __LINE__, __FILE__);
 
     int retval;
     unsigned int x, y, s;
     while ((retval = fscanf(fp, "%d %d %d\n", &x, &y, &s)) != EOF)
     {
         if (retval != 3)
-        {
-            printf("Error! Expected 3 values per line in input file\n");
-            exit(EXIT_FAILURE);
-        }
+            die("Expected 3 values per line in input file.", __LINE__, __FILE__);
         if (x < 0 || x > NX - 1)
-        {
-            printf("Error! Input x-coord out of range\n");
-            exit(EXIT_FAILURE);
-        }
+            die("Input x-coord out of range.", __LINE__, __FILE__);
         if (y < 0 || y > NY - 1)
-        {
-            printf("Error! Input y-coord out of range\n");
-            exit(EXIT_FAILURE);
-        }
+            die("Input y-coord out of range.", __LINE__, __FILE__);
         if (s != ALIVE)
-        {
-            printf("Error! Alive value should be 1\n");
-            exit(EXIT_FAILURE);
-        }
+            die("Alive value should be 1.", __LINE__, __FILE__);
 
         board[x + y * NX] = ALIVE;
     }
@@ -153,10 +141,7 @@ int main(int argc, void **argv)
     char* board_tock = (char *)calloc(NX * NY, sizeof(char));
 
     if (!board_tick || !board_tock)
-    {
-        printf("Error! Could not allocate memory for board\n");
-        return EXIT_FAILURE;
-    }
+        die("Could not allocate memory for board", __LINE__, __FILE__);
 
     // Load in the starting state to board_tick
     load_board(board_tick, argv[1]);
@@ -181,4 +166,13 @@ int main(int argc, void **argv)
     print_board(board_tock);
 
     return EXIT_SUCCESS;
+}
+
+// Function to display error and exit nicely
+void die(const char* message, const int line, const char *file)
+{
+  fprintf(stderr, "Error at line %d of file %s:\n", line, file);
+  fprintf(stderr, "%s\n",message);
+  fflush(stderr);
+  exit(EXIT_FAILURE);
 }
