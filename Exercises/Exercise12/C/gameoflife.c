@@ -19,53 +19,17 @@
 #define DEAD  0
 #define ALIVE 1
 
-// Function declarations
+/*************************************************************************************
+ * Forward declarations of utility functions
+ ************************************************************************************/
 void die(const char* message, const int line, const char *file);
+void load_board(char* board, char* file);
+void print_board(char* board);
 
-// Function to load in a file which lists the alive cells
-// Each line of the file is expected to be: x y 1
-void load_board(char* board, char* file)
-{
-    FILE *fp = fopen(file, "r");
-    if (!fp)
-        die("Could not open input file.", __LINE__, __FILE__);
 
-    int retval;
-    unsigned int x, y, s;
-    while ((retval = fscanf(fp, "%d %d %d\n", &x, &y, &s)) != EOF)
-    {
-        if (retval != 3)
-            die("Expected 3 values per line in input file.", __LINE__, __FILE__);
-        if (x < 0 || x > NX - 1)
-            die("Input x-coord out of range.", __LINE__, __FILE__);
-        if (y < 0 || y > NY - 1)
-            die("Input y-coord out of range.", __LINE__, __FILE__);
-        if (s != ALIVE)
-            die("Alive value should be 1.", __LINE__, __FILE__);
-
-        board[x + y * NX] = ALIVE;
-    }
-
-    fclose(fp);
-}
-
-// Function to print out the board to stdout
-// Alive cells are displayed as O
-// Dead cells are displayed as .
-void print_board(char* board)
-{
-    for (unsigned int i = 0; i < NY; i++)
-    {
-        for (unsigned int j = 0; j < NX; j++)
-        {
-            if (board[i * NX + j] == DEAD)
-                printf(".");
-            else
-                printf("O");
-        }
-        printf("\n");
-    }
-}
+/*************************************************************************************
+ * Game of Life worker method
+ ************************************************************************************/
 
 // Apply the rules of life to tick and save in tock
 void accelerate_life(char* tick, char* tock)
@@ -125,7 +89,11 @@ void accelerate_life(char* tick, char* tock)
     }
 }
 
-// Main function
+
+/*************************************************************************************
+ * Main function
+ ************************************************************************************/
+
 int main(int argc, void **argv)
 {
 
@@ -166,6 +134,56 @@ int main(int argc, void **argv)
     print_board(board_tock);
 
     return EXIT_SUCCESS;
+}
+
+
+/*************************************************************************************
+ * Utility functions
+ ************************************************************************************/
+
+// Function to load in a file which lists the alive cells
+// Each line of the file is expected to be: x y 1
+void load_board(char* board, char* file)
+{
+    FILE *fp = fopen(file, "r");
+    if (!fp)
+        die("Could not open input file.", __LINE__, __FILE__);
+
+    int retval;
+    unsigned int x, y, s;
+    while ((retval = fscanf(fp, "%d %d %d\n", &x, &y, &s)) != EOF)
+    {
+        if (retval != 3)
+            die("Expected 3 values per line in input file.", __LINE__, __FILE__);
+        if (x < 0 || x > NX - 1)
+            die("Input x-coord out of range.", __LINE__, __FILE__);
+        if (y < 0 || y > NY - 1)
+            die("Input y-coord out of range.", __LINE__, __FILE__);
+        if (s != ALIVE)
+            die("Alive value should be 1.", __LINE__, __FILE__);
+
+        board[x + y * NX] = ALIVE;
+    }
+
+    fclose(fp);
+}
+
+// Function to print out the board to stdout
+// Alive cells are displayed as O
+// Dead cells are displayed as .
+void print_board(char* board)
+{
+    for (unsigned int i = 0; i < NY; i++)
+    {
+        for (unsigned int j = 0; j < NX; j++)
+        {
+            if (board[i * NX + j] == DEAD)
+                printf(".");
+            else
+                printf("O");
+        }
+        printf("\n");
+    }
 }
 
 // Function to display error and exit nicely
