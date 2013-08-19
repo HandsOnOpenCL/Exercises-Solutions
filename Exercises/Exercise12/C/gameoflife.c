@@ -12,11 +12,51 @@
 #include <stdlib.h>
 
 // Define the board size
-#define NX (6)
-#define NY (6)
+#define NX (17)
+#define NY (17)
 
 #define DEAD  0
 #define ALIVE 1
+
+void load_board(char* board, char* file)
+{
+    FILE *fp = fopen(file, "r");
+    if (!fp)
+    {
+        printf("Error! Could not open input file.");
+        exit(EXIT_FAILURE);
+    }
+
+    int retval;
+    unsigned int x, y, s;
+    while ((retval = fscanf(fp, "%d %d %d\n", &x, &y, &s)) != EOF)
+    {
+        if (retval != 3)
+        {
+            printf("Error! Expected 3 values per line in input file\n");
+            exit(EXIT_FAILURE);
+        }
+        if (x < 0 || x > NX - 1)
+        {
+            printf("Error! Input x-coord out of range\n");
+            exit(EXIT_FAILURE);
+        }
+        if (y < 0 || y > NY - 1)
+        {
+            printf("Error! Input y-coord out of range\n");
+            exit(EXIT_FAILURE);
+        }
+        if (s != ALIVE)
+        {
+            printf("Error! Alive value should be 1\n");
+            exit(EXIT_FAILURE);
+        }
+
+        board[x + y * NX] = ALIVE;
+    }
+
+    fclose(fp);
+}
 
 void print_board(char* board)
 {
@@ -91,17 +131,17 @@ void accelerate_life(char* tick, char* tock)
     }
 }
 
-int main(void)
+int main(int argc, void **argv)
 {
-    // Arrays for boards
-    //char* board_tick = (char *)calloc(NX * NY, sizeof(char));
-    char board_tick[] = {0,0,0,0,0,0,
-                         0,1,1,0,0,0,
-                         0,1,1,0,0,0,
-                         0,0,0,1,1,0,
-                         0,0,0,1,1,0,
-                         0,0,0,0,0,0};
 
+    if (argc != 2)
+    {
+        printf("Usage:\n./gameoflife input.dat\n");
+        return EXIT_FAILURE;
+    }
+
+    // Arrays for boards
+    char* board_tick = (char *)calloc(NX * NY, sizeof(char));
     char* board_tock = (char *)calloc(NX * NY, sizeof(char));
 
     if (!board_tick || !board_tock)
@@ -110,9 +150,18 @@ int main(void)
         return EXIT_FAILURE;
     }
 
+    // Load in the file
+    load_board(board_tick, argv[1]);
+
     printf("Starting state\n");
     print_board(board_tick);
 
+    accelerate_life(board_tick, board_tock);
+    printf("Then:\n");
+    print_board(board_tock);
+    accelerate_life(board_tock, board_tick);
+    printf("Then\n");
+    print_board(board_tick);
     accelerate_life(board_tick, board_tock);
 
     printf("Finishing state\n");
