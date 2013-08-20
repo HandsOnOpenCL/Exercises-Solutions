@@ -25,7 +25,7 @@ void die(const char* message, const int line, const char *file);
 void load_board(char* board, const char* file, const unsigned int nx, const unsigned int ny);
 void print_board(const char* board, const unsigned int nx, const unsigned int ny);
 void save_board(const char* board, const unsigned int nx, const unsigned int ny);
-void load_params(unsigned int *nx, unsigned int *ny);
+void load_params(unsigned int *nx, unsigned int *ny, unsigned int *iterations);
 
 
 /*************************************************************************************
@@ -105,10 +105,11 @@ int main(int argc, void **argv)
         return EXIT_FAILURE;
     }
 
-    // Board dimensions
+    // Board dimensions and iteration total
     unsigned int nx, ny;
+    unsigned int iterations;
 
-    load_params(&nx, &ny);
+    load_params(&nx, &ny, &iterations);
 
     // Allocate memory for boards
     char* board_tick = (char *)calloc(nx * ny, sizeof(char));
@@ -125,22 +126,27 @@ int main(int argc, void **argv)
     print_board(board_tick, nx, ny);
 
     // Loop
-    // TODO
+    for (unsigned int i = 0; i < iterations; i++)
+    {
+        // Apply the rules of Life
+        printf("Input\n");
+        print_board(board_tick, nx, ny);
+        accelerate_life(board_tick, board_tock, nx, ny);
+        printf("Output\n");
+        print_board(board_tock, nx, ny);
 
-    accelerate_life(board_tick, board_tock, nx, ny);
-    printf("Then:\n");
-    print_board(board_tock, nx, ny);
-    accelerate_life(board_tock, board_tick, nx, ny);
-    printf("Then\n");
-    print_board(board_tick, nx, ny);
-    accelerate_life(board_tick, board_tock, nx, ny);
+        // Swap the boards over
+        char *tmp = board_tick;
+        board_tick = board_tock;
+        board_tock = tmp;
+    }
 
     // Display the final state
     printf("Finishing state\n");
-    print_board(board_tock, nx, ny);
+    print_board(board_tick, nx, ny);
 
     // Save the final state of the board
-    save_board(board_tock, nx, ny);
+    save_board(board_tick, nx, ny);
 
     return EXIT_SUCCESS;
 }
@@ -151,7 +157,7 @@ int main(int argc, void **argv)
  ************************************************************************************/
 
 // Function to load the params file and set up the X and Y dimensions
-void load_params(unsigned int *nx, unsigned int *ny)
+void load_params(unsigned int *nx, unsigned int *ny, unsigned int *iterations)
 {
     FILE *fp = fopen(PARAMFILE, "r");
     if (!fp)
@@ -164,6 +170,9 @@ void load_params(unsigned int *nx, unsigned int *ny)
     retval = fscanf(fp, "%d\n", ny);
     if (retval != 1)
         die("Could not read params file: ny", __LINE__, __FILE__);
+    retval = fscanf(fp, "%d\n", iterations);
+    if (retval != 1)
+        die("Could not read params file: iterations", __LINE__, __FILE__);
 
     fclose(fp);
 }
