@@ -24,6 +24,7 @@
 void die(const char* message, const int line, const char *file);
 void load_board(char* board, const char* file, const unsigned int nx, const unsigned int ny);
 void print_board(const char* board, const unsigned int nx, const unsigned int ny);
+void save_board(const char* board, const unsigned int nx, const unsigned int ny);
 void load_params(unsigned int *nx, unsigned int *ny);
 
 
@@ -138,6 +139,9 @@ int main(int argc, void **argv)
     printf("Finishing state\n");
     print_board(board_tock, nx, ny);
 
+    // Save the final state of the board
+    save_board(board_tock, nx, ny);
+
     return EXIT_SUCCESS;
 }
 
@@ -206,6 +210,22 @@ void print_board(const char* board, const unsigned int nx, const unsigned int ny
                 printf("O");
         }
         printf("\n");
+    }
+}
+
+void save_board(const char* board, const unsigned int nx, const unsigned int ny)
+{
+    FILE *fp = fopen(FINALSTATEFILE, "w");
+    if (!fp)
+        die("Could not open final state file.", __LINE__, __FILE__);
+
+    for (unsigned int i = 0; i < ny; i++)
+    {
+        for (unsigned int j = 0; j < nx; j++)
+        {
+            if (board[i * nx + j] == ALIVE)
+                fprintf(fp, "%d %d %d\n", j, i, ALIVE);
+        }
     }
 }
 
