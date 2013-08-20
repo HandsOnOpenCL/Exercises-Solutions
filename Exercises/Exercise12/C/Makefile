@@ -1,13 +1,12 @@
 
 CC = gcc
 
-#CCFLAGS = -O3
-CCFLAGS = -g -std=c99
+CCFLAGS = -O3 -std=c99
 
-LIBS = -lm
+LIBS = -fopenmp
 
 gameoflife: gameoflife.c
-	$(CC) $^ $(CCFLAGS) -o $@
+	$(CC) $^ $(CCFLAGS) $(LIBS) -o $@
 
 clean:
 	rm -f gameoflife

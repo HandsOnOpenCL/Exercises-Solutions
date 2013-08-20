@@ -10,6 +10,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <omp.h>
 
 #define PARAMFILE      "input.params"
 #define FINALSTATEFILE "final_state.dat"
@@ -33,7 +34,7 @@ void load_params(unsigned int *nx, unsigned int *ny, unsigned int *iterations);
  ************************************************************************************/
 
 // Apply the rules of life to tick and save in tock
-void accelerate_life(char* tick, char* tock, const int nx, const int ny)
+void accelerate_life(const char* tick, char* tock, const int nx, const int ny)
 {
     // The cell we work on in the loop
     unsigned int idx;
@@ -42,9 +43,11 @@ void accelerate_life(char* tick, char* tock, const int nx, const int ny)
     // wrapping around if required
     unsigned int x_l, x_r, y_u, y_d;
 
+    unsigned int j;
+    #pragma omp parallel for private(j, idx, x_l, x_r, y_u, y_d)
     for (unsigned int i = 0; i < ny; i++)
     {
-        for (unsigned int j = 0; j < nx; j++)
+        for (j = 0; j < nx; j++)
         {
             // Calculate indexes
             idx = i * nx + j;
