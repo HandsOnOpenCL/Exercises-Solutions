@@ -129,11 +129,7 @@ int main(int argc, void **argv)
     for (unsigned int i = 0; i < iterations; i++)
     {
         // Apply the rules of Life
-        printf("Input\n");
-        print_board(board_tick, nx, ny);
         accelerate_life(board_tick, board_tock, nx, ny);
-        printf("Output\n");
-        print_board(board_tock, nx, ny);
 
         // Swap the boards over
         char *tmp = board_tick;
