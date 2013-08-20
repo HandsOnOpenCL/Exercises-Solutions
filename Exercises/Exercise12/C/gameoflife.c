@@ -12,7 +12,6 @@
 #include <stdlib.h>
 #include <omp.h>
 
-#define PARAMFILE      "input.params"
 #define FINALSTATEFILE "final_state.dat"
 
 // Define the state of the cell
@@ -26,7 +25,7 @@ void die(const char* message, const int line, const char *file);
 void load_board(char* board, const char* file, const unsigned int nx, const unsigned int ny);
 void print_board(const char* board, const unsigned int nx, const unsigned int ny);
 void save_board(const char* board, const unsigned int nx, const unsigned int ny);
-void load_params(unsigned int *nx, unsigned int *ny, unsigned int *iterations);
+void load_params(const char *file, unsigned int *nx, unsigned int *ny, unsigned int *iterations);
 
 
 /*************************************************************************************
@@ -102,9 +101,9 @@ int main(int argc, void **argv)
 {
 
     // Check we have a starting state file
-    if (argc != 2)
+    if (argc != 3)
     {
-        printf("Usage:\n./gameoflife input.dat\n");
+        printf("Usage:\n./gameoflife input.dat input.params\n");
         return EXIT_FAILURE;
     }
 
@@ -112,7 +111,7 @@ int main(int argc, void **argv)
     unsigned int nx, ny;
     unsigned int iterations;
 
-    load_params(&nx, &ny, &iterations);
+    load_params(argv[2], &nx, &ny, &iterations);
 
     // Allocate memory for boards
     char* board_tick = (char *)calloc(nx * ny, sizeof(char));
@@ -156,9 +155,9 @@ int main(int argc, void **argv)
  ************************************************************************************/
 
 // Function to load the params file and set up the X and Y dimensions
-void load_params(unsigned int *nx, unsigned int *ny, unsigned int *iterations)
+void load_params(const char* file, unsigned int *nx, unsigned int *ny, unsigned int *iterations)
 {
-    FILE *fp = fopen(PARAMFILE, "r");
+    FILE *fp = fopen(file, "r");
     if (!fp)
         die("Could not open params file.", __LINE__, __FILE__);
 
