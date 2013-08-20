@@ -11,9 +11,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// Define the board size
-#define NX (17)
-#define NY (17)
+#define PARAMFILE      "input.params"
+#define FINALSTATEFILE "final_state.dat"
 
 // Define the state of the cell
 #define DEAD  0
@@ -23,8 +22,9 @@
  * Forward declarations of utility functions
  ************************************************************************************/
 void die(const char* message, const int line, const char *file);
-void load_board(char* board, char* file);
-void print_board(char* board);
+void load_board(char* board, const char* file, const unsigned int nx, const unsigned int ny);
+void print_board(const char* board, const unsigned int nx, const unsigned int ny);
+void load_params(unsigned int *nx, unsigned int *ny);
 
 
 /*************************************************************************************
@@ -32,7 +32,7 @@ void print_board(char* board);
  ************************************************************************************/
 
 // Apply the rules of life to tick and save in tock
-void accelerate_life(char* tick, char* tock)
+void accelerate_life(char* tick, char* tock, const int nx, const int ny)
 {
     // The cell we work on in the loop
     unsigned int idx;
@@ -41,29 +41,29 @@ void accelerate_life(char* tick, char* tock)
     // wrapping around if required
     unsigned int x_l, x_r, y_u, y_d;
 
-    for (unsigned int i = 0; i < NY; i++)
+    for (unsigned int i = 0; i < ny; i++)
     {
-        for (unsigned int j = 0; j < NX; j++)
+        for (unsigned int j = 0; j < nx; j++)
         {
             // Calculate indexes
-            idx = i * NX + j;
-            x_r = (j + 1) % NX;
-            x_l = (j == 0) ? NY - 1 : j - 1;
-            y_u = (i + 1) % NX;
-            y_d = (i == 0) ? NX - 1: i - 1;
+            idx = i * nx + j;
+            x_r = (j + 1) % nx;
+            x_l = (j == 0) ? ny - 1 : j - 1;
+            y_u = (i + 1) % nx;
+            y_d = (i == 0) ? nx - 1: i - 1;
 
             // Count alive neighbours (out of eight)
             int neighbours = 0;
-            if (tick[i * NX + x_l] == ALIVE) neighbours++;
-            if (tick[y_u * NX + x_l] == ALIVE) neighbours++;
-            if (tick[y_d * NX + x_l] == ALIVE) neighbours++;
+            if (tick[i * nx + x_l] == ALIVE) neighbours++;
+            if (tick[y_u * nx + x_l] == ALIVE) neighbours++;
+            if (tick[y_d * nx + x_l] == ALIVE) neighbours++;
             
-            if (tick[i * NX + x_r] == ALIVE) neighbours++;
-            if (tick[y_u * NX + x_r] == ALIVE) neighbours++;
-            if (tick[y_d * NX + x_r] == ALIVE) neighbours++;
+            if (tick[i * nx + x_r] == ALIVE) neighbours++;
+            if (tick[y_u * nx + x_r] == ALIVE) neighbours++;
+            if (tick[y_d * nx + x_r] == ALIVE) neighbours++;
             
-            if (tick[y_u * NX + j] == ALIVE) neighbours++;
-            if (tick[y_d * NX + j] == ALIVE) neighbours++;
+            if (tick[y_u * nx + j] == ALIVE) neighbours++;
+            if (tick[y_d * nx + j] == ALIVE) neighbours++;
 
             // Apply game of life rules
             if (tick[idx] == ALIVE)
@@ -104,34 +104,39 @@ int main(int argc, void **argv)
         return EXIT_FAILURE;
     }
 
+    // Board dimensions
+    unsigned int nx, ny;
+
+    load_params(&nx, &ny);
+
     // Allocate memory for boards
-    char* board_tick = (char *)calloc(NX * NY, sizeof(char));
-    char* board_tock = (char *)calloc(NX * NY, sizeof(char));
+    char* board_tick = (char *)calloc(nx * ny, sizeof(char));
+    char* board_tock = (char *)calloc(nx * ny, sizeof(char));
 
     if (!board_tick || !board_tock)
         die("Could not allocate memory for board", __LINE__, __FILE__);
 
     // Load in the starting state to board_tick
-    load_board(board_tick, argv[1]);
+    load_board(board_tick, argv[1], nx, ny);
 
     // Display the starting state
     printf("Starting state\n");
-    print_board(board_tick);
+    print_board(board_tick, nx, ny);
 
     // Loop
     // TODO
 
-    accelerate_life(board_tick, board_tock);
+    accelerate_life(board_tick, board_tock, nx, ny);
     printf("Then:\n");
-    print_board(board_tock);
-    accelerate_life(board_tock, board_tick);
+    print_board(board_tock, nx, ny);
+    accelerate_life(board_tock, board_tick, nx, ny);
     printf("Then\n");
-    print_board(board_tick);
-    accelerate_life(board_tick, board_tock);
+    print_board(board_tick, nx, ny);
+    accelerate_life(board_tick, board_tock, nx, ny);
 
     // Display the final state
     printf("Finishing state\n");
-    print_board(board_tock);
+    print_board(board_tock, nx, ny);
 
     return EXIT_SUCCESS;
 }
@@ -141,9 +146,27 @@ int main(int argc, void **argv)
  * Utility functions
  ************************************************************************************/
 
+// Function to load the params file and set up the X and Y dimensions
+void load_params(unsigned int *nx, unsigned int *ny)
+{
+    FILE *fp = fopen(PARAMFILE, "r");
+    if (!fp)
+        die("Could not open params file.", __LINE__, __FILE__);
+
+    int retval;
+    retval = fscanf(fp, "%d\n", nx);
+    if (retval != 1)
+        die("Could not read params file: nx.", __LINE__, __FILE__);
+    retval = fscanf(fp, "%d\n", ny);
+    if (retval != 1)
+        die("Could not read params file: ny", __LINE__, __FILE__);
+
+    fclose(fp);
+}
+
 // Function to load in a file which lists the alive cells
 // Each line of the file is expected to be: x y 1
-void load_board(char* board, char* file)
+void load_board(char* board, const char* file, const unsigned int nx, const unsigned int ny)
 {
     FILE *fp = fopen(file, "r");
     if (!fp)
@@ -155,14 +178,14 @@ void load_board(char* board, char* file)
     {
         if (retval != 3)
             die("Expected 3 values per line in input file.", __LINE__, __FILE__);
-        if (x < 0 || x > NX - 1)
+        if (x < 0 || x > nx - 1)
             die("Input x-coord out of range.", __LINE__, __FILE__);
-        if (y < 0 || y > NY - 1)
+        if (y < 0 || y > ny - 1)
             die("Input y-coord out of range.", __LINE__, __FILE__);
         if (s != ALIVE)
             die("Alive value should be 1.", __LINE__, __FILE__);
 
-        board[x + y * NX] = ALIVE;
+        board[x + y * nx] = ALIVE;
     }
 
     fclose(fp);
@@ -171,13 +194,13 @@ void load_board(char* board, char* file)
 // Function to print out the board to stdout
 // Alive cells are displayed as O
 // Dead cells are displayed as .
-void print_board(char* board)
+void print_board(const char* board, const unsigned int nx, const unsigned int ny)
 {
-    for (unsigned int i = 0; i < NY; i++)
+    for (unsigned int i = 0; i < ny; i++)
     {
-        for (unsigned int j = 0; j < NX; j++)
+        for (unsigned int j = 0; j < nx; j++)
         {
-            if (board[i * NX + j] == DEAD)
+            if (board[i * nx + j] == DEAD)
                 printf(".");
             else
                 printf("O");
