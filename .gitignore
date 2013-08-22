@@ -15,6 +15,8 @@ Exercises/Exercise06/C/mult
 
 Exercises/Exercise01/Cpp/DeviceInfo
 Exercises/Exercise03/Cpp/vadd
+Exercises/Exercise04/Cpp/vadd
+Exercises/Exercise05/Cpp/vadd
 
 Solutions/Exercise04/C/vadd_chain
 Solutions/Exercise05/C/vadd_abc
@@ -22,3 +24,4 @@ Solutions/Exercise08/C/pi_ocl
 Solutions/Exercise06/C/mult
 Solutions/Exercise07/C/mult
 
+Solutions/Exercise04/Cpp/vadd_chain
