@@ -51,9 +51,9 @@ void accelerate_life(const char* tick, char* tock, const int nx, const int ny)
             // Calculate indexes
             idx = i * nx + j;
             x_r = (j + 1) % nx;
-            x_l = (j == 0) ? ny - 1 : j - 1;
-            y_u = (i + 1) % nx;
-            y_d = (i == 0) ? nx - 1: i - 1;
+            x_l = (j == 0) ? nx - 1 : j - 1;
+            y_u = (i + 1) % ny;
+            y_d = (i == 0) ? ny - 1: i - 1;
 
             // Count alive neighbours (out of eight)
             int neighbours = 0;
