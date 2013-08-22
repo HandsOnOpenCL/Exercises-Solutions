@@ -88,14 +88,12 @@ int main(void)
             d_c,
             count);
 
+        queue.finish();
+
         double rtime = static_cast<double>(timer.getTimeMilliseconds()) / 1000.0;
         printf("\nThe kernels ran in %lf seconds\n", rtime);
 
-        queue.enqueueReadBuffer(
-            d_c, 
-            CL_TRUE,
-            0, sizeof(float) * LENGTH,
-            &h_c[0]);
+        cl::copy(queue, d_c, begin(h_c), end(h_c));
 
         // Test the results
         int correct = 0;
