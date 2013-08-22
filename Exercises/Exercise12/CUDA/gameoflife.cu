@@ -39,16 +39,26 @@ __global__ void accelerate_life(const char* tick, char* tock, const int nx, cons
     unsigned int idx = blockDim.x * blockIdx.x + threadIdx.x;
     unsigned int idy = blockDim.y * blockIdx.y + threadIdx.y;
 
+    // Index with respect to global array
+    unsigned int id = idy * nx + idx;
+    unsigned int id_b = (threadIdx.y + 1) * (blockDim.x + 2) + threadIdx.x + 1;
+
     // Copy block to shared memory
-    // TODO
     extern __shared__ char block[];
+    block[id_b] = tick[id];
+
+    // Copy the halo cells (those around the block) to shared memory
+    // TODO
+
+    __syncthreads();
+
+    // UPDATE THE FOLLOWING TO USE SHARED MEMORY
 
     // Indexes of rows/columns next to idx
     // wrapping around if required
-    unsigned int x_l, x_r, y_u, y_d;
+    /*unsigned int x_l, x_r, y_u, y_d;
 
     // Calculate indexes
-    unsigned int id = idy * nx + idx;
     x_r = (idx + 1) % nx;
     x_l = (idx == 0) ? nx - 1 : idx - 1;
     y_u = (idy + 1) % ny;
@@ -85,8 +95,9 @@ __global__ void accelerate_life(const char* tick, char* tock, const int nx, cons
         else
             // Remains dead
             tock[id] = DEAD;
-    }
+    }*/
 
+    tock[id] = block[id_b];
 }
 
 
@@ -222,10 +233,11 @@ void print_board(const char* board, const unsigned int nx, const unsigned int ny
     {
         for (unsigned int j = 0; j < nx; j++)
         {
-            if (board[i * nx + j] == DEAD)
+            /*if (board[i * nx + j] == DEAD)
                 printf(".");
             else
-                printf("O");
+                printf("O");*/
+            printf("%d|", board[i*nx+j]);
         }
         printf("\n");
     }
