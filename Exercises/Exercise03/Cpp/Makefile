@@ -1,5 +1,7 @@
 
-CC=g++
+ifndef CPPC
+	CPPC=g++
+endif
 
 CPP_COMMON = ../../Cpp_common
 
@@ -27,7 +29,7 @@ endif
 CCFLAGS += -D DEVICE=$(DEVICE)
 
 vadd: vadd.cpp
-	$(CC) $^ $(INC) $(CCFLAGS) $(LIBS) -o $@
+	$(CPPC) $^ $(INC) $(CCFLAGS) $(LIBS) -o $@
 
 
 clean:

@@ -1,5 +1,7 @@
 
-CC=g++
+ifndef CPPC
+	CPPC=g++
+endif
 
 CPP_COMMON = ../../Cpp_common
 
@@ -18,7 +20,7 @@ ifeq ($(PLATFORM), Darwin)
 endif
 
 DeviceInfo: DeviceInfo.cpp
-	$(CC) $^ $(INC) $(CCFLAGS) $(LIBS) -o $@
+	$(CPPC) $^ $(INC) $(CCFLAGS) $(LIBS) -o $@
 
 
 clean:
