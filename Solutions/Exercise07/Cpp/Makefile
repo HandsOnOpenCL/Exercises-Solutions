@@ -6,7 +6,9 @@
 #          Modified by Tom Deakin, July 2013
 #
 
-CC=g++
+ifndef CPPC
+	CPPC=g++
+endif
 
 CCFLAGS=-O3 -std=c++11 -std=gnu++11 -ffast-math
 
@@ -39,19 +41,19 @@ CCFLAGS += -D DEVICE=$(DEVICE)
 all: $(EXEC)
 
 mult: $(MMUL_OBJS)
-	$(CC) $(MMUL_OBJS) $(LIBS) -o $(EXEC)
+	$(CPPC) $(MMUL_OBJS) $(LIBS) -o $(EXEC)
 
 wtime.o: $(COMMON_DIR)/wtime.c
-	$(CC) -c $^ $(CCFLAGS) -o $@
+	$(CPPC) -c $^ $(CCFLAGS) -o $@
 
 err_code.o: $(COMMON_DIR)/err_code.c
-	$(CC) -c $^ $(CCFLAGS) -o $@
+	$(CPPC) -c $^ $(CCFLAGS) -o $@
 
 .c.o:
-	$(CC) -c $< $(CCFLAGS) -o $@
+	$(CPPC) -c $< $(CCFLAGS) -o $@
 
 .cpp.o:
-	$(CC) -c $< $(CCFLAGS) $(INC) -o $@
+	$(CPPC) -c $< $(CCFLAGS) $(INC) -o $@
 
 clean:
 	rm -f $(MMUL_OBJS) $(EXEC)

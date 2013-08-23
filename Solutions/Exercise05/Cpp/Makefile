@@ -1,5 +1,7 @@
 
-CC=g++
+ifndef CPPC
+	CPPC=g++
+endif
 
 CPP_COMMON = ../../Cpp_common
 
@@ -7,7 +9,7 @@ CCFLAGS=-std=c++11 -std=gnu++11
 
 INC = -I $(CPP_COMMON)
 
-LIBS = -lOpenCL
+LIBS = -lOpenCL -lrt
 
 # Change this variable to specify the device type
 # to the OpenCL device type of choice. You can also
@@ -27,7 +29,7 @@ endif
 CCFLAGS += -D DEVICE=$(DEVICE)
 
 vadd_abc: vadd_abc.cpp
-	$(CC) $^ $(INC) $(CCFLAGS) $(LIBS) -o $@
+	$(CPPC) $^ $(INC) $(CCFLAGS) $(LIBS) -o $@
 
 
 clean:
