@@ -121,6 +121,149 @@ int main(void)
 
         } // end for loop
 
+//--------------------------------------------------------------------------------
+// OpenCL matrix multiplication ... C row per work item
+//--------------------------------------------------------------------------------
+
+        // Create the compute program from the source buffer
+        program = cl::Program(context, util::loadProgram("../C_row.cl"), true);
+
+        // Create the compute kernel from the program
+        auto crow_mmul = cl::make_kernel<int, int, int, cl::Buffer, cl::Buffer, cl::Buffer>(program, "mmul");
+
+         printf("\n===== OpenCL, matrix mult, C row per work item, order %d ======\n",Ndim);
+
+        // Do the multiplication COUNT times
+        for (int i = 0; i < COUNT; i++)
+        {
+            zero_mat(Ndim, Mdim, h_C);
+
+            start_time = wtime();
+
+            cl::NDRange global(Ndim);
+            crow_mmul(cl::EnqueueArgs(queue, global),
+                    Mdim, Ndim, Pdim, d_a, d_b, d_c);
+
+            queue.finish();
+
+            run_time = wtime() - start_time;
+
+            cl::copy(queue, d_c, begin(h_C), end(h_C));
+
+            results(Mdim, Ndim, Pdim, h_C, run_time);
+
+        } // end for loop
+
+//--------------------------------------------------------------------------------
+// OpenCL matrix multiplication ... C row per work item, A row in pivate memory
+//--------------------------------------------------------------------------------
+
+        // Create the compute program from the source buffer
+        program = cl::Program(context, util::loadProgram("../C_row_priv.cl"), true);
+
+        // Create the compute kernel from the program
+        auto arowpriv_mmul = cl::make_kernel<int, int, int, cl::Buffer, cl::Buffer, cl::Buffer>(program, "mmul");
+
+        printf("\n===== OpenCL, matrix mult, C row, A row in priv mem, order %d ======\n",Ndim);
+
+        // Do the multiplication COUNT times
+        for (int i = 0; i < COUNT; i++)
+        {
+            zero_mat(Ndim, Mdim, h_C);
+
+            start_time = wtime();
+
+            cl::NDRange global(Ndim);
+            cl::NDRange local(ORDER / 16);
+            arowpriv_mmul(cl::EnqueueArgs(queue, global, local),
+                    Mdim, Ndim, Pdim, d_a, d_b, d_c);
+
+            queue.finish();
+
+            run_time = wtime() - start_time;
+
+            cl::copy(queue, d_c, begin(h_C), end(h_C));
+
+            results(Mdim, Ndim, Pdim, h_C, run_time);
+
+        } // end for loop
+
+//--------------------------------------------------------------------------------
+// OpenCL matrix multiplication ... C row per work item, A row pivate, B col local
+//--------------------------------------------------------------------------------
+
+        // Create the compute program from the source buffer
+        program = cl::Program(context, util::loadProgram("../C_row_priv_bloc.cl"), true);
+
+        // Create the compute kernel from the program
+        auto browloc_mmul = cl::make_kernel<int, int, int, cl::Buffer, cl::Buffer, cl::Buffer, cl::LocalSpaceArg>(program, "mmul");
+
+        printf("\n===== OpenCL, mat mult, C row, priv A, B cols loc, order %d ======\n",Ndim);
+
+        // Do the multiplication COUNT times
+        for (int i = 0; i < COUNT; i++)
+        {
+            zero_mat(Ndim, Mdim, h_C);
+
+            start_time = wtime();
+
+            cl::NDRange global(Ndim);
+            cl::NDRange local(ORDER / 16);
+
+            cl::LocalSpaceArg localmem = cl::Local(sizeof(float) * Pdim);
+
+            browloc_mmul(cl::EnqueueArgs(queue, global, local),
+                    Mdim, Ndim, Pdim, d_a, d_b, d_c, localmem);
+
+            queue.finish();
+
+            run_time = wtime() - start_time;
+
+            cl::copy(queue, d_c, begin(h_C), end(h_C));
+
+            results(Mdim, Ndim, Pdim, h_C, run_time);
+
+        } // end for loop
+
+//--------------------------------------------------------------------------------
+// OpenCL matrix multiplication ...  A and B in block form in local memory
+//--------------------------------------------------------------------------------
+
+        // Create the compute program from the source buffer
+        program = cl::Program(context, util::loadProgram("../C_block_form.cl"), true);
+
+        // Create the compute kernel from the program
+        auto block_mmul = cl::make_kernel<int, int, int, cl::Buffer, cl::Buffer, cl::Buffer, cl::LocalSpaceArg, cl::LocalSpaceArg>(program, "mmul");
+
+        printf("\n===== OpenCL, A and B in block form in local memory, order %d ======\n",Ndim);
+
+        // Do the multiplication COUNT times
+        for (int i = 0; i < COUNT; i++)
+        {
+            zero_mat(Ndim, Mdim, h_C);
+
+            start_time = wtime();
+
+            int blocksize = 16;
+            cl::NDRange global(Ndim, Mdim);
+            cl::NDRange local(blocksize, blocksize);
+
+            cl::LocalSpaceArg localmem1 = cl::Local(sizeof(float) * blocksize * blocksize);
+            cl::LocalSpaceArg localmem2 = cl::Local(sizeof(float) * blocksize * blocksize);
+
+            block_mmul(cl::EnqueueArgs(queue, global, local),
+                    Mdim, Ndim, Pdim, d_a, d_b, d_c, localmem1, localmem2);
+
+            queue.finish();
+
+            run_time = wtime() - start_time;
+
+            cl::copy(queue, d_c, begin(h_C), end(h_C));
+
+            results(Mdim, Ndim, Pdim, h_C, run_time);
+
+        } // end for loop
+
     } catch (cl::Error err)
     {
         std::cout << "Exception\n";
