@@ -175,9 +175,9 @@ int main(int argc, char **argv)
     errorCheck(cudaMemcpy(d_board_tick, h_board, size, cudaMemcpyHostToDevice));
 
     // Define our problem size for CUDA
-    dim3 numBlocks(nx/3, ny/3);
-    dim3 numThreads(3, 3);
-    size_t sharedMem = sizeof(char) * nx * 1;
+    dim3 numBlocks(nx/20, ny/20);
+    dim3 numThreads(20,20);
+    size_t sharedMem = sizeof(char) * (20 + 2) * (20 + 2);
 
     // Loop
     for (unsigned int i = 0; i < iterations; i++)
