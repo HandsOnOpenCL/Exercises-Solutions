@@ -142,9 +142,12 @@ int main(int argc, char **argv)
 {
 
     // Check we have a starting state file
-    if (argc != 3)
+    if (argc != 5)
     {
-        printf("Usage:\n./gameoflife input.dat input.params\n");
+        printf("Usage:\n./gameoflife input.dat input.params bx by\n");
+        printf("\tinput.dat\tpattern file\n");
+        printf("\tinput.params\tparameter file defining board size\n");
+        printf("\tbx by\tsizes of thread blocks - must divide the board size equally\n");
         return EXIT_FAILURE;
     }
 
@@ -152,6 +155,8 @@ int main(int argc, char **argv)
     // Board dimensions and iteration total
     unsigned int nx, ny;
     unsigned int iterations;
+    unsigned int bx = atoi(argv[3]);
+    unsigned int by = atoi(argv[4]);
 
     load_params(argv[2], &nx, &ny, &iterations);
 
@@ -175,9 +180,11 @@ int main(int argc, char **argv)
     errorCheck(cudaMemcpy(d_board_tick, h_board, size, cudaMemcpyHostToDevice));
 
     // Define our problem size for CUDA
-    dim3 numBlocks(nx/20, ny/20);
-    dim3 numThreads(20,20);
-    size_t sharedMem = sizeof(char) * (20 + 2) * (20 + 2);
+    dim3 numBlocks(nx/bx, ny/by);
+    dim3 numThreads(bx, by);
+    size_t sharedMem = sizeof(char) * (bx + 2) * (by + 2);
+
+    // TODO - vary number of blocks at runtime
 
     // Loop
     for (unsigned int i = 0; i < iterations; i++)
