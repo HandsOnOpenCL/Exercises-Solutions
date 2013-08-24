@@ -93,10 +93,11 @@ __global__ void accelerate_life(const char* tick, char* tock, const int nx, cons
     unsigned int x_l, x_r, y_u, y_d;
 
     // Calculate indexes
-    x_r = (threadIdx.x + 1) % blockDim.x;
-    x_l = (threadIdx.x == 0) ? blockDim.x - 1 : threadIdx.x - 1;
-    y_u = (threadIdx.y + 1) % blockDim.y;
-    y_d = (threadIdx.y == 0) ? blockDim.y - 1: threadIdx.y - 1;
+    x_r = threadIdx.x + 2;
+    x_l = threadIdx.x;
+    y_u = threadIdx.y + 2;
+    y_d = threadIdx.y;
+
 /*
     // Count alive neighbours (out of eight)
     int neighbours = 0;
@@ -110,8 +111,7 @@ __global__ void accelerate_life(const char* tick, char* tock, const int nx, cons
          
     if (block[(y_u + 1) * (blockDim.x + 2) + threadIdx.x + 1] == ALIVE) neighbours++;
     if (block[(y_d + 1) * (blockDim.x + 2) + threadIdx.x + 1] == ALIVE) neighbours++;
-*/
-/*
+
     // Apply game of life rules
     if (block[id_b] == ALIVE)
     {
@@ -132,7 +132,6 @@ __global__ void accelerate_life(const char* tick, char* tock, const int nx, cons
             tock[id] = DEAD;
     }
 */
-
 }
 
 
