@@ -98,19 +98,18 @@ __global__ void accelerate_life(const char* tick, char* tock, const int nx, cons
     y_u = threadIdx.y + 2;
     y_d = threadIdx.y;
 
-/*
     // Count alive neighbours (out of eight)
     int neighbours = 0;
-    if (block[(threadIdx.y + 1) * (blockDim.x + 2) + x_l + 1] == ALIVE) neighbours++;
-    if (block[(y_u + 1) * (blockDim.x + 2) + x_l + 1] == ALIVE) neighbours++;
-    if (block[(y_d + 1) * (blockDim.x + 2) + x_l + 1] == ALIVE) neighbours++;
+    if (block[(threadIdx.y + 1) * (blockDim.x + 2) + x_l] == ALIVE) neighbours++;
+    if (block[y_u * (blockDim.x + 2) + x_l] == ALIVE) neighbours++;
+    if (block[y_d * (blockDim.x + 2) + x_l] == ALIVE) neighbours++;
         
-    if (block[(threadIdx.y + 1) * (blockDim.x + 2) + x_r + 1] == ALIVE) neighbours++;
-    if (block[(y_u + 1) * (blockDim.x + 2) + x_r + 1] == ALIVE) neighbours++;
-    if (block[(y_d + 1) * (blockDim.x + 2) + x_r + 1] == ALIVE) neighbours++;
+    if (block[(threadIdx.y + 1) * (blockDim.x + 2) + x_r] == ALIVE) neighbours++;
+    if (block[y_u * (blockDim.x + 2) + x_r] == ALIVE) neighbours++;
+    if (block[y_d * (blockDim.x + 2) + x_r] == ALIVE) neighbours++;
          
-    if (block[(y_u + 1) * (blockDim.x + 2) + threadIdx.x + 1] == ALIVE) neighbours++;
-    if (block[(y_d + 1) * (blockDim.x + 2) + threadIdx.x + 1] == ALIVE) neighbours++;
+    if (block[y_u * (blockDim.x + 2) + threadIdx.x + 1] == ALIVE) neighbours++;
+    if (block[y_d * (blockDim.x + 2) + threadIdx.x + 1] == ALIVE) neighbours++;
 
     // Apply game of life rules
     if (block[id_b] == ALIVE)
@@ -131,7 +130,7 @@ __global__ void accelerate_life(const char* tick, char* tock, const int nx, cons
             // Remains dead
             tock[id] = DEAD;
     }
-*/
+
 }
 
 
