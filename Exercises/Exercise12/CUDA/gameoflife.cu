@@ -88,33 +88,30 @@ __global__ void accelerate_life(const char* tick, char* tock, const int nx, cons
 
     __syncthreads();
 
-    // UPDATE THE FOLLOWING TO USE SHARED MEMORY
-
-    // Indexes of rows/columns next to idx
-    // wrapping around if required
-    /*unsigned int x_l, x_r, y_u, y_d;
+    // Indexes of rows/columns next to id_b
+    unsigned int x_l, x_r, y_u, y_d;
 
     // Calculate indexes
-    x_r = (idx + 1) % nx;
-    x_l = (idx == 0) ? nx - 1 : idx - 1;
-    y_u = (idy + 1) % ny;
-    y_d = (idy == 0) ? ny - 1: idy - 1;
+    x_r = (threadIdx.x + 1) % blockDim.x;
+    x_l = (threadIdx.x == 0) ? blockDim.x - 1 : threadIdx.x - 1;
+    y_u = (threadIdx.y + 1) % blockDim.y;
+    y_d = (threadIdx.y == 0) ? blockDim.y - 1: threadIdx.y - 1;
 
     // Count alive neighbours (out of eight)
     int neighbours = 0;
-    if (tick[idy * nx + x_l] == ALIVE) neighbours++;
-    if (tick[y_u * nx + x_l] == ALIVE) neighbours++;
-    if (tick[y_d * nx + x_l] == ALIVE) neighbours++;
+    if (block[(threadIdx.y + 1) * (blockDim.x + 2) + x_l + 1] == ALIVE) neighbours++;
+    if (block[(y_u + 1) * (blockDim.x + 2) + x_l + 1] == ALIVE) neighbours++;
+    if (block[(y_d + 1) * (blockDim.x + 2) + x_l + 1] == ALIVE) neighbours++;
         
-    if (tick[idy * nx + x_r] == ALIVE) neighbours++;
-    if (tick[y_u * nx + x_r] == ALIVE) neighbours++;
-    if (tick[y_d * nx + x_r] == ALIVE) neighbours++;
+    if (block[(threadIdx.y + 1) * (blockDim.x + 2) + x_r + 1] == ALIVE) neighbours++;
+    if (block[(y_u + 1) * (blockDim.x + 2) + x_r + 1] == ALIVE) neighbours++;
+    if (block[(y_d + 1) * (blockDim.x + 2) + x_r + 1] == ALIVE) neighbours++;
          
-    if (tick[y_u * nx + idx] == ALIVE) neighbours++;
-    if (tick[y_d * nx + idx] == ALIVE) neighbours++;
+    if (block[(y_u + 1) * (blockDim.x + 2) + threadIdx.x + 1] == ALIVE) neighbours++;
+    if (block[(y_d + 1) * (blockDim.x + 2) + threadIdx.x + 1] == ALIVE) neighbours++;
 
     // Apply game of life rules
-    if (tick[id] == ALIVE)
+    if (block[id_b] == ALIVE)
     {
         if (neighbours == 2 || neighbours == 3)
             // Cell lives on
@@ -131,7 +128,7 @@ __global__ void accelerate_life(const char* tick, char* tock, const int nx, cons
         else
             // Remains dead
             tock[id] = DEAD;
-    }*/
+    }
 
 }
 
