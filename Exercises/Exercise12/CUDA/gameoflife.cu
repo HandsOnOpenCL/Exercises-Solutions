@@ -54,36 +54,36 @@ __global__ void accelerate_life(const char* tick, char* tock, const int nx, cons
     const unsigned int block_d = (blockIdx.y  == 0) ? gridDim.y - 1: blockIdx.y - 1;
 
     // Select the first row of threads
-    if (idy == 0)
+    if (threadIdx.y == 0)
     {
         // Down row
-        block[idx + 1] = tick[(blockDim.y * block_d + blockDim.y - 1) * nx + (blockDim.x * blockIdx.x + blockDim.x - 1)];
+        block[threadIdx.x + 1] = tick[(blockDim.y * block_d + blockDim.y - 1) * nx + idx];
     }
     // Select the last row of threads
-    if (idy == blockDim.y - 1)
+    if (threadIdx.y == blockDim.y - 1)
     {
         // Up row
-        block[id_b + blockDim.x] = tick[(blockDim.y * block_u) * nx + (blockDim.x * blockIdx.x)];
+        block[id_b + blockDim.x] = tick[(blockDim.y * block_u) * nx + idx];
     }
-
+/*
     // Add the 4 corner halo cells
     block[0] = tick[nx * (blockDim.y * block_d + blockDim.y - 1) + (blockDim.x * block_l) + blockDim.x - 1];
     block[blockDim.x + 1] = tick[nx * (blockDim.y * block_d) + (blockDim.x * block_r)];
     block[nx * (blockDim.y + 1)] = tick[nx * (blockDim.y * block_u) + (blockDim.x * block_l) + blockDim.x - 1];
     block[nx * (blockDim.y + 1) + blockDim.x + 1] = tick[nx * (blockDim.y * block_u) + (blockDim.x * block_r)];
-    
+*/    
     // Select right column of threads
-    if (idx == blockDim.x - 1)
+    if (threadIdx.x == blockDim.x - 1)
     {
         // Copy in right
-        block[id_b + 1] = tick[nx * (blockDim.y * blockIdx.y) + (blockDim.x * block_r)];
+        block[id_b + 1] = tick[nx * idy + (blockDim.x * block_r)];
     }
-    
+
     // Select left column of threads
-    if (idx == 0)
+    if (threadIdx.x == 0)
     {
         // Copy in left
-        block[id_b - 1] = tick[nx * (blockDim.y * blockIdx.y + blockDim.y - 1) + (blockDim.x * block_l + blockDim.x - 1)];
+        block[id_b - 1] = tick[nx * idy + (blockDim.x * block_l + blockDim.x - 1)];
     }
 
     __syncthreads();
@@ -129,6 +129,8 @@ __global__ void accelerate_life(const char* tick, char* tock, const int nx, cons
             // Remains dead
             tock[id] = DEAD;
     }
+
+    tock[id] = block[id_b];
 
 }
 
