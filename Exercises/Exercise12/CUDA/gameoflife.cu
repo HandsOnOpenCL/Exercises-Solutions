@@ -266,11 +266,10 @@ void print_board(const char* board, const unsigned int nx, const unsigned int ny
     {
         for (unsigned int j = 0; j < nx; j++)
         {
-            /*if (board[i * nx + j] == DEAD)
+            if (board[i * nx + j] == DEAD)
                 printf(".");
             else
-                printf("O");*/
-            printf("%d|", board[i*nx+j]);
+                printf("O");
         }
         printf("\n");
     }
