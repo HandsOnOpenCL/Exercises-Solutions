@@ -54,16 +54,16 @@ __global__ void accelerate_life(const char* tick, char* tock, const int nx, cons
     const unsigned int block_d = (blockIdx.y  == 0) ? gridDim.y - 1: blockIdx.y - 1;
 
     // Select the first row of threads
-    if (idx < blockDim.x && idy == 0)
+    if (idy == 0)
     {
         // Down row
-        block[idx + 1] = tick[(blockDim.y * block_d + blockDim.y - 1) * nx + idx];
+        block[idx + 1] = tick[(blockDim.y * block_d + blockDim.y - 1) * nx + (blockDim.x * blockIdx.x + blockDim.x - 1)];
     }
     // Select the last row of threads
-    if (idx < blockDim.x && idy == blockDim.y - 1)
+    if (idy == blockDim.y - 1)
     {
         // Up row
-        block[id_b + blockDim.x] = tick[(blockDim.y * block_u) * nx + idx];
+        block[id_b + blockDim.x] = tick[(blockDim.y * block_u) * nx + (blockDim.x * blockIdx.x)];
     }
 
     // Add the 4 corner halo cells
@@ -72,9 +72,19 @@ __global__ void accelerate_life(const char* tick, char* tock, const int nx, cons
     block[nx * (blockDim.y + 1)] = tick[nx * (blockDim.y * block_u) + (blockDim.x * block_l) + blockDim.x - 1];
     block[nx * (blockDim.y + 1) + blockDim.x + 1] = tick[nx * (blockDim.y * block_u) + (blockDim.x * block_r)];
     
-    // Copy in right
+    // Select right column of threads
+    if (idx == blockDim.x - 1)
+    {
+        // Copy in right
+        block[id_b + 1] = tick[nx * (blockDim.y * blockIdx.y) + (blockDim.x * block_r)];
+    }
     
-    // Copy in left
+    // Select left column of threads
+    if (idx == 0)
+    {
+        // Copy in left
+        block[id_b - 1] = tick[nx * (blockDim.y * blockIdx.y + blockDim.y - 1) + (blockDim.x * block_l + blockDim.x - 1)];
+    }
 
     __syncthreads();
 
