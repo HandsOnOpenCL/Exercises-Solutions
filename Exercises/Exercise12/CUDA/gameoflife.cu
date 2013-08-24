@@ -63,15 +63,9 @@ __global__ void accelerate_life(const char* tick, char* tock, const int nx, cons
     if (threadIdx.y == blockDim.y - 1)
     {
         // Up row
-        block[id_b + blockDim.x] = tick[(blockDim.y * block_u) * nx + idx];
+        block[id_b + blockDim.x + 2] = tick[(blockDim.y * block_u) * nx + idx];
     }
-/*
-    // Add the 4 corner halo cells
-    block[0] = tick[nx * (blockDim.y * block_d + blockDim.y - 1) + (blockDim.x * block_l) + blockDim.x - 1];
-    block[blockDim.x + 1] = tick[nx * (blockDim.y * block_d) + (blockDim.x * block_r)];
-    block[nx * (blockDim.y + 1)] = tick[nx * (blockDim.y * block_u) + (blockDim.x * block_l) + blockDim.x - 1];
-    block[nx * (blockDim.y + 1) + blockDim.x + 1] = tick[nx * (blockDim.y * block_u) + (blockDim.x * block_r)];
-*/    
+
     // Select right column of threads
     if (threadIdx.x == blockDim.x - 1)
     {
@@ -86,6 +80,13 @@ __global__ void accelerate_life(const char* tick, char* tock, const int nx, cons
         block[id_b - 1] = tick[nx * idy + (blockDim.x * block_l + blockDim.x - 1)];
     }
 
+
+    // Add the 4 corner halo cells
+    block[0] = tick[nx * (blockDim.y * block_d + blockDim.y - 1) + (blockDim.x * block_l) + blockDim.x - 1];
+    block[blockDim.x + 1] = tick[nx * (blockDim.y * block_d + blockDim.y - 1) + (blockDim.x * block_r)];
+    block[(blockDim.x + 2) * (blockDim.y + 1)] = tick[nx * (blockDim.y * block_u) + (blockDim.x * block_l) + blockDim.x - 1];
+    block[(blockDim.x + 2) * (blockDim.y + 2) - 1] = tick[nx * (blockDim.y * block_u) + (blockDim.x * block_r)];
+    
     __syncthreads();
 
     // Indexes of rows/columns next to id_b
@@ -96,7 +97,7 @@ __global__ void accelerate_life(const char* tick, char* tock, const int nx, cons
     x_l = (threadIdx.x == 0) ? blockDim.x - 1 : threadIdx.x - 1;
     y_u = (threadIdx.y + 1) % blockDim.y;
     y_d = (threadIdx.y == 0) ? blockDim.y - 1: threadIdx.y - 1;
-
+/*
     // Count alive neighbours (out of eight)
     int neighbours = 0;
     if (block[(threadIdx.y + 1) * (blockDim.x + 2) + x_l + 1] == ALIVE) neighbours++;
@@ -109,7 +110,8 @@ __global__ void accelerate_life(const char* tick, char* tock, const int nx, cons
          
     if (block[(y_u + 1) * (blockDim.x + 2) + threadIdx.x + 1] == ALIVE) neighbours++;
     if (block[(y_d + 1) * (blockDim.x + 2) + threadIdx.x + 1] == ALIVE) neighbours++;
-
+*/
+/*
     // Apply game of life rules
     if (block[id_b] == ALIVE)
     {
@@ -129,8 +131,7 @@ __global__ void accelerate_life(const char* tick, char* tock, const int nx, cons
             // Remains dead
             tock[id] = DEAD;
     }
-
-    tock[id] = block[id_b];
+*/
 
 }
 
