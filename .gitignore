@@ -13,6 +13,8 @@ Exercises/Exercise05/C/vadd
 Exercises/Exercise08/C/pi
 Exercises/Exercise06/C/mult
 Exercises/Exercise12/C/gameoflife
+Exercises/Exercise12/CUDA/gameoflife
+Exercises/Exercise12/Displayer/displayer
 
 Exercises/Exercise01/Cpp/DeviceInfo
 Exercises/Exercise03/Cpp/vadd
