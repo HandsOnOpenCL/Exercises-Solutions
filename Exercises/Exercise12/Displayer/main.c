@@ -5,28 +5,28 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define MULT 5
+#define MULT 1
 
 GLuint texture;
-unsigned int nx, ny;
 
 void display(void)
 {
+    // Clear the colour buffer for the new display
     glClear(GL_COLOR_BUFFER_BIT);
+    // Use a 2D texture
     glEnable(GL_TEXTURE_2D);
+    // The shape we will define should take on the colors of the texture
     glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+    // Use this specific texture
     glBindTexture(GL_TEXTURE_2D, texture);
+    // Draw a rectangle the size of the display
     glBegin(GL_QUADS);
-    /*glTexCoord2f(0.0f, 0.0f); glVertex3f((MULT * nx) / -2.0f, (MULT * ny) / -2.0f, 0.0f);
-    glTexCoord2f(0.0f, 1.0f); glVertex3f((MULT * nx) / 2.0f, (MULT * ny) / -2.0f, 0.0f);
-    glTexCoord2f(1.0f, 1.0f); glVertex3f((MULT * nx) / 2.0f, (MULT * ny) / 2.0f, 0.0f);
-    glTexCoord2f(1.0f, 0.0f); glVertex3f((MULT * nx) / -2.0f, (MULT * ny) / 2.0f, 0.0f);
-    */
-    glTexCoord2f(0.0,1.0); glVertex2f(-1.0,-1.0);
-    glTexCoord2f(0.0,0.0); glVertex2f(-1.0,1.0);
-    glTexCoord2f(1.0,0.0); glVertex2f(1.0,1.0);
-    glTexCoord2f(1.0,1.0); glVertex2f(1.0,-1.0);
+        glTexCoord2f(0.0,1.0); glVertex2f(-1.0,-1.0);
+        glTexCoord2f(0.0,0.0); glVertex2f(-1.0,1.0);
+        glTexCoord2f(1.0,0.0); glVertex2f(1.0,1.0);
+        glTexCoord2f(1.0,1.0); glVertex2f(1.0,-1.0);
     glEnd();
+    // Display!
     glFlush();
     glDisable(GL_TEXTURE_2D);
 }
@@ -34,11 +34,17 @@ void display(void)
 int main(int argc, char **argv)
 {
     // Check for a .dat file to display
-    if (argc < 3)
+    if (argc < 5)
     {
-        printf("Usage: display input.dat input.params\n");
+        printf("Usage: display input.dat input.params winX winY\n");
+        printf("\tinput.dat\tPattern to draw\n");
+        printf("\tinput.params\tParameter file of the board\n");
+        printf("\twinX winY\tSize of the window to display the board\n");
         return EXIT_FAILURE;
     }
+
+    // Board size
+    unsigned int nx, ny;
 
     // Load in the params file
     FILE *fp = fopen(argv[2], "r");
@@ -55,45 +61,38 @@ int main(int argc, char **argv)
     GLubyte *board = (GLubyte*)calloc(nx * ny, sizeof(GLubyte));
     unsigned int x, y, s;
     fp = fopen(argv[1], "r");
-
     while ((retval = fscanf(fp, "%d %d %d\n", &x, &y, &s)) != EOF)
     {
-        printf("setting %d, %d\n", x, y);
         board[x + y * nx] = 255;
     }
 
-    /*for (int i = 0; i < nx * 15; i++)
-    {
-            board[i] = 255;
-    }*/
-
-
+    // Get window size
+    unsigned int winX = atoi(argv[3]);
+    unsigned int winY = atoi(argv[4]);
 
     // Set up GLUT window
     glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
-    glutInitWindowSize(MULT * nx, MULT * ny);
+    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+    glutInitWindowSize(winX, winY);
     glutCreateWindow("Game of Life Viewer");
     glClearColor (0.0, 0.0, 0.0, 0.0);
-    glShadeModel(GL_FLAT);
-    glEnable(GL_DEPTH_TEST);
 
-    // Create the texture
+    // Create the texture from the board
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
-   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
-//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, 
-                   GL_NEAREST);
-   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, 
-                   GL_NEAREST);
-
+    // Make sure the texture we are about to create lines up
+    // in the GPU memory properly
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    // Specify what to do when we stretch/shrink the texture to fit on the screen
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    // Create the texture itself
     glTexImage2D(GL_TEXTURE_2D, 0, 4, nx, ny, 0, GL_RED, GL_UNSIGNED_BYTE, &board[0]);
-    glBindTexture(GL_TEXTURE_2D, 0);
 
+    // Set display call back
     glutDisplayFunc(display);
+
+    // Show the screen
     glutMainLoop();
 
     return EXIT_SUCCESS;
