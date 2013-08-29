@@ -19,3 +19,7 @@ Solutions/Exercise08/C/pi_ocl
 Solutions/Exercise06/C/mult
 Solutions/Exercise07/C/mult
 
+
+*.plist
+
+Exercises/Exercise01/C/DeviceInfo.dSYM/Contents/Resources/DWARF/DeviceInfo
