@@ -38,3 +38,9 @@ Solutions/Exercise07/Cpp/mult
 Solutions/Exercise08/Cpp/mult
 Solutions/Exercise09/Cpp/pi_ocl
 Solutions/Exercise13/Cpp/gameoflife
+
+
+*.plist
+
+Exercises/Exercise01/C/DeviceInfo.dSYM/Contents/Resources/DWARF/DeviceInfo
+
