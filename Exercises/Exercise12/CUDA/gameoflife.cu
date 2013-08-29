@@ -191,6 +191,7 @@ int main(int argc, char **argv)
     {
         // Apply the rules of Life
         accelerate_life<<<numBlocks, numThreads, sharedMem>>>(d_board_tick, d_board_tock, nx, ny);
+        errorCheck(cudaPeekAtLastError());
 
         // Swap the boards over
         char *tmp = d_board_tick;
