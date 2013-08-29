@@ -22,7 +22,6 @@ ALIVE = 1
 # Main function
 #*************************************************************************************
 
-
 def main():
 
     # Check we have a starting state file
@@ -92,7 +91,6 @@ def main():
     # Save the final state of the board
     save_board(h_board, nx, ny)
 
-    return
 
 #*************************************************************************************
 # Utility functions
@@ -109,6 +107,7 @@ def load_board(board, data, nx, ny):
             if s != ALIVE:
                 die("Alive value should be 1.")
             board[x + y * nx] = ALIVE
+
 
 def print_board(board, nx, ny):
     for i in xrange(ny):
@@ -128,6 +127,7 @@ def save_board(board, nx, ny):
                 if board[i * nx + j] == ALIVE:
                     f.write('{0} {1} {2}\n'.format(j, i, ALIVE))
 
+
 def load_params(params):
     with open(params, 'r') as f:
         nx = int(f.readline())
@@ -136,9 +136,11 @@ def load_params(params):
 
     return (nx, ny, iterations)
 
+
 def die(message):
     print 'Error:', message
     sys.exit(-1)
+
 
 if __name__ == "__main__":
     main()
