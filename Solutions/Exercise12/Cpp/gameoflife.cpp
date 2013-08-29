@@ -108,7 +108,7 @@ int main(int argc, char **argv)
         cl::NDRange local(bx, by);
 
         // Allocate local memory
-        cl::LocalSpaceArg localmem = cl::Local(sizeof(char) * (bx + 2) * (by * 2));
+        cl::LocalSpaceArg localmem = cl::Local(sizeof(char) * (bx + 2) * (by + 2));
 
         // Loop
         for (unsigned int i = 0; i < iterations; i++)
