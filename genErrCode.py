@@ -61,10 +61,10 @@ char *err_code (cl_int err_in)
 '''
 for err in errors:
     print '        case', err, ':'
-    print '            return "', err, '";'
+    print '            return (char*)"', err, '";'
 
 print '        default:'
-print '            return "UNKNOWN ERROR";'
+print '            return (char*)"UNKNOWN ERROR";'
 print '''
     }
 }
