@@ -1,5 +1,5 @@
-Exercise 1 - Device Info
-========================
+Exercise 1 - Platform Information
+=================================
 
 Goal
 ----
@@ -8,7 +8,7 @@ Specifically, can you run a simple OpenCL program.
 
 Procedure
 ---------
-* Take the program we provide (`DeviceInfo`), inspect it in the editor of your choice, build and run the it on your system.
+* Take the program we provide (`DeviceInfo`), inspect it in the editor of your choice, build the program and run it.
 
 Expected output
 ---------------

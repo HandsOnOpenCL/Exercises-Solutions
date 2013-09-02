@@ -1,5 +1,5 @@
-Exercise 2 - Running the Vadd kernel (C)
-========================================
+Exercise 2 - Running the Vadd kernel
+====================================
 
 Goal
 ----
@@ -7,11 +7,11 @@ Goal
 
 Procedure
 ---------
-* Take the program we provide you.
+* Take the C Vadd program we provide you.
 It will run a simple kernel to add two vectors together.
-* Look at the host code and identify the API calls.
-Compare them against the API descriptions on the provided reference card.
-* There are some helper files which time the execution, output device information neatly and check (some) errors.
+* Look at the host code and identify the API calls in the host code.
+Compare them against the API descriptions on the OpenCL reference card.
+* There are some helper files which time the execution, output device information neatly and check errors.
 
 Expected output
 ---------------
