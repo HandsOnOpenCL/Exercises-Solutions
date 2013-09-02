@@ -4,12 +4,12 @@
 
 CEXES = Exercise01/C/DeviceInfo Exercise02/C/vadd \
 		Exercise04/C/vadd Exercise05/C/vadd \
-		Exercise06/C/mult Exercise08/C/pi \
-		Exercise12/C/gameoflife
+		Exercise06/C/mult Exercise09/C/pi \
+		Exercise13/C/gameoflife
 
 CPPEXES = Exercise01/Cpp/DeviceInfo Exercise03/Cpp/vadd \
 		Exercise04/Cpp/vadd Exercise05/Cpp/vadd \
-		Exercise06/Cpp/mult Exercise08/Cpp/pi
+		Exercise06/Cpp/mult Exercise09/Cpp/pi
 
 # Change this variable to specify the device type in all
 # the Makefile to the OpenCL device type of choice
