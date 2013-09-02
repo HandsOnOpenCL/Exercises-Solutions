@@ -4,7 +4,8 @@
 
 CEXES = Exercise01/C/DeviceInfo Exercise02/C/vadd \
 		Exercise04/C/vadd Exercise05/C/vadd \
-		Exercise06/C/mult Exercise08/C/pi
+		Exercise06/C/mult Exercise08/C/pi \
+		Exercise12/C/gameoflife
 
 CPPEXES = Exercise01/Cpp/DeviceInfo Exercise03/Cpp/vadd \
 		Exercise04/Cpp/vadd Exercise05/Cpp/vadd \
