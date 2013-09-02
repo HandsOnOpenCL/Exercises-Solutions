@@ -18,7 +18,7 @@
 #include <CL/cl.h>
 #endif
 
-int err_code (cl_int);
+char* err_code (cl_int);
 
 int main(void)
 {
@@ -28,7 +28,7 @@ int main(void)
     err = clGetPlatformIDs(0, NULL, &num_platforms);
     if (err != CL_SUCCESS || num_platforms < 0)
     {
-        printf("Error: could not find a platform\n", err_code(err));
+        printf("Error: could not find a platform\n%s\n", err_code(err));
         return EXIT_FAILURE;
     }
     // Create a list of platform IDs
@@ -36,7 +36,7 @@ int main(void)
     err = clGetPlatformIDs(num_platforms, platform, NULL);
     if (err != CL_SUCCESS)
     {
-        printf("Error: could not get platforms\n", err_code(err));
+        printf("Error: could not get platforms\n%s\n", err_code(err));
     }
 
     printf("\nNumber of OpenCL platforms: %d\n", num_platforms);
@@ -50,7 +50,7 @@ int main(void)
         err = clGetPlatformInfo(platform[i], CL_PLATFORM_NAME, sizeof(string), &string, NULL);
         if (err != CL_SUCCESS)
         {
-            printf("Error: could not get platform information\n", err_code(err));
+            printf("Error: could not get platform information\n%s\n", err_code(err));
             return EXIT_FAILURE;
         }
         printf("Platform: %s\n", string);
@@ -59,7 +59,7 @@ int main(void)
         err = clGetPlatformInfo(platform[i], CL_PLATFORM_VENDOR, sizeof(string), &string, NULL);
         if (err != CL_SUCCESS)
         {
-            printf("Error: could not get platform information\n", err_code(err));
+            printf("Error: could not get platform information\n%s\n", err_code(err));
             return EXIT_FAILURE;
         }
         printf("Vendor: %s\n", string);
@@ -68,7 +68,7 @@ int main(void)
         err = clGetPlatformInfo(platform[i], CL_PLATFORM_VERSION, sizeof(string), &string, NULL);
         if (err != CL_SUCCESS)
         {
-            printf("Error: could not get platform information\n", err_code(err));
+            printf("Error: could not get platform information\n%s\n", err_code(err));
             return EXIT_FAILURE;
         }
         printf("Version: %s\n", string);
@@ -78,7 +78,7 @@ int main(void)
         err = clGetDeviceIDs(platform[i], CL_DEVICE_TYPE_ALL, 0, NULL, &num_devices);
         if (err != CL_SUCCESS)
         {
-            printf("Error: could not get devices for platform\n", err_code(err));
+            printf("Error: could not get devices for platform\n%s\n", err_code(err));
             return EXIT_FAILURE;
         }
         // Get the device IDs
@@ -86,7 +86,7 @@ int main(void)
         err = clGetDeviceIDs(platform[i], CL_DEVICE_TYPE_ALL, num_devices, device, NULL);
         if (err != CL_SUCCESS)
         {
-            printf("Error: could not get devices for platform\n", err_code(err));
+            printf("Error: could not get devices for platform\n%s\n", err_code(err));
             return EXIT_FAILURE;
         }
         printf("Number of devices: %d\n", num_devices);
@@ -100,7 +100,7 @@ int main(void)
             err = clGetDeviceInfo(device[j], CL_DEVICE_NAME, sizeof(string), &string, NULL);
             if (err != CL_SUCCESS)
             {
-                printf("Error: could not get device information\n", err_code(err));
+                printf("Error: could not get device information\n%s\n", err_code(err));
                 return EXIT_FAILURE;
             }
             printf("\t\tName: %s\n", string);
@@ -110,7 +110,7 @@ int main(void)
             err = clGetDeviceInfo(device[j], CL_DEVICE_MAX_COMPUTE_UNITS, sizeof(cl_uint), &num, NULL);
             if (err != CL_SUCCESS)
             {
-                printf("Error: could not get device information\n", err_code(err));
+                printf("Error: could not get device information\n%s\n", err_code(err));
                 return EXIT_FAILURE;
             }
             printf("\t\tMax. Compute Units: %d\n", num);
@@ -120,7 +120,7 @@ int main(void)
             err = clGetDeviceInfo(device[j], CL_DEVICE_LOCAL_MEM_SIZE, sizeof(cl_ulong), &mem_size, NULL);
             if (err != CL_SUCCESS)
             {
-                printf("Error: could not get device information\n", err_code(err));
+                printf("Error: could not get device information\n%s\n", err_code(err));
                 return EXIT_FAILURE;
             }
             printf("\t\tLocal Memory Size: %ld KB\n", mem_size/1024);
@@ -129,7 +129,7 @@ int main(void)
             err = clGetDeviceInfo(device[j], CL_DEVICE_GLOBAL_MEM_SIZE, sizeof(cl_ulong), &mem_size, NULL);
             if (err != CL_SUCCESS)
             {
-                printf("Error: could not get device information\n", err_code(err));
+                printf("Error: could not get device information\n%s\n", err_code(err));
                 return EXIT_FAILURE;
             }
             printf("\t\tGlobal Memory Size: %ld MB\n", mem_size/(1024*1024));
@@ -138,7 +138,7 @@ int main(void)
             err = clGetDeviceInfo(device[j], CL_DEVICE_MAX_MEM_ALLOC_SIZE, sizeof(cl_ulong), &mem_size, NULL);
             if (err != CL_SUCCESS)
             {
-                printf("Error: could not get device information\n", err_code(err));
+                printf("Error: could not get device information\n%s\n", err_code(err));
                 return EXIT_FAILURE;
             }
             printf("\t\tMax Alloc Size: %ld MB\n", mem_size/(1024*1024));
@@ -148,7 +148,7 @@ int main(void)
             err = clGetDeviceInfo(device[j], CL_DEVICE_MAX_WORK_GROUP_SIZE, sizeof(size_t), &size, NULL);
             if (err != CL_SUCCESS)
             {
-                printf("Error: could not get device information\n", err_code(err));
+                printf("Error: could not get device information\n%s\n", err_code(err));
                 return EXIT_FAILURE;
             }
             printf("\t\tMax Work-group Size: %ld\n", size);
@@ -157,7 +157,7 @@ int main(void)
             err = clGetDeviceInfo(device[j], CL_DEVICE_MAX_WORK_ITEM_DIMENSIONS, sizeof(cl_uint), &num, NULL);
             if (err != CL_SUCCESS)
             {
-                printf("Error: could not get device information\n", err_code(err));
+                printf("Error: could not get device information\n%s\n", err_code(err));
                 return EXIT_FAILURE;
             }
             // Get the max. dimensions of the work-groups
@@ -165,7 +165,7 @@ int main(void)
             err = clGetDeviceInfo(device[j], CL_DEVICE_MAX_WORK_ITEM_SIZES, sizeof(dims), &dims, NULL);
             if (err != CL_SUCCESS)
             {
-                printf("Error: could not get device information\n", err_code(err));
+                printf("Error: could not get device information\n%s\n", err_code(err));
                 return EXIT_FAILURE;
             }
             printf("\t\tMax Work-item Dims: ( ");
