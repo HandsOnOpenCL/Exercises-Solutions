@@ -1,2 +1,2 @@
-Exercise A - Vectorized Pi
-==========================
+Exercise A - The vectorized Pi program
+======================================
