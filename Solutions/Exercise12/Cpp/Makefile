@@ -28,9 +28,13 @@ endif
 
 CCFLAGS += -D DEVICE=$(DEVICE)
 
-gameoflife: gameoflife.cpp
+all: gameoflife
+
+gameoflife: gameoflife.cpp err_code.o
 	$(CPPC) $^ $(INC) $(CCFLAGS) $(LIBS) -o $@
 
+err_code.o: $(CPP_COMMON)/err_code.c
+	$(CPPC) -c $^ $(CCFLAGS) -o $@
 
 clean:
-	rm -f gameoflife
+	rm -f gameoflife *.o

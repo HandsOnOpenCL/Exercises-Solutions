@@ -39,6 +39,7 @@ void print_board(const std::vector<char>& board, const unsigned int nx, const un
 void save_board(const std::vector<char>& board, const unsigned int nx, const unsigned int ny);
 void load_params(const std::string file, unsigned int *nx, unsigned int *ny, unsigned int *iterations);
 
+extern int err_code(cl_int);
 
 /*************************************************************************************
  * Main function
@@ -135,7 +136,8 @@ int main(int argc, char **argv)
 
     } catch (cl::Error err)
     {
-        std::cerr << "ERROR: " << err.what() << "(" << err.err() << ")\n";
+        std::cerr << "ERROR: " << err.what() << ":\n";
+        err_code(err.err());
         return EXIT_FAILURE;
     }
 
