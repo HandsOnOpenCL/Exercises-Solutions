@@ -29,7 +29,7 @@
 
 extern double wtime();       // returns time since some fixed past point (wtime.c)
 extern int output_device_info(cl_device_id );
-int err_code (cl_int);
+char* err_code (cl_int);
 
 //------------------------------------------------------------------------------
 char * getKernelSource(char *filename)
@@ -91,7 +91,7 @@ int main(void)
     err = clGetPlatformIDs(0, NULL, &numPlatforms);
     if (err != CL_SUCCESS || numPlatforms <= 0)
     {
-        printf("Error: Failed to find a platform!\n",err_code(err));
+        printf("Error: Failed to find a platform!\n%s\n",err_code(err));
         return EXIT_FAILURE;
     }
     // Get all platforms
@@ -99,7 +99,7 @@ int main(void)
     err = clGetPlatformIDs(numPlatforms, Platform, NULL);
     if (err != CL_SUCCESS || numPlatforms <= 0)
     {
-        printf("Error: Failed to get the platform!\n",err_code(err));
+        printf("Error: Failed to get the platform!\n%s\n",err_code(err));
         return EXIT_FAILURE;
     }
     // Secure a device
@@ -111,7 +111,7 @@ int main(void)
     }
     if (device_id == NULL)
     {
-        printf("Error: Failed to create a device group!\n",err_code(err));
+        printf("Error: Failed to create a device group!\n%s\n",err_code(err));
         return EXIT_FAILURE;
     }
     // Output information
@@ -120,21 +120,21 @@ int main(void)
     context = clCreateContext(0, 1, &device_id, NULL, NULL, &err);
     if (!context)
     {
-        printf("Error: Failed to create a compute context!\n");
+        printf("Error: Failed to create a compute context!\n%s\n", err_code(err));
         return EXIT_FAILURE;
     }
     // Create a command queue
     commands = clCreateCommandQueue(context, device_id, 0, &err);
     if (!commands)
     {
-        printf("Error: Failed to create a command commands!\n");
+        printf("Error: Failed to create a command commands!\n%s\n", err_code(err));
         return EXIT_FAILURE;
     }
     // Create the compute program from the source buffer
     program = clCreateProgramWithSource(context, 1, (const char **) & kernelsource, NULL, &err);
     if (!program)
     {
-        printf("Error: Failed to create compute program!\n");
+        printf("Error: Failed to create compute program!\n%s\n", err_code(err));
         return EXIT_FAILURE;
     }
     // Build the program  
@@ -144,7 +144,7 @@ int main(void)
         size_t len;
         char buffer[2048];
 
-        printf("Error: Failed to build program executable!\n");
+        printf("Error: Failed to build program executable!\n%s\n", err_code(err));
         clGetProgramBuildInfo(program, device_id, CL_PROGRAM_BUILD_LOG, sizeof(buffer), buffer, &len);
         printf("%s\n", buffer);
         return EXIT_FAILURE;
@@ -153,7 +153,7 @@ int main(void)
     kernel_pi = clCreateKernel(program, "pi", &err);
     if (!kernel_pi || err != CL_SUCCESS)
     {
-        printf("Error: Failed to create compute kernel!\n");
+        printf("Error: Failed to create compute kernel!\n%s\n", err_code(err));
         return EXIT_FAILURE;
     }
 
@@ -161,7 +161,7 @@ int main(void)
     err = clGetKernelWorkGroupInfo (kernel_pi, device_id, CL_KERNEL_WORK_GROUP_SIZE, sizeof(size_t), &work_group_size, NULL);
     if (err != CL_SUCCESS)
     {
-        printf("Error: Failed to get kernel work-group info\n", err_code(err));
+        printf("Error: Failed to get kernel work-group info\n%s\n", err_code(err));
         return EXIT_FAILURE;
     }
     // Now that we know the size of the work-groups, we can set the number of
@@ -191,7 +191,7 @@ int main(void)
     d_partial_sums = clCreateBuffer(context, CL_MEM_WRITE_ONLY, sizeof(float) * nwork_groups, NULL, &err);
     if (err != CL_SUCCESS)
     {
-        printf("Error: Failed to create buffer\n", err_code(err));
+        printf("Error: Failed to create buffer\n%s\n", err_code(err));
         return EXIT_FAILURE;
     }
 
@@ -202,7 +202,7 @@ int main(void)
     err |= clSetKernelArg(kernel_pi, 3, sizeof(cl_mem), &d_partial_sums);
     if (err != CL_SUCCESS)
     {
-        printf("Error: Failed to set kernel arguments! %d\n", err);
+        printf("Error: Failed to set kernel arguments!\n");
         return EXIT_FAILURE;
     }
 
@@ -220,7 +220,7 @@ int main(void)
         0, NULL, NULL);
     if (err != CL_SUCCESS)
     {
-        printf("Error: Failed to execute kernel\n", err_code(err));
+        printf("Error: Failed to execute kernel\n%s\n", err_code(err));
         return EXIT_FAILURE;
     }
 
@@ -235,7 +235,7 @@ int main(void)
         0, NULL, NULL);
     if (err != CL_SUCCESS)
     {
-        printf("Error: Failed to read buffer\n", err_code(err));
+        printf("Error: Failed to read buffer\n%s\n", err_code(err));
         return EXIT_FAILURE;
     }
 

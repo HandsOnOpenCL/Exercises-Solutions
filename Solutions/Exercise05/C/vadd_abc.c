@@ -29,7 +29,7 @@
 #endif
 
 extern int output_device_info(cl_device_id );
-int err_code (cl_int);
+char* err_code (cl_int);
 
 //------------------------------------------------------------------------------
 
@@ -103,7 +103,7 @@ int main(int argc, char** argv)
     err = clGetPlatformIDs(0, NULL, &numPlatforms);
     if (err != CL_SUCCESS || numPlatforms <= 0)
     {
-        printf("Error: Failed to find a platform!\n",err_code(err));
+        printf("Error: Failed to find a platform!\n%s\n",err_code(err));
         return EXIT_FAILURE;
     }
 
@@ -112,7 +112,7 @@ int main(int argc, char** argv)
     err = clGetPlatformIDs(numPlatforms, Platform, NULL);
     if (err != CL_SUCCESS || numPlatforms <= 0)
     {
-        printf("Error: Failed to get the platform!\n",err_code(err));
+        printf("Error: Failed to get the platform!\n%s\n",err_code(err));
         return EXIT_FAILURE;
     }
 
@@ -128,7 +128,7 @@ int main(int argc, char** argv)
 
     if (device_id == NULL)
     {
-        printf("Error: Failed to create a device group!\n",err_code(err));
+        printf("Error: Failed to create a device group!\n%s\n",err_code(err));
         return EXIT_FAILURE;
     }
 
@@ -138,7 +138,7 @@ int main(int argc, char** argv)
     context = clCreateContext(0, 1, &device_id, NULL, NULL, &err);
     if (!context)
     {
-        printf("Error: Failed to create a compute context!\n");
+        printf("Error: Failed to create a compute context!\n%s\n", err_code(err));
         return EXIT_FAILURE;
     }
 
@@ -146,7 +146,7 @@ int main(int argc, char** argv)
     commands = clCreateCommandQueue(context, device_id, 0, &err);
     if (!commands)
     {
-        printf("Error: Failed to create a command commands!\n");
+        printf("Error: Failed to create a command commands!\n%s\n", err_code(err));
         return EXIT_FAILURE;
     }
 
@@ -154,7 +154,7 @@ int main(int argc, char** argv)
     program = clCreateProgramWithSource(context, 1, (const char **) & KernelSource, NULL, &err);
     if (!program)
     {
-        printf("Error: Failed to create compute program!\n");
+        printf("Error: Failed to create compute program!\n%s\n", err_code(err));
         return EXIT_FAILURE;
     }
 
@@ -165,7 +165,7 @@ int main(int argc, char** argv)
         size_t len;
         char buffer[2048];
 
-        printf("Error: Failed to build program executable!\n");
+        printf("Error: Failed to build program executable!\n%s\n", err_code(err));
         clGetProgramBuildInfo(program, device_id, CL_PROGRAM_BUILD_LOG, sizeof(buffer), buffer, &len);
         printf("%s\n", buffer);
         return EXIT_FAILURE;
@@ -175,7 +175,7 @@ int main(int argc, char** argv)
     ko_vadd = clCreateKernel(program, "vadd", &err);
     if (!ko_vadd || err != CL_SUCCESS)
     {
-        printf("Error: Failed to create compute kernel!\n");
+        printf("Error: Failed to create compute kernel!\n%s\n", err_code(err));
         return EXIT_FAILURE;
     }
 
@@ -203,7 +203,7 @@ int main(int argc, char** argv)
     err |= clSetKernelArg(ko_vadd, 4, sizeof(unsigned int), &count);
     if (err != CL_SUCCESS)
     {
-        printf("Error: Failed to set kernel arguments! %d\n", err);
+        printf("Error: Failed to set kernel arguments!\n");
         exit(1);
     }
 	
@@ -213,7 +213,7 @@ int main(int argc, char** argv)
     err = clEnqueueNDRangeKernel(commands, ko_vadd, 1, NULL, &global, NULL, 0, NULL, NULL);
     if (err)
     {
-        printf("Error: Failed to execute kernel 1!\n");
+        printf("Error: Failed to execute kernel!\n%s\n", err_code(err));
         return EXIT_FAILURE;
     }
 
@@ -221,7 +221,7 @@ int main(int argc, char** argv)
     err = clEnqueueReadBuffer( commands, d_r, CL_TRUE, 0, sizeof(float) * count, h_r, 0, NULL, NULL );  
     if (err != CL_SUCCESS)
     {
-        printf("Error: Failed to read output array! %d\n", err);
+        printf("Error: Failed to read output array!\n%s\n", err_code(err));
         exit(1);
     }
     

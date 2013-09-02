@@ -35,7 +35,7 @@
 //  functions from ../Common
 //------------------------------------------------------------------------------
 extern int    output_device_info(cl_device_id );
-extern int    err_code(cl_int);
+extern char*    err_code(cl_int);
 extern double wtime();   // returns time since some fixed past point (wtime.c)
 
 //------------------------------------------------------------------------------
