@@ -55,20 +55,17 @@ print '''
 #include <CL/cl.h>
 #endif
 
-int err_code (cl_int err_in)
+char *err_code (cl_int err_in)
 {
     switch (err_in) {
 '''
 for err in errors:
     print '        case', err, ':'
-    print '            printf("\\n', err, '\\n");'
-    print '            break;'
+    print '            return "', err, '";'
 
 print '        default:'
-print '            printf("\\n unknown error. \\n");'
-print '            break;'
+print '            return "UNKNOWN ERROR";'
 print '''
     }
-    return (int)err_in;
 }
 '''
