@@ -34,7 +34,7 @@ int main(int argc, char** argv)
 {
 	if (argc != 2)
 	{
-		std::cout << "Usage:./pi_vocl num\n"
+		std::cout << "Usage: ./pi_vocl num\n"
 		          << "\twhere num = 1, 4 or 8\n";
 		return EXIT_FAILURE;
 	}
@@ -67,7 +67,7 @@ int main(int argc, char** argv)
 	// Set some default values:
 	// Default number of steps (updated later to device preferable)
 	unsigned int in_nsteps = INSTEPS;
-	// Defaultl number of iterations
+	// Default number of iterations
 	unsigned int niters = ITERS;
 	unsigned int work_group_size = WGS;
 
