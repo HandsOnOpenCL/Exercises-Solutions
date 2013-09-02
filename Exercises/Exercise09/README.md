@@ -15,3 +15,8 @@ Expected output
 ---------------
 * Output result plus an estimate of the error in the result.
 * Report the runtime.
+
+Hint
+----
+You will want each work-item to do many iterations of the loop, i.e. don't create one work-item per loop iteration.
+To do so would make the reduction so costly that performance would be terrible.

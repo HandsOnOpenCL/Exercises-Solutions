@@ -1,5 +1,5 @@
 Exercise 7 - using private memory
-===========================================
+=================================
 
 Goal
 ----
@@ -8,8 +8,8 @@ Goal
 Procedure
 ---------
 * Start with your matrix multiplication program.
-* Modify the kernel so that each work-item copies its own row of A into private memory
-* Optimize step by step, saving the intermediate versions and tracking performance improvements
+* Modify the kernel so that each work-item copies its own row of A into private memory.
+* Optimize step by step, saving the intermediate versions and tracking performance improvements.
 
 Expected output
 ---------------
