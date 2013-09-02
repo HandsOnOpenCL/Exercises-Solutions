@@ -10,29 +10,31 @@ Exercises/Exercise01/C/DeviceInfo
 Exercises/Exercise02/C/vadd
 Exercises/Exercise04/C/vadd
 Exercises/Exercise05/C/vadd
-Exercises/Exercise08/C/pi
 Exercises/Exercise06/C/mult
-Exercises/Exercise12/C/gameoflife
-Exercises/Exercise12/CUDA/gameoflife
-Exercises/Exercise12/Displayer/displayer
+Exercises/Exercise09/C/pi
+Exercises/Exercise13/C/gameoflife
+Exercises/Exercise13/CUDA/gameoflife
+Exercises/Exercise13/Displayer/displayer
 
 Exercises/Exercise01/Cpp/DeviceInfo
 Exercises/Exercise03/Cpp/vadd
 Exercises/Exercise04/Cpp/vadd
 Exercises/Exercise05/Cpp/vadd
-Exercises/Exercise08/Cpp/pi
 Exercises/Exercise06/Cpp/mult
+Exercises/Exercise09/Cpp/pi
 
 Solutions/Exercise04/C/vadd_chain
 Solutions/Exercise05/C/vadd_abc
-Solutions/Exercise08/C/pi_ocl
 Solutions/Exercise06/C/mult
 Solutions/Exercise07/C/mult
-Solutions/Exercise12/C/gameoflife
+Solutions/Exercise08/C/mult
+Solutions/Exercise09/C/pi_ocl
+Solutions/Exercise13/C/gameoflife
 
 Solutions/Exercise04/Cpp/vadd_chain
 Solutions/Exercise05/Cpp/vadd_abc
-Solutions/Exercise08/Cpp/pi_ocl
 Solutions/Exercise06/Cpp/mult
 Solutions/Exercise07/Cpp/mult
-Solutions/Exercise12/Cpp/gameoflife
+Solutions/Exercise08/Cpp/mult
+Solutions/Exercise09/Cpp/pi_ocl
+Solutions/Exercise13/Cpp/gameoflife
