@@ -28,7 +28,7 @@ endif
 
 CCFLAGS += -D DEVICE=$(DEVICE)
 
-vadd: vadd.cpp
+vadd: vadd.cpp $(CPP_COMMON)/err_code.c
 	$(CPPC) $^ $(INC) $(CCFLAGS) $(LIBS) -o $@
 
 

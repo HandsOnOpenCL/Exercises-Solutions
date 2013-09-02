@@ -14,6 +14,8 @@
 #include <iostream>
 #include <vector>
 
+char* err_code(cl_int);
+
 int main(void)
 {
 
@@ -85,7 +87,7 @@ int main(void)
   }
   catch (cl::Error err)
   {
-    std::cout << "OpenCL Error: " << err.what() << " returned " << err.err() << std::endl;
+    std::cout << "OpenCL Error: " << err.what() << " returned " << err_code(err.err()) << std::endl;
     std::cout << "Check cl.h for error codes." << std::endl;
     exit(-1);
   }

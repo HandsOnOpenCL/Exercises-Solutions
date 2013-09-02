@@ -19,7 +19,7 @@ ifeq ($(PLATFORM), Darwin)
 	LIBS = -framework OpenCL
 endif
 
-DeviceInfo: DeviceInfo.cpp
+DeviceInfo: DeviceInfo.cpp $(CPP_COMMON)/err_code.c
 	$(CPPC) $^ $(INC) $(CCFLAGS) $(LIBS) -o $@
 
 
