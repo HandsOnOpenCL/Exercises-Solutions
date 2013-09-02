@@ -28,7 +28,7 @@ endif
 
 CCFLAGS += -D DEVICE=$(DEVICE)
 
-pi_ocl: pi_ocl.cpp
+pi_ocl: pi_ocl.cpp $(CPP_COMMON)/err_code.c
 	$(CPPC) $^ $(INC) $(CCFLAGS) $(LIBS) -o $@
 
 

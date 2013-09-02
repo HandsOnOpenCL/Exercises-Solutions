@@ -194,7 +194,7 @@ int main(void)
         std::cerr << "ERROR: "
                   << err.what()
                   << "("
-                  << err.err()
+                  << err_code(err.err())
                   << ")"
                   << std::endl;
     }

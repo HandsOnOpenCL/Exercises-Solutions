@@ -30,6 +30,7 @@
 #define DEVICE CL_DEVICE_TYPE_DEFAULT
 #endif
 
+char* err_code(cl_int);
 
 #define INSTEPS (512*512*512)
 #define ITERS (262144)
@@ -127,7 +128,7 @@ int main(void)
             << "ERROR: "
             << err.what()
             << "("
-            << err.err()
+            << err_code(err.err())
            << ")"
            << std::endl;
 	}
