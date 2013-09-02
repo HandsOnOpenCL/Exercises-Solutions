@@ -6,18 +6,30 @@ CEXES = Exercise04/C/vadd_chain Exercise05/C/vadd_abc \
 		Exercise06/C/mult Exercise07/C/mult \
 		Exercise08/C/pi_ocl
 
+CPPEXES = Exercise04/Cpp/vadd_chain Exercise05/Cpp/vadd_abc \
+		Exercise06/Cpp/mult Exercise07/Cpp/mult \
+		Exercise08/Cpp/pi_ocl
+
 # Change this variable to specify the device type in all
 # the Makefile to the OpenCL device type of choice
 DEVICE = CL_DEVICE_TYPE_DEFAULT
 export DEVICE
 
-.PHONY : $(CEXES)
+# Incase you need to rename the C++ compiler, you can
+# do it in bulk here
+CPPC = g++
+export CPPC
 
-all: $(CEXES)
+.PHONY : $(CEXES) $(CPEXES)
+
+all: $(CEXES) $(CPPEXES)
 
 $(CEXES):
 	$(MAKE) -C `dirname $@`
 
+$(CPPEXES):
+	$(MAKE) -C `dirname $@`
+
 .PHONY : clean
 clean:
-	for e in $(CEXES); do $(MAKE) -C `dirname $$e` clean; done
+	for e in $(CEXES) $(CPPEXES); do $(MAKE) -C `dirname $$e` clean; done
