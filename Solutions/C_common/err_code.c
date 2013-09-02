@@ -22,165 +22,113 @@
 #include <CL/cl.h>
 #endif
 
-int err_code (cl_int err_in)
+char *err_code (cl_int err_in)
 {
     switch (err_in) {
 
         case CL_SUCCESS :
-            printf("\n CL_SUCCESS \n");
-            break;
+            return " CL_SUCCESS ";
         case CL_DEVICE_NOT_FOUND :
-            printf("\n CL_DEVICE_NOT_FOUND \n");
-            break;
+            return " CL_DEVICE_NOT_FOUND ";
         case CL_DEVICE_NOT_AVAILABLE :
-            printf("\n CL_DEVICE_NOT_AVAILABLE \n");
-            break;
+            return " CL_DEVICE_NOT_AVAILABLE ";
         case CL_COMPILER_NOT_AVAILABLE :
-            printf("\n CL_COMPILER_NOT_AVAILABLE \n");
-            break;
+            return " CL_COMPILER_NOT_AVAILABLE ";
         case CL_MEM_OBJECT_ALLOCATION_FAILURE :
-            printf("\n CL_MEM_OBJECT_ALLOCATION_FAILURE \n");
-            break;
+            return " CL_MEM_OBJECT_ALLOCATION_FAILURE ";
         case CL_OUT_OF_RESOURCES :
-            printf("\n CL_OUT_OF_RESOURCES \n");
-            break;
+            return " CL_OUT_OF_RESOURCES ";
         case CL_OUT_OF_HOST_MEMORY :
-            printf("\n CL_OUT_OF_HOST_MEMORY \n");
-            break;
+            return " CL_OUT_OF_HOST_MEMORY ";
         case CL_PROFILING_INFO_NOT_AVAILABLE :
-            printf("\n CL_PROFILING_INFO_NOT_AVAILABLE \n");
-            break;
+            return " CL_PROFILING_INFO_NOT_AVAILABLE ";
         case CL_MEM_COPY_OVERLAP :
-            printf("\n CL_MEM_COPY_OVERLAP \n");
-            break;
+            return " CL_MEM_COPY_OVERLAP ";
         case CL_IMAGE_FORMAT_MISMATCH :
-            printf("\n CL_IMAGE_FORMAT_MISMATCH \n");
-            break;
+            return " CL_IMAGE_FORMAT_MISMATCH ";
         case CL_IMAGE_FORMAT_NOT_SUPPORTED :
-            printf("\n CL_IMAGE_FORMAT_NOT_SUPPORTED \n");
-            break;
+            return " CL_IMAGE_FORMAT_NOT_SUPPORTED ";
         case CL_BUILD_PROGRAM_FAILURE :
-            printf("\n CL_BUILD_PROGRAM_FAILURE \n");
-            break;
+            return " CL_BUILD_PROGRAM_FAILURE ";
         case CL_MAP_FAILURE :
-            printf("\n CL_MAP_FAILURE \n");
-            break;
+            return " CL_MAP_FAILURE ";
         case CL_MISALIGNED_SUB_BUFFER_OFFSET :
-            printf("\n CL_MISALIGNED_SUB_BUFFER_OFFSET \n");
-            break;
+            return " CL_MISALIGNED_SUB_BUFFER_OFFSET ";
         case CL_EXEC_STATUS_ERROR_FOR_EVENTS_IN_WAIT_LIST :
-            printf("\n CL_EXEC_STATUS_ERROR_FOR_EVENTS_IN_WAIT_LIST \n");
-            break;
+            return " CL_EXEC_STATUS_ERROR_FOR_EVENTS_IN_WAIT_LIST ";
         case CL_INVALID_VALUE :
-            printf("\n CL_INVALID_VALUE \n");
-            break;
+            return " CL_INVALID_VALUE ";
         case CL_INVALID_DEVICE_TYPE :
-            printf("\n CL_INVALID_DEVICE_TYPE \n");
-            break;
+            return " CL_INVALID_DEVICE_TYPE ";
         case CL_INVALID_PLATFORM :
-            printf("\n CL_INVALID_PLATFORM \n");
-            break;
+            return " CL_INVALID_PLATFORM ";
         case CL_INVALID_DEVICE :
-            printf("\n CL_INVALID_DEVICE \n");
-            break;
+            return " CL_INVALID_DEVICE ";
         case CL_INVALID_CONTEXT :
-            printf("\n CL_INVALID_CONTEXT \n");
-            break;
+            return " CL_INVALID_CONTEXT ";
         case CL_INVALID_QUEUE_PROPERTIES :
-            printf("\n CL_INVALID_QUEUE_PROPERTIES \n");
-            break;
+            return " CL_INVALID_QUEUE_PROPERTIES ";
         case CL_INVALID_COMMAND_QUEUE :
-            printf("\n CL_INVALID_COMMAND_QUEUE \n");
-            break;
+            return " CL_INVALID_COMMAND_QUEUE ";
         case CL_INVALID_HOST_PTR :
-            printf("\n CL_INVALID_HOST_PTR \n");
-            break;
+            return " CL_INVALID_HOST_PTR ";
         case CL_INVALID_MEM_OBJECT :
-            printf("\n CL_INVALID_MEM_OBJECT \n");
-            break;
+            return " CL_INVALID_MEM_OBJECT ";
         case CL_INVALID_IMAGE_FORMAT_DESCRIPTOR :
-            printf("\n CL_INVALID_IMAGE_FORMAT_DESCRIPTOR \n");
-            break;
+            return " CL_INVALID_IMAGE_FORMAT_DESCRIPTOR ";
         case CL_INVALID_IMAGE_SIZE :
-            printf("\n CL_INVALID_IMAGE_SIZE \n");
-            break;
+            return " CL_INVALID_IMAGE_SIZE ";
         case CL_INVALID_SAMPLER :
-            printf("\n CL_INVALID_SAMPLER \n");
-            break;
+            return " CL_INVALID_SAMPLER ";
         case CL_INVALID_BINARY :
-            printf("\n CL_INVALID_BINARY \n");
-            break;
+            return " CL_INVALID_BINARY ";
         case CL_INVALID_BUILD_OPTIONS :
-            printf("\n CL_INVALID_BUILD_OPTIONS \n");
-            break;
+            return " CL_INVALID_BUILD_OPTIONS ";
         case CL_INVALID_PROGRAM :
-            printf("\n CL_INVALID_PROGRAM \n");
-            break;
+            return " CL_INVALID_PROGRAM ";
         case CL_INVALID_PROGRAM_EXECUTABLE :
-            printf("\n CL_INVALID_PROGRAM_EXECUTABLE \n");
-            break;
+            return " CL_INVALID_PROGRAM_EXECUTABLE ";
         case CL_INVALID_KERNEL_NAME :
-            printf("\n CL_INVALID_KERNEL_NAME \n");
-            break;
+            return " CL_INVALID_KERNEL_NAME ";
         case CL_INVALID_KERNEL_DEFINITION :
-            printf("\n CL_INVALID_KERNEL_DEFINITION \n");
-            break;
+            return " CL_INVALID_KERNEL_DEFINITION ";
         case CL_INVALID_KERNEL :
-            printf("\n CL_INVALID_KERNEL \n");
-            break;
+            return " CL_INVALID_KERNEL ";
         case CL_INVALID_ARG_INDEX :
-            printf("\n CL_INVALID_ARG_INDEX \n");
-            break;
+            return " CL_INVALID_ARG_INDEX ";
         case CL_INVALID_ARG_VALUE :
-            printf("\n CL_INVALID_ARG_VALUE \n");
-            break;
+            return " CL_INVALID_ARG_VALUE ";
         case CL_INVALID_ARG_SIZE :
-            printf("\n CL_INVALID_ARG_SIZE \n");
-            break;
+            return " CL_INVALID_ARG_SIZE ";
         case CL_INVALID_KERNEL_ARGS :
-            printf("\n CL_INVALID_KERNEL_ARGS \n");
-            break;
+            return " CL_INVALID_KERNEL_ARGS ";
         case CL_INVALID_WORK_DIMENSION :
-            printf("\n CL_INVALID_WORK_DIMENSION \n");
-            break;
+            return " CL_INVALID_WORK_DIMENSION ";
         case CL_INVALID_WORK_GROUP_SIZE :
-            printf("\n CL_INVALID_WORK_GROUP_SIZE \n");
-            break;
+            return " CL_INVALID_WORK_GROUP_SIZE ";
         case CL_INVALID_WORK_ITEM_SIZE :
-            printf("\n CL_INVALID_WORK_ITEM_SIZE \n");
-            break;
+            return " CL_INVALID_WORK_ITEM_SIZE ";
         case CL_INVALID_GLOBAL_OFFSET :
-            printf("\n CL_INVALID_GLOBAL_OFFSET \n");
-            break;
+            return " CL_INVALID_GLOBAL_OFFSET ";
         case CL_INVALID_EVENT_WAIT_LIST :
-            printf("\n CL_INVALID_EVENT_WAIT_LIST \n");
-            break;
+            return " CL_INVALID_EVENT_WAIT_LIST ";
         case CL_INVALID_EVENT :
-            printf("\n CL_INVALID_EVENT \n");
-            break;
+            return " CL_INVALID_EVENT ";
         case CL_INVALID_OPERATION :
-            printf("\n CL_INVALID_OPERATION \n");
-            break;
+            return " CL_INVALID_OPERATION ";
         case CL_INVALID_GL_OBJECT :
-            printf("\n CL_INVALID_GL_OBJECT \n");
-            break;
+            return " CL_INVALID_GL_OBJECT ";
         case CL_INVALID_BUFFER_SIZE :
-            printf("\n CL_INVALID_BUFFER_SIZE \n");
-            break;
+            return " CL_INVALID_BUFFER_SIZE ";
         case CL_INVALID_MIP_LEVEL :
-            printf("\n CL_INVALID_MIP_LEVEL \n");
-            break;
+            return " CL_INVALID_MIP_LEVEL ";
         case CL_INVALID_GLOBAL_WORK_SIZE :
-            printf("\n CL_INVALID_GLOBAL_WORK_SIZE \n");
-            break;
+            return " CL_INVALID_GLOBAL_WORK_SIZE ";
         case CL_INVALID_PROPERTY :
-            printf("\n CL_INVALID_PROPERTY \n");
-            break;
+            return " CL_INVALID_PROPERTY ";
         default:
-            printf("\n unknown error. \n");
-            break;
+            return "UNKNOWN ERROR";
 
     }
-    return (int)err_in;
 }
 
