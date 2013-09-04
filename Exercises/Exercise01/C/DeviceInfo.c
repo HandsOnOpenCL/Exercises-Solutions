@@ -105,6 +105,15 @@ int main(void)
             }
             printf("\t\tName: %s\n", string);
 
+            // Get device OpenCL version
+            err = clGetDeviceInfo(device[j], CL_DEVICE_OPENCL_C_VERSION, sizeof(string), &string, NULL);
+            if (err != CL_SUCCESS)
+            {
+                printf("Error: could not get device information\n%s\n", err_code(err));
+                return EXIT_FAILURE;
+            }
+            printf("\t\tVersion: %s\n", string);
+
             // Get Max. Compute units
             cl_uint num;
             err = clGetDeviceInfo(device[j], CL_DEVICE_MAX_COMPUTE_UNITS, sizeof(cl_uint), &num, NULL);

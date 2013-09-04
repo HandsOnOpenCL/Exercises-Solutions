@@ -34,6 +34,7 @@ for p in platforms:
         print "\t-------------------------"
         # Print out some information about the devices
         print "\t\tName:", d.name
+        print "\t\tVersion:", d.opencl_c_version
         print "\t\tMax. Compute Units:", d.max_compute_units
         print "\t\tLocal Memory Size:", d.local_mem_size/1024, "KB"
         print "\t\tGlobal Memory Size:", d.global_mem_size/(1024*1024), "MB"

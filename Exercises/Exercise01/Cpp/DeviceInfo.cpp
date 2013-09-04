@@ -53,6 +53,9 @@ int main(void)
         dev.getInfo(CL_DEVICE_NAME, &s);
         std::cout << "\t\tName: " << s << std::endl;
 
+        dev.getInfo(CL_DEVICE_OPENCL_C_VERSION, &s);
+        std::cout << "\t\tVersion: " << s << std::endl;
+
         int i;
         dev.getInfo(CL_DEVICE_MAX_COMPUTE_UNITS, &i);
         std::cout << "\t\tMax. Compute Units: " << i << std::endl;
