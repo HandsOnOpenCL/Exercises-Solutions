@@ -184,8 +184,6 @@ int main(int argc, char **argv)
     dim3 numThreads(bx, by);
     size_t sharedMem = sizeof(char) * (bx + 2) * (by + 2);
 
-    // TODO - vary number of blocks at runtime
-
     // Loop
     for (unsigned int i = 0; i < iterations; i++)
     {
