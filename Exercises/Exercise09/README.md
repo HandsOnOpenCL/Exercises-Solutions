@@ -1,4 +1,4 @@
-Exercise 8 - The Pi program
+Exercise 9 - The Pi program
 ===========================
 
 Goal

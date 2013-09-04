@@ -1,4 +1,4 @@
-Exercise 9 - Heterogeneous Computing
+Exercise 10 - Heterogeneous Computing
 ====================================
 
 Goal

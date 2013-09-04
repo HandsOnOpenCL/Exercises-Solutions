@@ -1,4 +1,4 @@
-Exercise 12 - Porting CUDA to OpenCL
+Exercise 13 - Porting CUDA to OpenCL
 ====================================
 
 Goal

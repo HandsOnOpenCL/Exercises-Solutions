@@ -1,18 +1,17 @@
-Exercise 11 - Optimize matrix multiplication
-============================================
+Exercise 12 - Profiling OpenCL programs
+=======================================
 
 Goal
 ----
-* To understand portable performance in OpenCL.
+* To experiment with profiling tools.
 
 Procedure
 ---------
-* Optimize step by step ... saving intermediate versions and tracking performance improvements.
-* After you've tried to optimize the program on your own, study the blocked solution optimized for NVIDIA GPU.
-Apply these techniques to your own code to further optimize performance.
-* As a final step, go back and make a single program that is adaptive so it delivers good results on both a CPU and a GPU.
+* Take one of your OpenCL programs, such as matrix multiply.
+* Run the program in the profiler and explore the results.
+* Modify the program to improve the performance.
+* Repeat with other programs if you have time.
 
 Expected output
 ---------------
-* A message confirming that the matrix multiplication is correct.
-* Report the runtime and the MFLOPS.
+* Timing from the timer and profiling interfaces should roughly match.
