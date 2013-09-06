@@ -3138,6 +3138,10 @@ public:
         }
     }
 
+    /*!
+     * \brief Construct a Buffer from a host container via iterators using a specified context.
+     * If useHostPtr is specified iterators must represent contiguous data.
+     */
     template< typename IteratorType >
     Buffer(const Context &context, IteratorType startIterator, IteratorType endIterator,
         bool readOnly, bool useHostPtr = false, cl_int* err = NULL);
@@ -3208,7 +3212,6 @@ public:
     }		
 #endif
 };
-
 
 #if defined (USE_DX_INTEROP)
 /*! \brief Class interface for creating OpenCL buffers from ID3D10Buffer's.
@@ -6158,10 +6161,6 @@ __attribute__((weak)) CommandQueue CommandQueue::default_;
 __attribute__((weak)) volatile cl_int CommandQueue::default_error_ = CL_SUCCESS;
 #endif
 
-/*!
- * \brief Construct a Buffer from a host container via iterators using a specified context.
- * If useHostPtr is specified iterators must represent contiguous data.
- */
 template< typename IteratorType >
 Buffer::Buffer(
     const Context &context,
