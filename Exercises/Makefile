@@ -21,6 +21,9 @@ export DEVICE
 CPPC = g++
 export CPPC
 
+CC = gcc
+export CC
+
 .PHONY : $(CEXES) $(CPPEXES)
 
 all: $(CEXES) $(CPPEXES)

@@ -1,4 +1,7 @@
-CC=gcc
+
+ifndef CC
+	CC = gcc
+endif
 
 CCFLAGS=-lm -O3
 

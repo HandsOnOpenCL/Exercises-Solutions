@@ -1,5 +1,7 @@
 
-CC=gcc
+ifndef CC
+	CC = gcc
+endif
 
 CCFLAGS=-g -std=c99
 

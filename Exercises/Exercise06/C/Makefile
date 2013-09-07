@@ -6,7 +6,9 @@
 #          Modified by Tom Deakin, July 2013
 #
 
-CC=gcc
+ifndef CC
+	CC = gcc
+endif
 
 CCFLAGS=-O3 -std=c99 -ffast-math
 
