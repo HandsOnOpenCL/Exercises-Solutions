@@ -34,7 +34,7 @@ PLATFORM = $(shell uname -s)
 ifeq ($(PLATFORM), Darwin)
 	CPPC = clang++
 	CCFLAGS += -DAPPLE -stdlib=libc++
-	LIBS = -lm -framework OpenCL -fopenmp
+	LIBS = -lm -framework OpenCL
 endif
 
 CCFLAGS += -D DEVICE=$(DEVICE)
