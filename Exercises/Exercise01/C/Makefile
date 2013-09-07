@@ -1,5 +1,5 @@
 
-CC=clang
+CC=gcc
 
 CCFLAGS=-std=c99
 
