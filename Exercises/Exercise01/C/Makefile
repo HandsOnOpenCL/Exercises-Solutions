@@ -1,7 +1,7 @@
 
-CC=gcc
+CC=clang
 
-CCFLAGS=-std=c99 -g -I /usr/local/cuda/include
+CCFLAGS=-std=c99
 
 LIBS = -lOpenCL
 
