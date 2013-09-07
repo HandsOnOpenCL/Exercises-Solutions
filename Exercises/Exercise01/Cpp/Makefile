@@ -15,6 +15,7 @@ LIBS = -lOpenCL
 # and set up the right compiler flags and libraries
 PLATFORM = $(shell uname -s)
 ifeq ($(PLATFORM), Darwin)
+	CPPC = clang++
 	CCFLAGS += -DAPPLE
 	LIBS = -framework OpenCL
 endif

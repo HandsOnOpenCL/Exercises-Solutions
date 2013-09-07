@@ -32,6 +32,7 @@ endif
 # and set up the right compiler flags and libraries
 PLATFORM = $(shell uname -s)
 ifeq ($(PLATFORM), Darwin)
+	CPPC = clang++
 	CCFLAGS += -DAPPLE
 	LIBS = -lm -framework OpenCL -fopenmp
 endif
