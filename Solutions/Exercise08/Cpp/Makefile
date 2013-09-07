@@ -10,7 +10,7 @@ ifndef CPPC
 	CPPC=g++
 endif
 
-CCFLAGS=-O3 -std=c++11 -std=gnu++11 -ffast-math
+CCFLAGS=-O3 -std=c++11 -ffast-math
 
 LIBS = -lm -lOpenCL -fopenmp
 

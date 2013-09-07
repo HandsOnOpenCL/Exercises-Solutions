@@ -5,7 +5,7 @@ endif
 
 CPP_COMMON = ../../Cpp_common
 
-CCFLAGS=-std=c++11 -std=gnu++11 -O3
+CCFLAGS=-std=c++11 -O3
 
 INC = -I $(CPP_COMMON)
 
