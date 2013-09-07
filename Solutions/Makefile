@@ -5,12 +5,12 @@
 CEXES = Exercise04/C/vadd_chain Exercise05/C/vadd_abc \
 		Exercise06/C/mult Exercise07/C/mult \
 		Exercise08/C/mult Exercise09/C/pi_ocl \
-		Exercise13/C/gameoflife
+		Exercise13/C/gameoflife ExerciseA/C/pi_vocl
 
 CPPEXES = Exercise04/Cpp/vadd_chain Exercise05/Cpp/vadd_abc \
 		Exercise06/Cpp/mult Exercise07/Cpp/mult \
 		Exercise08/Cpp/mult Exercise08/Cpp/pi_ocl \
-		Exercise13/Cpp/gameoflife
+		Exercise13/Cpp/gameoflife ExerciseA/Cpp/pi_vocl
 
 # Change this variable to specify the device type in all
 # the Makefile to the OpenCL device type of choice
