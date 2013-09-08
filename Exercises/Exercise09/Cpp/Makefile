@@ -5,7 +5,7 @@ endif
 
 CCFLAGS=-O3 -std=c++11
 
-LIBS = -lm -lrt
+LIBS = -lm
 
 CPP_COMMON = ../../Cpp_common
 
