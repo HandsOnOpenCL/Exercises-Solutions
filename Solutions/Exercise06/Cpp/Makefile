@@ -42,7 +42,7 @@ CCFLAGS += -D DEVICE=$(DEVICE)
 all: $(EXEC)
 
 mult: $(MMUL_OBJS)
-	$(CPPC) $(MMUL_OBJS) $(LIBS) -o $(EXEC)
+	$(CPPC) $(MMUL_OBJS) $(CCFLAGS) $(LIBS) -o $(EXEC)
 
 wtime.o: $(COMMON_DIR)/wtime.c
 	$(CPPC) -c $^ $(CCFLAGS) -o $@
