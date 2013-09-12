@@ -16,7 +16,7 @@ INC = -I $(CPP_COMMON)
 PLATFORM = $(shell uname -s)
 ifeq ($(PLATFORM), Darwin)
 	CPPC = clang++
-	CCFLAGS += -DAPPLE -stdlib=libc++
+	CCFLAGS += -stdlib=libc++
 endif
 
 pi: pi.cpp

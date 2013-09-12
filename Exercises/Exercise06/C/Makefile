@@ -32,7 +32,6 @@ CCFLAGS += -D DEVICE=$(DEVICE)
 # and set up the right compiler flags and libraries
 PLATFORM = $(shell uname -s)
 ifeq ($(PLATFORM), Darwin)
-	CCFLAGS += -DAPPLE
 	LIBS = -lm -framework OpenCL -fopenmp
 endif
 
