@@ -13,7 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
-#ifdef APPLE
+#ifdef __APPLE__
 #include <OpenCL/opencl.h>
 #include <unistd.h>
 #else

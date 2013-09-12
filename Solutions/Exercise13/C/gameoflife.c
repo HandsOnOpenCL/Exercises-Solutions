@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#ifdef APPLE
+#ifdef __APPLE__
 #include <OpenCL/opencl.h>
 #else
 #include <CL/cl.h>
@@ -45,7 +45,7 @@ extern char* err_code(cl_int);
  * Main function
  ************************************************************************************/
 
-int main(int argc, void **argv)
+int main(int argc, char **argv)
 {
 
     // Check we have a starting state file

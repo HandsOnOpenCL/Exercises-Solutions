@@ -23,7 +23,7 @@ endif
 PLATFORM = $(shell uname -s)
 ifeq ($(PLATFORM), Darwin)
 	CPPC = clang++
-	CCFLAGS += -DAPPLE -stdlib=libc++
+	CCFLAGS += -stdlib=libc++
 	LIBS = -framework OpenCL
 endif
 

@@ -16,7 +16,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-#ifdef APPLE
+#ifdef __APPLE__
 #include <OpenCL/opencl.h>
 #include <unistd.h>
 #else
