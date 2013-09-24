@@ -1,6 +1,8 @@
 Source Code for the Exercises and Solutions
 ==========================================
 
+These examples, and the slides, and released under the "attribution CC BY" creative commons license.
+
 Introduction
 ------------
 
