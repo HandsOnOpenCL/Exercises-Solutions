@@ -79,15 +79,18 @@ d_c = cl.Buffer(context, cl.mem_flags.WRITE_ONLY, h_c.nbytes)
 d_d = cl.Buffer(context, cl.mem_flags.WRITE_ONLY, h_d.nbytes)
 d_f = cl.Buffer(context, cl.mem_flags.WRITE_ONLY, h_f.nbytes)
 
+vadd = program.vadd
+vadd.set_scalar_arg_dtypes([None, None, None, numpy.uint32])
+
 # Execute the kernel over the entire range of our 1d input
 # allowing OpenCL runtime to select the work group items for the device
-program.vadd(queue, h_a.shape, None, d_a, d_b, d_c, numpy.uint32(LENGTH))
+vadd(queue, h_a.shape, None, d_a, d_b, d_c, LENGTH)
 
 # Enqueue the kernel again, but with different arguments
-program.vadd(queue, h_e.shape, None, d_e, d_c, d_d, numpy.uint32(LENGTH))
+vadd(queue, h_e.shape, None, d_e, d_c, d_d, LENGTH)
 
 # Enqueue the kernel a third time, again with different arguments
-program.vadd(queue, h_g.shape, None, d_g, d_d, d_f, numpy.uint32(LENGTH))
+vadd(queue, h_g.shape, None, d_g, d_d, d_f, LENGTH)
 
 
 # Read back the results from the compute device

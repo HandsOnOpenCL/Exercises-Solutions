@@ -76,7 +76,9 @@ d_r = cl.Buffer(context, cl.mem_flags.WRITE_ONLY, h_r.nbytes)
 
 # Execute the kernel over the entire range of our 1d input
 # allowing OpenCL runtime to select the work group items for the device
-program.vadd(queue, h_a.shape, None, d_a, d_b, d_c, d_r, numpy.uint32(LENGTH))
+vadd = program.vadd
+vadd.set_scalar_arg_dtypes([None, None, None, None, numpy.uint32])
+vadd(queue, h_a.shape, None, d_a, d_b, d_c, d_r, LENGTH)
 
 # Read back the results from the compute device
 cl.enqueue_copy(queue, h_r, d_r)

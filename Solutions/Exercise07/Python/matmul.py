@@ -80,6 +80,8 @@ d_c = cl.Buffer(context, cl.mem_flags.WRITE_ONLY, h_C.nbytes)
 
 kernelsource = open("../C_elem.cl").read()
 program = cl.Program(context, kernelsource).build()
+mmul = program.mmul
+mmul.set_scalar_arg_dtypes([numpy.int32, numpy.int32, numpy.int32, None, None, None])
 
 print "\n===== OpenCL, matrix mult, C(i,j) per work item, order", Ndim, "======\n"
 
@@ -88,7 +90,7 @@ for i in range(COUNT):
     h_C.fill(0.0)
     start_time = time()
 
-    program.mmul(queue, (Ndim, Mdim), None, numpy.int32(Mdim), numpy.int32(Ndim), numpy.int32(Pdim), d_a, d_b, d_c)
+    mmul(queue, (Ndim, Mdim), None, Mdim, Ndim, Pdim, d_a, d_b, d_c)
     queue.finish()
 
     run_time = time() - start_time
@@ -102,13 +104,15 @@ for i in range(COUNT):
 
 kernelsource = open("../C_row.cl").read()
 program = cl.Program(context, kernelsource).build()
+mmul = program.mmul
+mmul.set_scalar_arg_dtypes([numpy.int32, numpy.int32, numpy.int32, None, None, None])
 print "\n===== OpenCL, matrix mult, C row per work item, order", Ndim, "======\n"
 # Do the multiplication COUNT times
 for i in range(COUNT):
     h_C.fill(0.0)
     start_time = time()
 
-    program.mmul(queue, (Ndim,), (ORDER/16,), numpy.int32(Mdim), numpy.int32(Ndim), numpy.int32(Pdim), d_a, d_b, d_c)
+    mmul(queue, (Ndim,), (ORDER/16,), Mdim, Ndim, Pdim, d_a, d_b, d_c)
     queue.finish()
 
     run_time = time() - start_time
@@ -122,13 +126,15 @@ for i in range(COUNT):
 
 kernelsource = open("../C_row_priv.cl").read()
 program = cl.Program(context, kernelsource).build()
+mmul = program.mmul
+mmul.set_scalar_arg_dtypes([numpy.int32, numpy.int32, numpy.int32, None, None, None])
 print "\n===== OpenCL, matrix mult, C row, A row in priv mem, order", Ndim, "======\n"
 # Do the multiplication COUNT times
 for i in range(COUNT):
     h_C.fill(0.0)
     start_time = time()
 
-    program.mmul(queue, (Ndim,), (ORDER/16,), numpy.int32(Mdim), numpy.int32(Ndim), numpy.int32(Pdim), d_a, d_b, d_c)
+    mmul(queue, (Ndim,), (ORDER/16,), Mdim, Ndim, Pdim, d_a, d_b, d_c)
     queue.finish()
 
     run_time = time() - start_time

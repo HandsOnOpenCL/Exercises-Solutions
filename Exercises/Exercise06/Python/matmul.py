@@ -87,6 +87,8 @@ d_b = cl.Buffer(context, cl.mem_flags.READ_ONLY | cl.mem_flags.COPY_HOST_PTR, ho
 d_c = cl.Buffer(context, cl.mem_flags.WRITE_ONLY, h_C.nbytes)
 
 program = cl.Program(context, C_elem_KernelSource).build()
+mmul = program.mmul
+mmul.set_scalar_arg_dtypes([numpy.int32, numpy.int32, numpy.int32, None, None, None])
 
 print "\n===== OpenCL, matrix mult, C(i,j) per work item, order", Ndim, "======\n"
 
@@ -98,7 +100,7 @@ for i in range(COUNT):
     globalrange = (Ndim, Mdim)
     localrange = None
 
-    program.mmul(queue, globalrange, localrange, numpy.int32(Mdim), numpy.int32(Ndim), numpy.int32(Pdim), d_a, d_b, d_c)
+    mmul(queue, globalrange, localrange, Mdim, Ndim, Pdim, d_a, d_b, d_c)
     queue.finish()
 
     run_time = time() - start_time

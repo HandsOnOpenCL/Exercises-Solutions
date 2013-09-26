@@ -30,6 +30,8 @@ context = cl.create_some_context()
 queue = cl.CommandQueue(context)
 kernelsource = open("../pi_ocl.cl").read()
 program = cl.Program(context, kernelsource).build()
+pi = program.pi
+pi.set_scalar_arg_dtypes([numpy.int32, numpy.float32, None, None])
 
 # Get the max work group size for the kernel pi on our device
 device = context.devices[0]
@@ -63,11 +65,11 @@ rtime = time()
 # Set the global and local size as tuples
 global_size = ((nwork_groups * work_group_size),)
 local_size = ((work_group_size),)
-program.pi(queue, global_size, local_size,
-	numpy.int32(niters),
-	numpy.float32(step_size),
-	cl.LocalMemory(numpy.dtype(numpy.float32).itemsize * work_group_size),
-	d_partial_sums)
+localmem = cl.LocalMemory(numpy.dtype(numpy.float32).itemsize * work_group_size)
+
+pi(queue, global_size, local_size,
+	niters, step_size,
+	localmem, d_partial_sums)
 
 cl.enqueue_copy(queue, h_psum, d_partial_sums)
 

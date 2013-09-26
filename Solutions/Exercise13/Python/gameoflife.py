@@ -45,6 +45,8 @@ def main():
     with open('../gameoflife.cl', 'r') as f:
         kernelsource = f.read()
     program = cl.Program(context, kernelsource).build()
+    accelerate_life = program.accelerate_life
+    accelerate_life.set_scalar_arg_dtypes([None, None, numpy.uint32, numpy.uint32, None])
 
     # Allocate memory for boards
     h_board = numpy.zeros(nx * ny).astype(numpy.int8)
@@ -71,9 +73,9 @@ def main():
     for i in xrange(iterations):
         # Apply the rules of Life
         # Enqueue the kernel
-        program.accelerate_life(queue, global_size, local_size,
+        accelerate_life(queue, global_size, local_size,
             d_board_tick, d_board_tock,
-            numpy.uint32(nx), numpy.uint32(ny),
+            nx, ny,
             localmem)
 
         # Swap the boards over

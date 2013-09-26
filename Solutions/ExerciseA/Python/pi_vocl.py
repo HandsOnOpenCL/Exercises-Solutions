@@ -54,7 +54,14 @@ context = cl.create_some_context()
 queue = cl.CommandQueue(context)
 kernelsource = open("../pi_vocl.cl").read()
 program = cl.Program(context, kernelsource).build()
+if vector_size == 1:
+	pi = program.pi
+elif vector_size == 4:
+	pi = program.pi_vec4
+elif vector_size == 8:
+	pi = program.pi_vec8
 
+pi.set_scalar_arg_dtypes([numpy.int32, numpy.float32, None, None])
 
 # Now that we know the size of the work_groups, we can set the number of work
 # groups, the actual number of steps, and the step size
@@ -98,24 +105,13 @@ rtime = time()
 global_size = ((nwork_groups * work_group_size),)
 local_size = ((work_group_size),)
 
-if vector_size == 1:
-	program.pi(queue, global_size, local_size,
-		numpy.int32(niters),
-		numpy.float32(step_size),
-		cl.LocalMemory(numpy.dtype(numpy.float32).itemsize * work_group_size),
-		d_partial_sums)
-elif vector_size == 4:
-	program.pi_vec4(queue, global_size, local_size,
-		numpy.int32(niters),
-		numpy.float32(step_size),
-		cl.LocalMemory(numpy.dtype(numpy.float32).itemsize * work_group_size),
-		d_partial_sums)
-elif vector_size == 8:
-	program.pi_vec8(queue, global_size, local_size,
-		numpy.int32(niters),
-		numpy.float32(step_size),
-		cl.LocalMemory(numpy.dtype(numpy.float32).itemsize * work_group_size),
-		d_partial_sums)
+localmem = cl.LocalMemory(numpy.dtype(numpy.float32).itemsize * work_group_size)
+
+pi(queue, global_size, local_size,
+	niters,
+	step_size,
+	localmem,
+	d_partial_sums)
 
 cl.enqueue_copy(queue, h_psum, d_partial_sums)
 
