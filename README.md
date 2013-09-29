@@ -1,8 +1,9 @@
 Introduction
 ============
 
-This set of freely available OpenCL exercises and solutions has
-been created by Simon McIntosh-Smith and Tom Deakin from the
+This set of freely available OpenCL exercises and solutions,
+together with the [HandsOnOpenCL slides](https://github.com/HandsOnOpenCL/Lecture-Slides)
+have been created by Simon McIntosh-Smith and Tom Deakin from the
 University of Bristol in the UK, with financial support from the
 Khronos Initiative for Training and Education ([KITE](http://kite.khronos.org/en/opencl))
 to promote the use of open standards. 
