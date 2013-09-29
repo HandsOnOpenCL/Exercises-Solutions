@@ -1,9 +1,22 @@
 Introduction
 ============
 
-This set of freely available OpenCL exercises and solutions have been created by Simon McIntosh-Smith and Tom Deakin from the University of Bristol in the UK. This resource has been created with support from Khronos's KITE initiative to promote the use of open standards. 
+This set of freely available OpenCL exercises and solutions has
+been created by Simon McIntosh-Smith and Tom Deakin from the
+University of Bristol in the UK, with financial support from the
+Khronos Initiative for Training and Education ([KITE](http://kite.khronos.org/en/opencl))
+to promote the use of open standards. 
 
-Simon McIntosh-Smith is one of the foremost OpenCL trainers in the world, having taught the subject since 2009. He has run many OpenCL training courses at events including SuperComputing, while also running his training courses for the UK's national supercomputing service and also for the Barcelona Supercomputing Center. With OpenCL training experience ranging from half day on-site introductions within companies, to two-day intensive hands-on workshops for undergraduates, Simon can provide customized OpenCL training to meet your needs. Get in touch with him if you'd like to know more: <simonm at cs.bris.ac.uk>.
+[Simon McIntosh-Smith](http://www.cs.bris.ac.uk/home/simonm/) is
+one of the foremost OpenCL trainers in the world, having taught
+the subject since 2009. He has run many OpenCL training courses
+at conferences such as SuperComputing and HiPEAC, and has provided
+OpenCL training for the UK's national supercomputing service and
+for the Barcelona Supercomputing Center. With OpenCL training
+experience ranging from half day on-site introductions within
+companies, to two-day intensive hands-on workshops for undergraduates,
+Simon can provide customized OpenCL training to meet your needs.
+Get in touch if you'd like to know more: <simonm at cs.bris.ac.uk>.
 
 For more about the authors, please visit [Simon's home page](http://www.cs.bris.ac.uk/home/simonm/) or [Tom's home page](http://www.tomdeakin.com).
 
