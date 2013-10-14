@@ -126,7 +126,7 @@ void results(int Mdim, int Ndim, int Pdim, std::vector<float>& C, double run_tim
     mflops = 2.0 * Mdim * Ndim * Pdim/(1000000.0f * run_time);
     printf(" %.2f seconds at %.1f MFLOPS \n",  run_time,mflops);
     errsq = error(Mdim, Ndim, Pdim, C);
-    if (isnan(errsq) || errsq > TOL)
+    if (std::isnan(errsq) || errsq > TOL)
            printf("\n Errors in multiplication: %f\n",errsq);
 }
 
