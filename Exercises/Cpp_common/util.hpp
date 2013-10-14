@@ -88,7 +88,7 @@ private:
         struct timeval tv;
         gettimeofday(&tv, 0);
         ticks = (uint64_t) (tv.tv_sec - startTime_.tv_sec) * scale
-                + (uint64_t) (tv.tv_usec - startTime_.tv_sec);
+                + (uint64_t) (tv.tv_usec - startTime_.tv_usec) * scale / (1000ULL * 1000ULL);
 #else
         struct timespec tp;
         ::clock_gettime(CLOCK_MONOTONIC, &tp);
