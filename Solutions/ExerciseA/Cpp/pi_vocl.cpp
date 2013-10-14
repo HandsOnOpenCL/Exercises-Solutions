@@ -159,8 +159,14 @@ int main(int argc, char** argv)
 	}
 	catch (cl::Error err)
 	{
-        std::cerr << "ERROR: " << err.what() << ":\n";
-        err_code(err.err());
+		std::cout << "Exception\n";
+		std::cerr 
+            << "ERROR: "
+            << err.what()
+            << "("
+            << err_code(err.err())
+           << ")"
+           << std::endl;
         return EXIT_FAILURE;
 	}
 }
