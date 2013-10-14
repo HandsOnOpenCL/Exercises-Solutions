@@ -1,12 +1,35 @@
+Introduction
+============
+
+This set of freely available OpenCL exercises and solutions,
+together with the [HandsOnOpenCL slides](https://github.com/HandsOnOpenCL/Lecture-Slides)
+have been created by Simon McIntosh-Smith and Tom Deakin from the
+University of Bristol in the UK, with financial support from the
+Khronos Initiative for Training and Education ([KITE](http://kite.khronos.org/en/opencl))
+to promote the use of open standards. 
+
+[Simon McIntosh-Smith](http://www.cs.bris.ac.uk/home/simonm/) is
+one of the foremost OpenCL trainers in the world, having taught
+the subject since 2009. He has run many OpenCL training courses
+at conferences such as SuperComputing and HiPEAC, and has provided
+OpenCL training for the UK's national supercomputing service and
+for the Barcelona Supercomputing Center. With OpenCL training
+experience ranging from half day on-site introductions within
+companies, to two-day intensive hands-on workshops for undergraduates,
+Simon can provide customized OpenCL training to meet your needs.
+Get in touch if you'd like to know more: <simonm at cs.bris.ac.uk>.
+
+For more about the authors, please visit [Simon's home page](http://www.cs.bris.ac.uk/home/simonm/) or [Tom's home page](http://www.tomdeakin.com).
+
 Source Code for the Exercises and Solutions
 ==========================================
 
-These examples, and the slides, and released under the "attribution CC BY" creative commons license.
+These examples together with the [HandsOnOpenCL slides](https://github.com/HandsOnOpenCL/Lecture-Slides) are released under the ["attribution CC BY" creative commons license](http://creativecommons.org/licenses/by/3.0/). In other words, you can use these in any way you see fit, including commercially, but please retain an attribution for the original authors, Simon McIntosh-Smith and Tom Deakin.
 
-Introduction
-------------
+Getting started
+---------------
 
-Please checkout the repository using git with the following command:
+Please download a tarball from [Releases](https://github.com/HandsOnOpenCL/Exercises-Solutions/releases), or checkout the repository using git with the following command:
 
 `git clone git://github.com/HandsOnOpenCL/Exercises-Solutions.git`
 
@@ -84,7 +107,8 @@ The Solutions directory contains sample code
 providing an example implementation which
 solves the exercises in the lecture notes.
 
-Each directory contains a subdirectory for
-each of the exercises. Each of these contains
-an implementation of the exercise or solution
-in C, C++ and Python.
+Within both of the Exercises and Solutions
+directories, there is one subdirectory per
+exercise. Within each exercise subdirectory,
+there are further subdirectories for each
+implementation: C, C++ and Python.
