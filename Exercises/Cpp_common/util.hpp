@@ -87,8 +87,21 @@ private:
         // WARNING: THIS IS PROBABLY BROKEN
         struct timeval tv;
         gettimeofday(&tv, 0);
-        ticks = (uint64_t) (tv.tv_sec - startTime_.tv_sec) * scale
-                + (uint64_t) (tv.tv_usec - startTime_.tv_usec) * scale / (1000ULL * 1000ULL);
+        // check for overflow
+        if ((tv.tv_usec - startTime_.tv_usec) < 0)
+        {
+            // Remove a second from the second field and add it to the
+            // microseconds fields to prevent overflow.
+            // Then scale.
+            ticks = (uint64_t) (tv.tv_sec - startTime_.tv_sec - 1) * scale
+                    + (uint64_t) ((1000ULL * 1000ULL) + tv.tv_usec - startTime_.tv_usec)
+                                    * scale / (1000ULL * 1000ULL);
+        }
+        else
+        {
+            ticks = (uint64_t) (tv.tv_sec - startTime_.tv_sec) * scale
+                    + (uint64_t) (tv.tv_usec - startTime_.tv_usec) * scale / (1000ULL * 1000ULL);
+        }
 #else
         struct timespec tp;
         ::clock_gettime(CLOCK_MONOTONIC, &tp);
