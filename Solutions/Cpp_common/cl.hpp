@@ -3090,6 +3090,7 @@ public:
 
     /*!
      * \brief Construct a Buffer from a host container via iterators.
+     * IteratorType must be random access.
      * If useHostPtr is specified iterators must represent contiguous data.
      */
     template< typename IteratorType >
@@ -3140,6 +3141,7 @@ public:
 
     /*!
      * \brief Construct a Buffer from a host container via iterators using a specified context.
+     * IteratorType must be random access.
      * If useHostPtr is specified iterators must represent contiguous data.
      */
     template< typename IteratorType >
@@ -6914,7 +6916,6 @@ template <
    typename T20,   typename T21,   typename T22,   typename T23,
    typename T24,   typename T25,   typename T26,   typename T27,
    typename T28,   typename T29,   typename T30,   typename T31
-
 >
 class KernelFunctorGlobal
 {
@@ -6968,7 +6969,6 @@ public:
         T29 t29 = NullType(),
         T30 t30 = NullType(),
         T31 t31 = NullType()
-
         )
     {
         Event event;
@@ -7004,7 +7004,6 @@ public:
         SetArg<29, T29>::set(kernel_, t29);
         SetArg<30, T30>::set(kernel_, t30);
         SetArg<31, T31>::set(kernel_, t31);
-
         
         args.queue_.enqueueNDRangeKernel(
             kernel_,
@@ -12295,7 +12294,6 @@ template <
    typename T27 = detail::NullType,   typename T28 = detail::NullType,
    typename T29 = detail::NullType,   typename T30 = detail::NullType,
    typename T31 = detail::NullType
-
 >
 struct make_kernel :
     public detail::functionImplementation_<
@@ -12307,7 +12305,6 @@ struct make_kernel :
                T20,   T21,   T22,   T23,
                T24,   T25,   T26,   T27,
                T28,   T29,   T30,   T31
-
     >
 {
 public:
@@ -12320,7 +12317,6 @@ public:
                T20,   T21,   T22,   T23,
                T24,   T25,   T26,   T27,
                T28,   T29,   T30,   T31
-
     > FunctorType;
 
     make_kernel(
@@ -12336,7 +12332,6 @@ public:
                        T20,   T21,   T22,   T23,
                        T24,   T25,   T26,   T27,
                        T28,   T29,   T30,   T31
-
            >(
             FunctorType(program, name, err)) 
     {}
@@ -12352,7 +12347,6 @@ public:
                        T20,   T21,   T22,   T23,
                        T24,   T25,   T26,   T27,
                        T28,   T29,   T30,   T31
-
            >(
             FunctorType(kernel)) 
     {}    
