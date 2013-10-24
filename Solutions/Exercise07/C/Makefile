@@ -10,7 +10,7 @@ ifndef CC
 	CC = gcc
 endif
 
-CCFLAGS=-O3 -std=c99 -ffast-math
+CCFLAGS=-O0 -std=c99 -g
 
 LIBS = -lm -lOpenCL -fopenmp
 
@@ -30,7 +30,7 @@ endif
 # and set up the right compiler flags and libraries
 PLATFORM = $(shell uname -s)
 ifeq ($(PLATFORM), Darwin)
-	LIBS = -lm -framework OpenCL -fopenmp
+	LIBS = -lm -framework OpenCL
 endif
 
 CCFLAGS += -D DEVICE=$(DEVICE)

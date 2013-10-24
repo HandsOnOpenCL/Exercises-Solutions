@@ -12,7 +12,7 @@ endif
 
 CCFLAGS=-O3 -std=c++11 -ffast-math
 
-LIBS = -lm -lOpenCL -fopenmp
+LIBS = -lm -lOpenCL -fopenmp 
 
 COMMON_DIR = ../../Cpp_common
 

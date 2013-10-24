@@ -30,7 +30,7 @@ endif
 # and set up the right compiler flags and libraries
 PLATFORM = $(shell uname -s)
 ifeq ($(PLATFORM), Darwin)
-	LIBS = -lm -framework OpenCL -fopenmp
+	LIBS = -lm -framework OpenCL
 endif
 
 CCFLAGS += -D DEVICE=$(DEVICE)
