@@ -22,16 +22,18 @@
 
 #include "matmul.hpp"
 #include "matrix_lib.hpp"
+#include "util.hpp"
 
 int main(void)
 {
 
     int Mdim, Ndim, Pdim;   // A[N][P], B[P][M], C[N][M]
-    int szA, szB, szC;      // number of elements in each matrix
+    int szA, szB, szC;      // Number of elements in each matrix
 
 
     double start_time;      // Starting time
-    double run_time;        // timing data
+    double run_time;        // Timing data
+    util::Timer timer;      // timing
 
     Ndim = ORDER;
     Pdim = ORDER;
@@ -53,11 +55,11 @@ int main(void)
     for(int i = 0; i < COUNT; i++)
     {
         zero_mat(Ndim, Mdim, h_C);
-        start_time = wtime();
+        start_time = static_cast<double>(timer.getTimeMilliseconds()) / 1000.0;
 
         seq_mat_mul_sdot(Mdim, Ndim, Pdim, h_A, h_B, h_C);
 
-        run_time  = wtime() - start_time;
+        run_time  = static_cast<double>(timer.getTimeMilliseconds()) / 1000.0 - start_time;
         results(Mdim, Ndim, Pdim, h_C, run_time);
     }
 
@@ -101,7 +103,7 @@ int main(void)
         {
             zero_mat(Ndim, Mdim, h_C);
 
-            start_time = wtime();
+            start_time = static_cast<double>(timer.getTimeMilliseconds()) / 1000.0;
 
             // Execute the kernel over the entire range of C matrix elements ... computing
             // a dot product for each element of the product matrix.  The local work
@@ -113,7 +115,7 @@ int main(void)
 
             queue.finish();
 
-            run_time = wtime() - start_time;
+            run_time  = static_cast<double>(timer.getTimeMilliseconds()) / 1000.0 - start_time;
 
             cl::copy(queue, d_c, begin(h_C), end(h_C));
 
@@ -138,7 +140,7 @@ int main(void)
         {
             zero_mat(Ndim, Mdim, h_C);
 
-            start_time = wtime();
+            start_time = static_cast<double>(timer.getTimeMilliseconds()) / 1000.0;
 
             cl::NDRange global(Ndim);
             crow_mmul(cl::EnqueueArgs(queue, global),
@@ -146,7 +148,7 @@ int main(void)
 
             queue.finish();
 
-            run_time = wtime() - start_time;
+            run_time  = static_cast<double>(timer.getTimeMilliseconds()) / 1000.0 - start_time;
 
             cl::copy(queue, d_c, begin(h_C), end(h_C));
 
@@ -171,7 +173,7 @@ int main(void)
         {
             zero_mat(Ndim, Mdim, h_C);
 
-            start_time = wtime();
+            start_time = static_cast<double>(timer.getTimeMilliseconds()) / 1000.0;
 
             cl::NDRange global(Ndim);
             cl::NDRange local(ORDER / 16);
@@ -180,7 +182,7 @@ int main(void)
 
             queue.finish();
 
-            run_time = wtime() - start_time;
+            run_time  = static_cast<double>(timer.getTimeMilliseconds()) / 1000.0 - start_time;
 
             cl::copy(queue, d_c, begin(h_C), end(h_C));
 
@@ -205,7 +207,7 @@ int main(void)
         {
             zero_mat(Ndim, Mdim, h_C);
 
-            start_time = wtime();
+            start_time = static_cast<double>(timer.getTimeMilliseconds()) / 1000.0;
 
             cl::NDRange global(Ndim);
             cl::NDRange local(ORDER / 16);
@@ -217,7 +219,7 @@ int main(void)
 
             queue.finish();
 
-            run_time = wtime() - start_time;
+            run_time  = static_cast<double>(timer.getTimeMilliseconds()) / 1000.0 - start_time;
 
             cl::copy(queue, d_c, begin(h_C), end(h_C));
 
@@ -242,7 +244,7 @@ int main(void)
         {
             zero_mat(Ndim, Mdim, h_C);
 
-            start_time = wtime();
+            start_time = static_cast<double>(timer.getTimeMilliseconds()) / 1000.0;
 
             int blocksize = 16;
             cl::NDRange global(Ndim, Mdim);
@@ -256,7 +258,7 @@ int main(void)
 
             queue.finish();
 
-            run_time = wtime() - start_time;
+            run_time  = static_cast<double>(timer.getTimeMilliseconds()) / 1000.0 - start_time;
 
             cl::copy(queue, d_c, begin(h_C), end(h_C));
 
