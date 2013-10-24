@@ -10,7 +10,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#ifdef _OPENMP
 #include <omp.h>
+#endif
 
 #define FINALSTATEFILE "final_state.dat"
 
@@ -97,7 +99,7 @@ void accelerate_life(const char* tick, char* tock, const int nx, const int ny)
  * Main function
  ************************************************************************************/
 
-int main(int argc, void **argv)
+int main(int argc, char **argv)
 {
 
     // Check we have a starting state file
