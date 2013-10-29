@@ -1,9 +1,9 @@
 
 ifndef CPPC
-	CPPC=g++
+	CPPC = g++
 endif
 
-CCFLAGS=-O3 -std=c++11 -lrt
+CCFLAGS = -O3 -std=c++11 -lrt
 
 LIBS = -lm
 
@@ -16,7 +16,7 @@ INC = -I $(CPP_COMMON)
 PLATFORM = $(shell uname -s)
 ifeq ($(PLATFORM), Darwin)
 	CPPC = clang++
-	CCFLAGS += -stdlib=libc++
+	CCFLAGS = -O3 -std=c++11 -stdlib=libc++
 endif
 
 pi: pi.cpp

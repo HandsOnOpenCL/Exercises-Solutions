@@ -56,5 +56,9 @@ err_code.o: $(COMMON_DIR)/err_code.c
 .cpp.o:
 	$(CPPC) -c $< $(CCFLAGS) $(INC) -o $@
 
+matmul.o:	matmul.hpp matrix_lib.hpp
+
+matrix_lib.o:	matmul.hpp
+
 clean:
 	rm -f $(MMUL_OBJS) $(EXEC)
