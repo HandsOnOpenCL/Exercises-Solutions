@@ -56,4 +56,6 @@ float error(int Mdim, int Ndim, int Pdim, float *C);
 //------------------------------------------------------------------------------
 void results(int Mdim, int Ndim, int Pdim, float *C, double run_time);
     
+void print_matrix(int Ndim, int Mdim, float *C);
+
 #endif
