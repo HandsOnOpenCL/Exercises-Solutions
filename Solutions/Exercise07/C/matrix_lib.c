@@ -130,3 +130,17 @@ void results(int Mdim, int Ndim, int Pdim, float *C, double run_time)
            printf("\n Errors in multiplication: %f\n",errsq);
 }
 
+void print_matrix(int Ndim, int Mdim, float *matrix)
+{
+    int i, j;
+
+    for (i=0; i<Ndim; i++)
+    {
+        for (j=0; j<Mdim; j++)
+        {
+            printf("%f ", matrix[i*Ndim+j]);
+        }
+        printf("\n");
+    }
+}
+
