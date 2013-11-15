@@ -34,7 +34,7 @@ __kernel void vadd(
     __global float* r,
     const unsigned int count)
 {
-    int i = get_global_id(0);
+    unsigned int i = get_global_id(0);
     if (i < count)
         r[i] = a[i] + b[i] + c[i];
 }"
