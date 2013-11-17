@@ -58,7 +58,7 @@ work_group_size = WGS
 #---------------------------------------------
 #device = first(cl.devices(:gpu))
 #device = first(cl.devices(:cpu))
-device, ctx, queue = cl.create_some_context()
+device, ctx, queue = cl.create_compute_context()
 
 
 kernelsource = open(readall, joinpath(src_dir, "../pi_vocl.cl"))
