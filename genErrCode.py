@@ -1,9 +1,10 @@
-
+#!/usr/bin/env python3
+from __future__ import print_function
 import sys
 
 if len(sys.argv) != 2:
-    print "Usage: python genErrCode.py /path/to/cl.h"
-    sys.exit(-1)
+    print("Usage: python genErrCode.py /path/to/cl.h", file = sys.stderr)
+    sys.exit(1)
 
 hfile = open(sys.argv[1], "r")
 
@@ -19,7 +20,7 @@ for l in hfile:
     # Skip if a blank line
     if l == "\n":
         continue
-    
+
     tokens = l.split()
     # We expect the line to be of the form:
     # #define CL_... int
@@ -31,41 +32,39 @@ for l in hfile:
         errors.append(tokens[1])
 
 # Print out the C file
-print '''
-//------------------------------------------------------------------------------
-//
-// Name:     err_code()    
-//
-// Purpose:  Function to output descriptions of errors for an input error code
-//
-//
-// RETURN:   echoes the input error code
-//
-// HISTORY:  Written by Tim Mattson, June 2010
-//           This version automatically produced by genErrCode.py
-//           script written by Tom Deakin, August 2013
-//
-//------------------------------------------------------------------------------
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#ifdef APPLE
+print('''\
+/*----------------------------------------------------------------------------
+ *
+ * Name:     err_code()
+ *
+ * Purpose:  Function to output descriptions of errors for an input error code
+ *
+ *
+ * RETURN:   echoes the input error code
+ *
+ * HISTORY:  Written by Tim Mattson, June 2010
+ *           This version automatically produced by genErrCode.py
+ *           script written by Tom Deakin, August 2013
+ *           Modified by Bruce Merry, March 2014
+ *
+ *----------------------------------------------------------------------------
+ */
+#if defined(__APPLE__) || defined(__MACOSX)
 #include <OpenCL/opencl.h>
 #else
 #include <CL/cl.h>
 #endif
 
-char *err_code (cl_int err_in)
+const char *err_code (cl_int err_in)
 {
-    switch (err_in) {
-'''
+    switch (err_in) {''')
 for err in errors:
-    print '        case', err, ':'
-    print '            return (char*)"', err, '";'
+    print('        case ' + err + ':')
+    print('            return "' + err + '";')
 
-print '        default:'
-print '            return (char*)"UNKNOWN ERROR";'
-print '''
+print('''\
+        default:
+            return "UNKNOWN ERROR";
     }
 }
-'''
+''')
