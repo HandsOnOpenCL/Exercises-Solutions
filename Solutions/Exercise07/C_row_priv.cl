@@ -16,7 +16,7 @@ __kernel void mmul(
             Awrk[k] = A[i*Ndim+k];
 
         for (j = 0; j < Mdim; j++) {
-            tmp = 0.0;
+            tmp = 0.0f;
             for (k = 0; k < Pdim; k++)
                 tmp += Awrk[k] * B[k*Pdim+j];
             C[i*Ndim+j] = tmp;
