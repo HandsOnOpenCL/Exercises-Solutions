@@ -13,7 +13,7 @@ __kernel void mmul(
     float tmp;
     if ((i < Ndim) && (j < Mdim))
     {
-        tmp = 0.0;
+        tmp = 0.0f;
         for (k = 0; k < Pdim; k++)
             tmp += A[i*Ndim+k] * B[k*Pdim+j];
         C[i*Ndim+j] = tmp;

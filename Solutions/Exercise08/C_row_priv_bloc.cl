@@ -22,7 +22,7 @@ __kernel void mmul(
             for (k = iloc; k < Pdim; k += nloc)
                 Bwrk[k] = B[k*Pdim+j];
             barrier(CLK_LOCAL_MEM_FENCE);
-            tmp = 0.0;
+            tmp = 0.0f;
             for (k = 0; k < Pdim; k++)
                 tmp += Awrk[k] * Bwrk[k];
             C[i*Ndim+j] = tmp;
