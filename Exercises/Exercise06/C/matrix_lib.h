@@ -18,35 +18,35 @@
 //  Function to compute the matrix product (sequential algorithm, dot producdt)
 //
 //------------------------------------------------------------------------------
-void seq_mat_mul_sdot(int Mdim, int Ndim, int Pdim, float *A, float *B, float *C);
+void seq_mat_mul_sdot(int N, float *A, float *B, float *C);
 
 //------------------------------------------------------------------------------
 //
 //  Function to initialize the input matrices A and B
 //
 //------------------------------------------------------------------------------
-void initmat(int Mdim, int Ndim, int Pdim, float *A, float *B, float *C);
+void initmat(int N, float *A, float *B, float *C);
 
 //------------------------------------------------------------------------------
 //
 //  Function to set a matrix to zero 
 //
 //------------------------------------------------------------------------------
-void zero_mat (int Ndim, int Mdim, float *C);
+void zero_mat (int N, float *C);
 
 //------------------------------------------------------------------------------
 //
 //  Function to fill Btrans(Mdim,Pdim)  with transpose of B(Pdim,Mdim)
 //
 //------------------------------------------------------------------------------
-void trans(int Pdim, int Mdim, float *B, float *Btrans);
+void trans(int N, float *B, float *Btrans);
 
 //------------------------------------------------------------------------------
 //
 //  Function to compute errors of the product matrix
 //
 //------------------------------------------------------------------------------
-float error(int Mdim, int Ndim, int Pdim, float *C);
+float error(int N, float *C);
 
 
 //------------------------------------------------------------------------------
@@ -54,6 +54,6 @@ float error(int Mdim, int Ndim, int Pdim, float *C);
 //  Function to analyze and output results 
 //
 //------------------------------------------------------------------------------
-void results(int Mdim, int Ndim, int Pdim, float *C, double run_time);
+void results(int N, float *C, double run_time);
     
 #endif
