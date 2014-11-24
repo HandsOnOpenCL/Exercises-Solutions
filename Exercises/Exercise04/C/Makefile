@@ -25,8 +25,8 @@ endif
 
 CCFLAGS += -D DEVICE=$(DEVICE)
 
-vadd: vadd_c.c $(COMMON_DIR)/wtime.c $(COMMON_DIR)/err_code.c $(COMMON_DIR)/device_info.c
-	$(CC) $^ $(CCFLAGS) $(LIBS) -o $@
+vadd: vadd_c.c $(COMMON_DIR)/wtime.c $(COMMON_DIR)/device_info.c
+	$(CC) $^ $(CCFLAGS) $(LIBS) -I $(COMMON_DIR) -o $@
 
 
 clean:

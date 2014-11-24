@@ -32,7 +32,7 @@
 #define DEVICE CL_DEVICE_TYPE_DEFAULT
 #endif
 
-char* err_code(cl_int);
+#include <err_code.h>
 
 //------------------------------------------------------------------------------
 
@@ -43,7 +43,7 @@ int main(void)
 {
     std::vector<float> h_a(LENGTH);                // a vector 
     std::vector<float> h_b(LENGTH);                // b vector 	
-    std::vector<float> h_c (LENGTH, 0xdeadbeef);    // c = a + b, from compute device
+    std::vector<float> h_c(LENGTH, 0xdeadbeef);    // c = a + b, from compute device
 
     cl::Buffer d_a;                        // device memory used for the input  a vector
     cl::Buffer d_b;                        // device memory used for the input  b vector
@@ -71,10 +71,10 @@ int main(void)
 
         // Create the kernel functor
  
-        auto vadd = cl::make_kernel<cl::Buffer, cl::Buffer, cl::Buffer, int>(program, "vadd");
+        cl::make_kernel<cl::Buffer, cl::Buffer, cl::Buffer, int> vadd(program, "vadd");
 
-        d_a   = cl::Buffer(context, begin(h_a), end(h_a), true);
-        d_b   = cl::Buffer(context, begin(h_b), end(h_b), true);
+        d_a   = cl::Buffer(context, h_a.begin(), h_a.end(), true);
+        d_b   = cl::Buffer(context, h_b.begin(), h_b.end(), true);
 
         d_c  = cl::Buffer(context, CL_MEM_WRITE_ONLY, sizeof(float) * LENGTH);
 
@@ -94,7 +94,7 @@ int main(void)
         double rtime = static_cast<double>(timer.getTimeMilliseconds()) / 1000.0;
         printf("\nThe kernels ran in %lf seconds\n", rtime);
 
-        cl::copy(queue, d_c, begin(h_c), end(h_c));
+        cl::copy(queue, d_c, h_c.begin(), h_c.end());
 
         // Test the results
         int correct = 0;
