@@ -1,23 +1,24 @@
 //------------------------------------------------------------------------------
 //
-// kernel:  vadd  
+// kernel:  vadd
 //
-// Purpose: Compute the elementwise sum c = a+b
-// 
-// input: a and b float vectors of length count
+// Purpose: Compute the elementwise sum d = a+b+c
 //
-// output: c float vector of length count holding the sum a + b
+// input: a, b and c float vectors of length count
+//
+// output: d float vector of length count holding the sum a + b + c
 //
 
-__kernel void vadd(                             
-   __global float* a,                      
-   __global float* b,                      
-   __global float* c,                      
-   __global float* r,
-   const unsigned int count)               
-{                                          
-   int i = get_global_id(0);               
+__kernel void vadd(
+   __global float* a,
+   __global float* b,
+   __global float* c,
+   __global float* d,
+   const unsigned int count)
+{
+   int i = get_global_id(0);
    if(i < count)  {
-       r[i] =a[i] + b[i] + c[i];
+       d[i] = a[i] + b[i] + c[i];
    }
-}                                          
+}
+
