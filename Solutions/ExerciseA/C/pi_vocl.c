@@ -8,6 +8,7 @@
  *             Ported to the C++ Wrapper API by Benedict R. Gaster, September 2011
  *             Updated by Tom Deakin and Simon McIntosh-Smith, October 2012
  *             Updated by Tom Deakin, September 2013
+ *             Updated by Tom Deakin, October 2013
 */
 
 #include <stdio.h>
@@ -19,6 +20,8 @@
 #include <CL/cl.h>
 #endif
 
+#include "err_code.h"
+
 //pick up device type from compiler command line or from 
 //the default type
 #ifndef DEVICE
@@ -26,9 +29,7 @@
 #endif
 
 double wtime();
-char* err_code(cl_int);
 char * getKernelSource(char*);
-void die(const char*, const int, const char *);
 
 
 
@@ -87,11 +88,11 @@ int main(int argc, char** argv)
     // Find number of platforms
     cl_uint numPlatforms;
     err = clGetPlatformIDs(0, NULL, &numPlatforms);
-    if (err != CL_SUCCESS) die(err_code(err), __LINE__, __FILE__);
+    checkError(err, "Finding platforms");
     // Get all platforms
     cl_platform_id platforms[numPlatforms];
     err = clGetPlatformIDs(numPlatforms, platforms, NULL);
-    if (err != CL_SUCCESS) die(err_code(err), __LINE__, __FILE__);
+    checkError(err, "Getting platforms");
     // Secure a device
     for (int i = 0; i < numPlatforms; i++)
     {
@@ -99,17 +100,17 @@ int main(int argc, char** argv)
         if (err == CL_SUCCESS)
             break;
     }
-    if (device == NULL) die(err_code(err), __LINE__, __FILE__);
+    if (device == NULL) checkError(err, "Getting a device");
     // Create a compute context
     context = clCreateContext(0, 1, &device, NULL, NULL, &err);
-    if (err != CL_SUCCESS) die(err_code(err), __LINE__, __FILE__);
+    checkError(err, "Creating context");
     // Create a command queue
     queue = clCreateCommandQueue(context, device, 0, &err);
-    if (err != CL_SUCCESS) die(err_code(err), __LINE__, __FILE__);
+    checkError(err, "Creating command queue");
     // Create the compute program from the source buffer
     char *kernel_source = getKernelSource("../pi_vocl.cl");
     program = clCreateProgramWithSource(context, 1, (const char**)&kernel_source, NULL, &err);
-    if (err != CL_SUCCESS) die(err_code(err), __LINE__, __FILE__);
+    checkError(err, "Creating program");
     // Build the program
     err = clBuildProgram(program, 0, NULL, NULL, NULL, NULL);
     if (err != CL_SUCCESS)
@@ -118,22 +119,22 @@ int main(int argc, char** argv)
         char buffer[2048];
         clGetProgramBuildInfo(program, device, CL_PROGRAM_BUILD_LOG, sizeof(buffer), buffer, &len);
         printf("%s\n", buffer);
-        die(err_code(err), __LINE__, __FILE__);
+        checkError(err, "Building program");
     }
     if (vector_size == 1)
     {
         kernel = clCreateKernel(program, "pi", &err);
-        if (err != CL_SUCCESS) die(err_code(err), __LINE__, __FILE__);
+        checkError(err, "Creating kernel pi");
     }
     else if (vector_size == 4)
     {
         kernel = clCreateKernel(program, "pi_vec4", &err);
-        if (err != CL_SUCCESS) die(err_code(err), __LINE__, __FILE__);
+        checkError(err, "Creating kernel pi_vec4");
     }
     else if (vector_size == 8)
     {
         kernel = clCreateKernel(program, "pi_vec8", &err);
-        if (err != CL_SUCCESS) die(err_code(err), __LINE__, __FILE__);
+        checkError(err, "Creating kernel pi_vec8");
     }
 
     // Now that we know the size of the work_groups, we can set the number of work
@@ -143,7 +144,7 @@ int main(int argc, char** argv)
     // Get the max work group size for the kernel pi on our device
     size_t max_size;
     err = clGetKernelWorkGroupInfo(kernel, device, CL_KERNEL_WORK_GROUP_SIZE, sizeof(max_size), &max_size, NULL);
-    if (err != CL_SUCCESS) die(err_code(err), __LINE__, __FILE__);
+    checkError(err, "Getting kernel work group size");
 
     if (max_size > work_group_size)
     {
@@ -154,7 +155,7 @@ int main(int argc, char** argv)
     if (nwork_groups < 1)
     {
         err = clGetDeviceInfo(device, CL_DEVICE_MAX_COMPUTE_UNITS, sizeof(nwork_groups), &nwork_groups, NULL);
-        if (err != CL_SUCCESS) die(err_code(err), __LINE__, __FILE__);
+        checkError(err, "Getting device max compute units");
         work_group_size = in_nsteps/(nwork_groups*niters);
     }
 
@@ -168,7 +169,7 @@ int main(int argc, char** argv)
     printf(" %u Integration steps\n", nsteps);
 
     cl_mem d_partial_sums = clCreateBuffer(context, CL_MEM_WRITE_ONLY, sizeof(float) * nwork_groups, NULL, &err);
-    if (err != CL_SUCCESS) die(err_code(err), __LINE__, __FILE__);
+    checkError(err, "Creating buffer d_partial_sums");
 
     // Execute the kernel over the entire range of our 1d input data et
     // using the maximum number of work group items for this device
@@ -176,13 +177,10 @@ int main(int argc, char** argv)
     const size_t local = work_group_size;
 
     err = clSetKernelArg(kernel, 0, sizeof(int), &niters);
-    if (err != CL_SUCCESS) die(err_code(err), __LINE__, __FILE__);
-    err = clSetKernelArg(kernel, 1, sizeof(float), &step_size);
-    if (err != CL_SUCCESS) die(err_code(err), __LINE__, __FILE__);
-    err = clSetKernelArg(kernel, 2, sizeof(float) * work_group_size, NULL);
-    if (err != CL_SUCCESS) die(err_code(err), __LINE__, __FILE__);
-    err = clSetKernelArg(kernel, 3, sizeof(cl_mem), &d_partial_sums);
-    if (err != CL_SUCCESS) die(err_code(err), __LINE__, __FILE__);
+    err |= clSetKernelArg(kernel, 1, sizeof(float), &step_size);
+    err |= clSetKernelArg(kernel, 2, sizeof(float) * work_group_size, NULL);
+    err |= clSetKernelArg(kernel, 3, sizeof(cl_mem), &d_partial_sums);
+    checkError(err, "Setting kernel args");
 
     // Start the timer
     double rtime = wtime();
@@ -191,11 +189,11 @@ int main(int argc, char** argv)
         queue, kernel,
         1, NULL, &global, &local,
         0, NULL, NULL);
-    if (err != CL_SUCCESS) die(err_code(err), __LINE__, __FILE__);
+    checkError(err, "Enqueueing kernel");
 
     err = clEnqueueReadBuffer(queue, d_partial_sums, CL_TRUE, 0,
         sizeof(float) * nwork_groups, h_psum, 0, NULL, NULL);
-    if (err != CL_SUCCESS) die(err_code(err), __LINE__, __FILE__);
+    checkError(err, "Reading back d_partial_sums");
 
     // complete the sum and compute the final integral value on the host
     float pi_res = 0.0f;
@@ -240,11 +238,3 @@ char * getKernelSource(char *filename)
     return source;
 }
 
-// Function to display error and exit nicely
-void die(const char* message, const int line, const char *file)
-{
-  fprintf(stderr, "Error at line %d of file %s:\n", line, file);
-  fprintf(stderr, "%s\n",message);
-  fflush(stderr);
-  exit(EXIT_FAILURE);
-}

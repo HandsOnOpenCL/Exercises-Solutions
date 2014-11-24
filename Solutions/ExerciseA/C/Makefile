@@ -25,8 +25,8 @@ endif
 
 CCFLAGS += -D DEVICE=$(DEVICE)
 
-pi_vocl: pi_vocl.c $(COMMON_DIR)/wtime.c $(COMMON_DIR)/err_code.c
-	$(CC) $^ $(CCFLAGS) $(LIBS) -o $@
+pi_vocl: pi_vocl.c $(COMMON_DIR)/wtime.c
+	$(CC) $^ $(CCFLAGS) $(LIBS) -I $(COMMON_DIR) -o $@
 
 
 clean:

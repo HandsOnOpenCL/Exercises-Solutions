@@ -5,7 +5,7 @@ endif
 
 CPP_COMMON = ../../Cpp_common
 
-CCFLAGS=-std=c++11
+CCFLAGS=
 
 INC = -I $(CPP_COMMON)
 
@@ -29,7 +29,7 @@ endif
 
 CCFLAGS += -D DEVICE=$(DEVICE)
 
-pi_vocl: pi_vocl.cpp $(CPP_COMMON)/err_code.c
+pi_vocl: pi_vocl.cpp
 	$(CPPC) $^ $(INC) $(CCFLAGS) $(LIBS) -o $@
 
 

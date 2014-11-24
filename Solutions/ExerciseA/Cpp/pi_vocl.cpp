@@ -26,7 +26,7 @@
 #define DEVICE CL_DEVICE_TYPE_DEFAULT
 #endif
 
-char* err_code(cl_int);
+#include "err_code.h"
 
 #define INSTEPS (512*512*512)
 
@@ -140,12 +140,12 @@ int main(int argc, char** argv)
         kernel.setArg(3, d_partial_sums);
         queue.enqueueNDRangeKernel(kernel, cl::NullRange, global, local);
 
-        cl::copy(queue, d_partial_sums, begin(h_psum), end(h_psum));
+        cl::copy(queue, d_partial_sums, h_psum.begin(), h_psum.end());
 
         // Complete the sum and compute the final integral value
         float pi_res = 0.0;
-        for (float x : h_psum)
-            pi_res += x;
+        for (std::vector<float>::iterator x = h_psum.begin(); x != h_psum.end(); x++)
+            pi_res += *x;
         pi_res *= step_size;
 
         // Stop the timer
