@@ -8,6 +8,7 @@
  *             Ported to the C++ Wrapper API by Benedict R. Gaster, September 2011
  *             Updated by Tom Deakin and Simon McIntosh-Smith, October 2012
  *             Ported back to C by Tom Deakin, July 2013
+ *             Updated by Tom Deakin, October 2014
  */
 
 #include <stdio.h>
@@ -20,16 +21,11 @@
 #include <CL/cl.h>
 #endif
 
-//pick up device type from compiler command line or from 
-//the default type
-#ifndef DEVICE
-#define DEVICE CL_DEVICE_TYPE_DEFAULT
-#endif
+#include "err_code.h"
+#include "device_picker.h"
 
 
 extern double wtime();       // returns time since some fixed past point (wtime.c)
-extern int output_device_info(cl_device_id );
-char* err_code (cl_int);
 
 //------------------------------------------------------------------------------
 char * getKernelSource(char *filename)
@@ -63,7 +59,7 @@ char * getKernelSource(char *filename)
 
 //------------------------------------------------------------------------------
 
-int main(void)
+int main(int argc, char *argv[])
 {
     float *h_psum;              // vector to hold partial sum
     int in_nsteps = INSTEPS;    // default number of steps (updated later to device preferable)
@@ -79,64 +75,44 @@ int main(void)
     char *kernelsource = getKernelSource("../pi_ocl.cl");             // Kernel source
 
     cl_int err;
-    cl_device_id     device_id;     // compute device id 
+    cl_device_id        device;     // compute device id
     cl_context       context;       // compute context
     cl_command_queue commands;      // compute command queue
     cl_program       program;       // compute program
     cl_kernel        kernel_pi;     // compute kernel
 
-    // Set up OpenCL context. queue, kernel, etc.
-    cl_uint numPlatforms;
-    // Find number of platforms
-    err = clGetPlatformIDs(0, NULL, &numPlatforms);
-    if (err != CL_SUCCESS || numPlatforms <= 0)
+    // Set up OpenCL context, queue, kernel, etc.
+    cl_uint deviceIndex = 0;
+    parseArguments(argc, argv, &deviceIndex);
+
+    // Get list of devices
+    cl_device_id devices[MAX_DEVICES];
+    unsigned numDevices = getDeviceList(devices);
+
+    // Check device index in range
+    if (deviceIndex >= numDevices)
     {
-        printf("Error: Failed to find a platform!\n%s\n",err_code(err));
-        return EXIT_FAILURE;
+      printf("Invalid device index (try '--list')\n");
+      return EXIT_FAILURE;
     }
-    // Get all platforms
-    cl_platform_id Platform[numPlatforms];
-    err = clGetPlatformIDs(numPlatforms, Platform, NULL);
-    if (err != CL_SUCCESS || numPlatforms <= 0)
-    {
-        printf("Error: Failed to get the platform!\n%s\n",err_code(err));
-        return EXIT_FAILURE;
-    }
-    // Secure a device
-    for (int i = 0; i < numPlatforms; i++)
-    {
-        err = clGetDeviceIDs(Platform[i], DEVICE, 1, &device_id, NULL);
-        if (err == CL_SUCCESS)
-            break;
-    }
-    if (device_id == NULL)
-    {
-        printf("Error: Failed to create a device group!\n%s\n",err_code(err));
-        return EXIT_FAILURE;
-    }
-    // Output information
-    err = output_device_info(device_id);
+
+    device = devices[deviceIndex];
+
+    char name[MAX_INFO_STRING];
+    getDeviceName(device, name);
+    printf("\nUsing OpenCL device: %s\n", name);
+
+
+
     // Create a compute context
-    context = clCreateContext(0, 1, &device_id, NULL, NULL, &err);
-    if (!context)
-    {
-        printf("Error: Failed to create a compute context!\n%s\n", err_code(err));
-        return EXIT_FAILURE;
-    }
+    context = clCreateContext(0, 1, &device, NULL, NULL, &err);
+    checkError(err, "Creating context");
     // Create a command queue
-    commands = clCreateCommandQueue(context, device_id, 0, &err);
-    if (!commands)
-    {
-        printf("Error: Failed to create a command commands!\n%s\n", err_code(err));
-        return EXIT_FAILURE;
-    }
+    commands = clCreateCommandQueue(context, device, 0, &err);
+    checkError(err, "Creating command queue");
     // Create the compute program from the source buffer
     program = clCreateProgramWithSource(context, 1, (const char **) & kernelsource, NULL, &err);
-    if (!program)
-    {
-        printf("Error: Failed to create compute program!\n%s\n", err_code(err));
-        return EXIT_FAILURE;
-    }
+    checkError(err, "Creating program");
     // Build the program  
     err = clBuildProgram(program, 0, NULL, NULL, NULL, NULL);
     if (err != CL_SUCCESS)
@@ -145,32 +121,25 @@ int main(void)
         char buffer[2048];
 
         printf("Error: Failed to build program executable!\n%s\n", err_code(err));
-        clGetProgramBuildInfo(program, device_id, CL_PROGRAM_BUILD_LOG, sizeof(buffer), buffer, &len);
+        clGetProgramBuildInfo(program, device, CL_PROGRAM_BUILD_LOG, sizeof(buffer), buffer, &len);
         printf("%s\n", buffer);
         return EXIT_FAILURE;
     }
     // Create the compute kernel from the program 
     kernel_pi = clCreateKernel(program, "pi", &err);
-    if (!kernel_pi || err != CL_SUCCESS)
-    {
-        printf("Error: Failed to create compute kernel!\n%s\n", err_code(err));
-        return EXIT_FAILURE;
-    }
+    checkError(err, "Creating kernel");
 
     // Find kernel work-group size
-    err = clGetKernelWorkGroupInfo (kernel_pi, device_id, CL_KERNEL_WORK_GROUP_SIZE, sizeof(size_t), &work_group_size, NULL);
-    if (err != CL_SUCCESS)
-    {
-        printf("Error: Failed to get kernel work-group info\n%s\n", err_code(err));
-        return EXIT_FAILURE;
-    }
+    err = clGetKernelWorkGroupInfo (kernel_pi, device, CL_KERNEL_WORK_GROUP_SIZE, sizeof(size_t), &work_group_size, NULL);
+    checkError(err, "Getting kernel work group info");
     // Now that we know the size of the work-groups, we can set the number of
     // work-groups, the actual number of steps, and the step size
     nwork_groups = in_nsteps/(work_group_size*niters);
 
     if (nwork_groups < 1)
     {
-        err = clGetDeviceInfo(device_id, CL_DEVICE_MAX_COMPUTE_UNITS, sizeof(size_t), &nwork_groups, NULL);
+        err = clGetDeviceInfo(device, CL_DEVICE_MAX_COMPUTE_UNITS, sizeof(size_t), &nwork_groups, NULL);
+        checkError(err, "Getting device compute unit info");
         work_group_size = in_nsteps / (nwork_groups * niters);
     }
 
@@ -189,26 +158,18 @@ int main(void)
             nsteps);
 
     d_partial_sums = clCreateBuffer(context, CL_MEM_WRITE_ONLY, sizeof(float) * nwork_groups, NULL, &err);
-    if (err != CL_SUCCESS)
-    {
-        printf("Error: Failed to create buffer\n%s\n", err_code(err));
-        return EXIT_FAILURE;
-    }
+    checkError(err, "Creating buffer d_partial_sums");
 
     // Set kernel arguments
     err  = clSetKernelArg(kernel_pi, 0, sizeof(int), &niters);
     err |= clSetKernelArg(kernel_pi, 1, sizeof(float), &step_size);
     err |= clSetKernelArg(kernel_pi, 2, sizeof(float) * work_group_size, NULL);
     err |= clSetKernelArg(kernel_pi, 3, sizeof(cl_mem), &d_partial_sums);
-    if (err != CL_SUCCESS)
-    {
-        printf("Error: Failed to set kernel arguments!\n");
-        return EXIT_FAILURE;
-    }
+    checkError(err, "Settin kernel args");
 
     // Execute the kernel over the entire range of our 1D input data set
     // using the maximum number of work items for this device
-    size_t global = nwork_groups * work_group_size;
+    size_t global = nsteps / niters;
     size_t local = work_group_size;
     double rtime = wtime();
     err = clEnqueueNDRangeKernel(
@@ -218,12 +179,7 @@ int main(void)
         &global,
         &local,
         0, NULL, NULL);
-    if (err != CL_SUCCESS)
-    {
-        printf("Error: Failed to execute kernel\n%s\n", err_code(err));
-        return EXIT_FAILURE;
-    }
-
+    checkError(err, "Enqueueing kernel");
 
     err = clEnqueueReadBuffer(
         commands,
@@ -233,11 +189,7 @@ int main(void)
         sizeof(float) * nwork_groups,
         h_psum,
         0, NULL, NULL);
-    if (err != CL_SUCCESS)
-    {
-        printf("Error: Failed to read buffer\n%s\n", err_code(err));
-        return EXIT_FAILURE;
-    }
+    checkError(err, "Reading back d_partial_sums");
 
     // complete the sum and compute the final integral value on the host
     pi_res = 0.0f;
