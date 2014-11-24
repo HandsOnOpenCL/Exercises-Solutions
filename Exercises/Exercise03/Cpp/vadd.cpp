@@ -19,6 +19,8 @@
 
 #include "util.hpp" // utility library
 
+#include "err_code.h"
+
 #include <vector>
 #include <cstdio>
 #include <cstdlib>
@@ -31,8 +33,6 @@
 #ifndef DEVICE
 #define DEVICE CL_DEVICE_TYPE_DEFAULT
 #endif
-
-char* err_code(cl_int);
 
 //------------------------------------------------------------------------------
 
