@@ -1,13 +1,14 @@
 //------------------------------------------------------------------------------
 //
 // Name:       vadd.c
-// 
+//
 // Purpose:    Elementwise addition of two vectors (c = a + b)
 //
 // HISTORY:    Written by Tim Mattson, December 2009
 //             Updated by Tom Deakin and Simon McIntosh-Smith, October 2012
 //             Updated by Tom Deakin, July 2013
-//             
+//             Updated by Tom Deakin, October 2014
+//
 //------------------------------------------------------------------------------
 
 
@@ -21,7 +22,9 @@
 #include <CL/cl.h>
 #endif
 
-//pick up device type from compiler command line or from 
+#include "err_code.h"
+
+//pick up device type from compiler command line or from
 //the default type
 #ifndef DEVICE
 #define DEVICE CL_DEVICE_TYPE_DEFAULT
@@ -30,7 +33,7 @@
 
 extern double wtime();       // returns time since some fixed past point (wtime.c)
 extern int output_device_info(cl_device_id );
-char* err_code (cl_int);
+
 
 //------------------------------------------------------------------------------
 
@@ -39,15 +42,15 @@ char* err_code (cl_int);
 
 //------------------------------------------------------------------------------
 //
-// kernel:  vadd  
+// kernel:  vadd
 //
 // Purpose: Compute the elementwise sum c = a+b
-// 
+//
 // input: a and b float vectors of length count
 //
 // output: c float vector of length count holding the sum a + b
 //
- 
+
 const char *KernelSource = "\n" \
 "__kernel void vadd(                                                 \n" \
 "   __global float* a,                                                  \n" \
@@ -67,23 +70,25 @@ const char *KernelSource = "\n" \
 int main(int argc, char** argv)
 {
     int          err;               // error code returned from OpenCL calls
-    float        h_a[LENGTH];       // a vector 
-    float        h_b[LENGTH];       // b vector 
-    float        h_c[LENGTH];       // c vector (a+b) returned from the compute device
-    unsigned int correct;           // number of correct results  
 
-    size_t global;                  // global domain size  
+    float*       h_a = (float*) calloc(LENGTH, sizeof(float));       // a vector
+    float*       h_b = (float*) calloc(LENGTH, sizeof(float));       // b vector
+    float*       h_c = (float*) calloc(LENGTH, sizeof(float));       // c vector (a+b) returned from the compute device
 
-    cl_device_id     device_id;     // compute device id 
+    unsigned int correct;           // number of correct results
+
+    size_t global;                  // global domain size
+
+    cl_device_id     device_id;     // compute device id
     cl_context       context;       // compute context
     cl_command_queue commands;      // compute command queue
     cl_program       program;       // compute program
     cl_kernel        ko_vadd;       // compute kernel
-    
+
     cl_mem d_a;                     // device memory used for the input  a vector
     cl_mem d_b;                     // device memory used for the input  b vector
     cl_mem d_c;                     // device memory used for the output c vector
-    
+
     // Fill vectors a and b with random float values
     int i = 0;
     int count = LENGTH;
@@ -91,27 +96,24 @@ int main(int argc, char** argv)
         h_a[i] = rand() / (float)RAND_MAX;
         h_b[i] = rand() / (float)RAND_MAX;
     }
-    
+
     // Set up platform and GPU device
 
     cl_uint numPlatforms;
 
     // Find number of platforms
     err = clGetPlatformIDs(0, NULL, &numPlatforms);
-    if (err != CL_SUCCESS || numPlatforms <= 0)
+    checkError(err, "Finding platforms");
+    if (numPlatforms == 0)
     {
-        printf("Error: Failed to find a platform!\n%s\n",err_code(err));
+        printf("Found 0 platforms!\n");
         return EXIT_FAILURE;
     }
 
     // Get all platforms
     cl_platform_id Platform[numPlatforms];
     err = clGetPlatformIDs(numPlatforms, Platform, NULL);
-    if (err != CL_SUCCESS || numPlatforms <= 0)
-    {
-        printf("Error: Failed to get the platform!\n%s\n",err_code(err));
-        return EXIT_FAILURE;
-    }
+    checkError(err, "Getting platforms");
 
     // Secure a GPU
     for (i = 0; i < numPlatforms; i++)
@@ -124,38 +126,24 @@ int main(int argc, char** argv)
     }
 
     if (device_id == NULL)
-    {
-        printf("Error: Failed to create a device group!\n%s\n",err_code(err));
-        return EXIT_FAILURE;
-    }
+        checkError(err, "Finding a device");
 
     err = output_device_info(device_id);
-  
-    // Create a compute context 
+    checkError(err, "Printing device output");
+
+    // Create a compute context
     context = clCreateContext(0, 1, &device_id, NULL, NULL, &err);
-    if (!context)
-    {
-        printf("Error: Failed to create a compute context!\n%s\n", err_code(err));
-        return EXIT_FAILURE;
-    }
+    checkError(err, "Creating context");
 
     // Create a command queue
     commands = clCreateCommandQueue(context, device_id, 0, &err);
-    if (!commands)
-    {
-        printf("Error: Failed to create a command commands!\n%s\n", err_code(err));
-        return EXIT_FAILURE;
-    }
+    checkError(err, "Creating command queue");
 
     // Create the compute program from the source buffer
     program = clCreateProgramWithSource(context, 1, (const char **) & KernelSource, NULL, &err);
-    if (!program)
-    {
-        printf("Error: Failed to create compute program!\n%s\n", err_code(err));
-        return EXIT_FAILURE;
-    }
+    checkError(err, "Creating program");
 
-    // Build the program  
+    // Build the program
     err = clBuildProgram(program, 0, NULL, NULL, NULL, NULL);
     if (err != CL_SUCCESS)
     {
@@ -168,64 +156,46 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
     }
 
-    // Create the compute kernel from the program 
+    // Create the compute kernel from the program
     ko_vadd = clCreateKernel(program, "vadd", &err);
-    if (!ko_vadd || err != CL_SUCCESS)
-    {
-        printf("Error: Failed to create compute kernel!\n%s\n", err_code(err));
-        return EXIT_FAILURE;
-    }
+    checkError(err, "Creating kernel");
 
     // Create the input (a, b) and output (c) arrays in device memory
-    d_a  = clCreateBuffer(context,  CL_MEM_READ_ONLY,  sizeof(float) * count, NULL, NULL);
-    d_b  = clCreateBuffer(context,  CL_MEM_READ_ONLY,  sizeof(float) * count, NULL, NULL);
-    d_c  = clCreateBuffer(context,  CL_MEM_WRITE_ONLY, sizeof(float) * count, NULL, NULL);
-    if (!d_a || !d_b || !d_c)
-    {
-        printf("Error: Failed to allocate device memory!\n");
-        exit(1);
-    }    
-    
-    // Write a and b vectors into compute device memory 
+    d_a  = clCreateBuffer(context,  CL_MEM_READ_ONLY,  sizeof(float) * count, NULL, &err);
+    checkError(err, "Creating buffer d_a");
+
+    d_b  = clCreateBuffer(context,  CL_MEM_READ_ONLY,  sizeof(float) * count, NULL, &err);
+    checkError(err, "Creating buffer d_b");
+
+    d_c  = clCreateBuffer(context,  CL_MEM_WRITE_ONLY, sizeof(float) * count, NULL, &err);
+    checkError(err, "Creating buffer d_c");
+
+    // Write a and b vectors into compute device memory
     err = clEnqueueWriteBuffer(commands, d_a, CL_TRUE, 0, sizeof(float) * count, h_a, 0, NULL, NULL);
-    if (err != CL_SUCCESS)
-    {
-        printf("Error: Failed to write h_a to source array!\n%s\n", err_code(err));
-        exit(1);
-    }
+    checkError(err, "Copying h_a to device at d_a");
 
     err = clEnqueueWriteBuffer(commands, d_b, CL_TRUE, 0, sizeof(float) * count, h_b, 0, NULL, NULL);
-    if (err != CL_SUCCESS)
-    {
-        printf("Error: Failed to write h_b to source array!\n%s\n", err_code(err));
-        exit(1);
-    }
-	
+    checkError(err, "Copying h_b to device at d_b");
+
     // Set the arguments to our compute kernel
     err  = clSetKernelArg(ko_vadd, 0, sizeof(cl_mem), &d_a);
     err |= clSetKernelArg(ko_vadd, 1, sizeof(cl_mem), &d_b);
     err |= clSetKernelArg(ko_vadd, 2, sizeof(cl_mem), &d_c);
     err |= clSetKernelArg(ko_vadd, 3, sizeof(unsigned int), &count);
-    if (err != CL_SUCCESS)
-    {
-        printf("Error: Failed to set kernel arguments!\n");
-        exit(1);
-    }
+    checkError(err, "Setting kernel arguments");
 
     double rtime = wtime();
-	
+
     // Execute the kernel over the entire range of our 1d input data set
     // letting the OpenCL runtime choose the work-group size
     global = count;
     err = clEnqueueNDRangeKernel(commands, ko_vadd, 1, NULL, &global, NULL, 0, NULL, NULL);
-    if (err)
-    {
-        printf("Error: Failed to execute kernel!\n%s\n", err_code(err));
-        return EXIT_FAILURE;
-    }
+    checkError(err, "Enqueueing kernel");
 
     // Wait for the commands to complete before stopping the timer
-    clFinish(commands);
+    err = clFinish(commands);
+    checkError(err, "Waiting for kernel to finish");
+
     rtime = wtime() - rtime;
     printf("\nThe kernel ran in %lf seconds\n",rtime);
 
@@ -236,11 +206,11 @@ int main(int argc, char** argv)
         printf("Error: Failed to read output array!\n%s\n", err_code(err));
         exit(1);
     }
-    
+
     // Test the results
     correct = 0;
     float tmp;
-    
+
     for(i = 0; i < count; i++)
     {
         tmp = h_a[i] + h_b[i];     // assign element i of a+b to tmp
@@ -251,10 +221,10 @@ int main(int argc, char** argv)
             printf(" tmp %f h_a %f h_b %f h_c %f \n",tmp, h_a[i], h_b[i], h_c[i]);
         }
     }
-    
-    // summarize results
+
+    // summarise results
     printf("C = A+B:  %d out of %d results were correct.\n", correct, count);
-    
+
     // cleanup then shutdown
     clReleaseMemObject(d_a);
     clReleaseMemObject(d_b);
@@ -263,6 +233,10 @@ int main(int argc, char** argv)
     clReleaseKernel(ko_vadd);
     clReleaseCommandQueue(commands);
     clReleaseContext(context);
+
+    free(h_a);
+    free(h_b);
+    free(h_c);
 
     return 0;
 }
