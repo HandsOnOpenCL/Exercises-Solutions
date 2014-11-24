@@ -2,9 +2,9 @@
 
 This program will numerically compute the integral of
 
-                  4/(1+x*x) 
-				  
-from 0 to 1.  The value of this integral is pi -- which 
+                  4/(1+x*x)
+
+from 0 to 1.  The value of this integral is pi -- which
 is great since it gives us an easy way to check the answer.
 
 The is the original sequential program.  It uses the timer
@@ -41,4 +41,5 @@ int main ()
     pi = step * sum;
     double run_time = static_cast<double>(timer.getTimeMilliseconds()) / 1000.0;
     printf("\n pi with %ld steps is %lf in %lf seconds\n", num_steps, pi, run_time);
-}	  
+}
+
