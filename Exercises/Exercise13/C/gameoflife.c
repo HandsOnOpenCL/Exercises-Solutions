@@ -187,13 +187,13 @@ void load_board(char* board, const char* file, const unsigned int nx, const unsi
 
     int retval;
     unsigned int x, y, s;
-    while ((retval = fscanf(fp, "%d %d %d\n", &x, &y, &s)) != EOF)
+    while ((retval = fscanf(fp, "%u %u %u\n", &x, &y, &s)) != EOF)
     {
         if (retval != 3)
             die("Expected 3 values per line in input file.", __LINE__, __FILE__);
-        if (x < 0 || x > nx - 1)
+        if (x > nx - 1)
             die("Input x-coord out of range.", __LINE__, __FILE__);
-        if (y < 0 || y > ny - 1)
+        if (y > ny - 1)
             die("Input y-coord out of range.", __LINE__, __FILE__);
         if (s != ALIVE)
             die("Alive value should be 1.", __LINE__, __FILE__);
