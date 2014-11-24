@@ -16,8 +16,8 @@ ifeq ($(PLATFORM), Darwin)
 	LIBS = -framework OpenCL
 endif
 
-DeviceInfo: DeviceInfo.c $(COMMON_DIR)/err_code.c
-	$(CC) $^ $(CCFLAGS) $(LIBS) -o $@
+DeviceInfo: DeviceInfo.c
+	$(CC) $^ $(CCFLAGS) $(LIBS) -I $(COMMON_DIR) -o $@
 
 
 clean:

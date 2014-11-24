@@ -39,11 +39,11 @@ for p in platforms:
         print "\t\tLocal Memory Size:", d.local_mem_size/1024, "KB"
         print "\t\tGlobal Memory Size:", d.global_mem_size/(1024*1024), "MB"
         print "\t\tMax Alloc Size:", d.max_mem_alloc_size/(1024*1024), "MB"
-        print "\t\tMax Work-group Size:", d.max_work_group_size
+        print "\t\tMax Work-group Total Size:", d.max_work_group_size
 
         # Find the maximum dimensions of the work-groups
         dim = d.max_work_item_sizes
-        print "\t\tMax Work-item Dims:(", dim[0], " ".join(map(str, dim[1:])), ")"
+        print "\t\tMax Work-group Dims:(", dim[0], " ".join(map(str, dim[1:])), ")"
 
         print "\t-------------------------"
 

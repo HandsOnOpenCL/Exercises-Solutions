@@ -5,7 +5,7 @@ endif
 
 CPP_COMMON = ../../Cpp_common
 
-CCFLAGS=-std=c++11
+CCFLAGS=
 
 INC = -I $(CPP_COMMON)
 
@@ -19,7 +19,7 @@ ifeq ($(PLATFORM), Darwin)
 	LIBS = -framework OpenCL
 endif
 
-DeviceInfo: DeviceInfo.cpp $(CPP_COMMON)/err_code.c
+DeviceInfo: DeviceInfo.cpp
 	$(CPPC) $^ $(INC) $(CCFLAGS) $(LIBS) -o $@
 
 
