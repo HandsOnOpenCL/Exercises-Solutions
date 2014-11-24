@@ -32,7 +32,7 @@
 #define DEVICE CL_DEVICE_TYPE_DEFAULT
 #endif
 
-char *err_code(cl_int);
+#include "err_code.h"
 
 //------------------------------------------------------------------------------
 
@@ -81,12 +81,12 @@ int main(void)
 
         // Create the kernel functor
  
-        auto vadd = cl::make_kernel<cl::Buffer, cl::Buffer, cl::Buffer, int>(program, "vadd");
+        cl::make_kernel<cl::Buffer, cl::Buffer, cl::Buffer, int> vadd(program, "vadd");
 
-        d_a   = cl::Buffer(context, begin(h_a), end(h_a), true);
-        d_b   = cl::Buffer(context, begin(h_b), end(h_b), true);
-        d_e   = cl::Buffer(context, begin(h_e), end(h_e), true);
-        d_g   = cl::Buffer(context, begin(h_g), end(h_g), true);
+        d_a   = cl::Buffer(context, h_a.begin(), h_a.end(), true);
+        d_b   = cl::Buffer(context, h_b.begin(), h_b.end(), true);
+        d_e   = cl::Buffer(context, h_e.begin(), h_e.end(), true);
+        d_g   = cl::Buffer(context, h_g.begin(), h_g.end(), true);
 
         d_c  = cl::Buffer(context, CL_MEM_READ_WRITE, sizeof(float) * LENGTH);
         d_d  = cl::Buffer(context, CL_MEM_READ_WRITE, sizeof(float) * LENGTH);
@@ -119,7 +119,7 @@ int main(void)
             d_f,
             count);
 
-        cl::copy(queue, d_f, begin(h_f), end(h_f));
+        cl::copy(queue, d_f, h_f.begin(), h_f.end());
 
         // Test the results
         int correct = 0;
