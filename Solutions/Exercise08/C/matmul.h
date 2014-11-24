@@ -25,17 +25,10 @@
 
 #include "matrix_lib.h"
 
-//pick up device type from compiler command line or from 
-//the default type
-#ifndef DEVICE
-#define DEVICE CL_DEVICE_TYPE_DEFAULT
-#endif
-
 //------------------------------------------------------------------------------
 //  functions from ../Common
 //------------------------------------------------------------------------------
 extern int    output_device_info(cl_device_id );
-extern char*    err_code(cl_int);
 extern double wtime();   // returns time since some fixed past point (wtime.c)
 
 //------------------------------------------------------------------------------

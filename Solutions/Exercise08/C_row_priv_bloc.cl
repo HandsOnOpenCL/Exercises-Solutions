@@ -1,8 +1,6 @@
 
 __kernel void mmul(
-    const int Mdim,
-    const int Ndim,
-    const int Pdim,
+    const int N,
     __global float* A,
     __global float* B,
     __global float* C,
@@ -14,18 +12,19 @@ __kernel void mmul(
     int nloc = get_local_size(0);
     float Awrk[1024];
     float tmp;
-    if (i < Ndim) {
-        for (k = 0; k < Pdim; k++)
-            Awrk[k] = A[i*Ndim+k];
+    if (i < N) {
+        for (k = 0; k < N; k++)
+            Awrk[k] = A[i*N+k];
 
-        for (j = 0; j < Mdim; j++) {
-            for (k = iloc; k < Pdim; k += nloc)
-                Bwrk[k] = B[k*Pdim+j];
+        for (j = 0; j < N; j++) {
+            barrier(CLK_LOCAL_MEM_FENCE);
+            for (k = iloc; k < N; k += nloc)
+                Bwrk[k] = B[k*N+j];
             barrier(CLK_LOCAL_MEM_FENCE);
             tmp = 0.0f;
-            for (k = 0; k < Pdim; k++)
+            for (k = 0; k < N; k++)
                 tmp += Awrk[k] * Bwrk[k];
-            C[i*Ndim+j] = tmp;
+            C[i*N+j] = tmp;
             barrier(CLK_LOCAL_MEM_FENCE);
         }
     }
