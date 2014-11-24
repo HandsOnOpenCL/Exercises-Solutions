@@ -1,0 +1,10 @@
+#!/bin/bash
+
+IN=$1
+OUT=$2
+NAME=${IN%.cl}
+NAME=${NAME##*/}
+
+echo "const char *"$NAME"_ocl =" >$OUT
+sed -e 's/\\/\\\\/g;s/"/\\"/g;s/^/"/;s/$/\\n"/' $IN >>$OUT
+echo ";" >>$OUT
