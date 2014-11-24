@@ -44,6 +44,7 @@ Solutions/ExerciseA/Cpp/pi_vocl
 
 
 *.plist
+.DS_Store
 
 Exercises/Exercise01/C/DeviceInfo.dSYM/Contents/Resources/DWARF/DeviceInfo
 
