@@ -1,8 +1,6 @@
 
 __kernel void mmul(
-    const int Mdim,
-    const int Ndim,
-    const int Pdim,
+    const int N,
     __global float* A,
     __global float* B,
     __global float* C)
@@ -11,11 +9,11 @@ __kernel void mmul(
     int i = get_global_id(0);
     int j = get_global_id(1);
     float tmp;
-    if ((i < Ndim) && (j < Mdim))
+    if ((i < N) && (j < N))
     {
         tmp = 0.0f;
-        for (k = 0; k < Pdim; k++)
-            tmp += A[i*Ndim+k] * B[k*Pdim+j];
-        C[i*Ndim+j] = tmp;
+        for (k = 0; k < N; k++)
+            tmp += A[i*N+k] * B[k*N+j];
+        C[i*N+j] = tmp;
     }
 }
