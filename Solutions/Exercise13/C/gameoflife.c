@@ -17,6 +17,8 @@
 #include <CL/cl.h>
 #endif
 
+#include "err_code.h"
+
 // pick up device type from compiler command line or from the default type
 #ifndef DEVICE
 #define DEVICE CL_DEVICE_TYPE_DEFAULT
@@ -38,8 +40,6 @@ void save_board(const char* board, const unsigned int nx, const unsigned int ny)
 void load_params(const char *file, unsigned int *nx, unsigned int *ny, unsigned int *iterations);
 
 char *getKernelSource(char*);
-
-extern char* err_code(cl_int);
 
 /*************************************************************************************
  * Main function
@@ -69,13 +69,11 @@ int main(int argc, char **argv)
     // Find number of platforms
     cl_uint num_platforms;
     err = clGetPlatformIDs(0, NULL, &num_platforms);
-    if (err != CL_SUCCESS || num_platforms <= 0)
-        die(err_code(err), __LINE__, __FILE__);
+    checkError(err, "Finding platforms");
     // Get all platforms
     cl_platform_id platforms[num_platforms];
     err = clGetPlatformIDs(num_platforms, platforms, NULL);
-    if (err != CL_SUCCESS)
-        die(err_code(err), __LINE__, __FILE__);
+    checkError(err, "Getting platforms");
 
     // Secure a device
     for (int i = 0; i < num_platforms; i++)
@@ -85,23 +83,20 @@ int main(int argc, char **argv)
             break;
     }
     if (device == NULL)
-        die(err_code(err), __LINE__, __FILE__);
+        checkError(err, "Getting device");
 
     // Create a compute context
     context = clCreateContext(0, 1, &device, NULL, NULL, &err);
-    if (err != CL_SUCCESS)
-        die(err_code(err), __LINE__, __FILE__);
+    checkError(err, "Creating context");
 
     // Create a command queue
     queue = clCreateCommandQueue(context, device, 0, &err);
-    if (err != CL_SUCCESS)
-        die(err_code(err), __LINE__, __FILE__);
+    checkError(err, "Creating command queue");
 
     // Create the compute program from the source buffer
     char *kernel_source = getKernelSource("../gameoflife.cl");
     program = clCreateProgramWithSource(context, 1, (const char **) &kernel_source, NULL, &err);
-    if (err != CL_SUCCESS)
-        die(err_code(err), __LINE__, __FILE__);
+    checkError(err, "Creating program");
 
     // Build the program
     err = clBuildProgram(program, 0, NULL, NULL, NULL, NULL);
@@ -110,13 +105,12 @@ int main(int argc, char **argv)
         char buffer[2048];
         clGetProgramBuildInfo(program, device, CL_PROGRAM_BUILD_LOG, sizeof(buffer), buffer, NULL);
         fprintf(stderr, "%s\n", buffer);
-        die(err_code(err), __LINE__, __FILE__);
+        checkError(err, "Building program");
     }
 
     // Create the compute kernel from the program
     kernel = clCreateKernel(program, "accelerate_life", &err);
-    if (err != CL_SUCCESS)
-        die(err_code(err), __LINE__, __FILE__);
+    checkError(err, "Creating kernel");
 
     // Board dimensions, work-group sizes and iteration total
     unsigned int nx, ny;
@@ -132,18 +126,15 @@ int main(int argc, char **argv)
         die("Could not allocate memory for board", __LINE__, __FILE__);
 
     cl_mem d_board_tick = clCreateBuffer(context, CL_MEM_READ_WRITE, sizeof(char) * nx * ny, NULL, &err);
-    if (err != CL_SUCCESS)
-        die(err_code(err), __LINE__, __FILE__);
+    checkError(err, "Creating buffer d_board_tick");
     
     cl_mem d_board_tock = clCreateBuffer(context, CL_MEM_READ_WRITE, sizeof(char) * nx * ny, NULL, &err);
-    if (err != CL_SUCCESS)
-        die(err_code(err), __LINE__, __FILE__);
+    checkError(err, "Creating buffer d_board_tock");
 
     // Load in the starting state to host board and copy to device
     load_board(h_board, argv[1], nx, ny);
     err = clEnqueueWriteBuffer(queue, d_board_tick, CL_FALSE, 0, sizeof(char) * nx * ny, h_board, 0, NULL, NULL);
-    if (err != CL_SUCCESS)
-        die(err_code(err), __LINE__, __FILE__);
+    checkError(err, "Writing to buffer d_board_tick");
 
     // Display the starting state
     printf("Starting state\n");
@@ -155,16 +146,12 @@ int main(int argc, char **argv)
 
     // Set kernel arguments
     err = clSetKernelArg(kernel, 0, sizeof(cl_mem), &d_board_tick);
-    if (err != CL_SUCCESS) die(err_code(err), __LINE__, __FILE__);
-    err = clSetKernelArg(kernel, 1, sizeof(cl_mem), &d_board_tock);
-    if (err != CL_SUCCESS) die(err_code(err), __LINE__, __FILE__);
-    err = clSetKernelArg(kernel, 2, sizeof(unsigned int), &nx);
-    if (err != CL_SUCCESS) die(err_code(err), __LINE__, __FILE__);
-    err = clSetKernelArg(kernel, 3, sizeof(unsigned int), &ny);
-    if (err != CL_SUCCESS) die(err_code(err), __LINE__, __FILE__);
+    err |= clSetKernelArg(kernel, 1, sizeof(cl_mem), &d_board_tock);
+    err |= clSetKernelArg(kernel, 2, sizeof(unsigned int), &nx);
+    err |= clSetKernelArg(kernel, 3, sizeof(unsigned int), &ny);
     // And allocate the local memory
-    err = clSetKernelArg(kernel, 4, sizeof(char) * (bx + 2) * (by + 2), NULL);
-    if (err != CL_SUCCESS) die(err_code(err), __LINE__, __FILE__);
+    err |= clSetKernelArg(kernel, 4, sizeof(char) * (bx + 2) * (by + 2), NULL);
+    checkError(err, "Setting kernel args");
 
 
     // Loop
@@ -172,6 +159,7 @@ int main(int argc, char **argv)
     {
         // Apply the rules of Life
         err = clEnqueueNDRangeKernel(queue, kernel, 2, 0, global, local, 0, NULL, NULL);
+        checkError(err, "Enqueueing kernel");
 
         // Swap the boards over
         cl_mem tmp = d_board_tick;
@@ -179,15 +167,13 @@ int main(int argc, char **argv)
         d_board_tock = tmp;
 
         err = clSetKernelArg(kernel, 0, sizeof(cl_mem), &d_board_tick);
-        if (err != CL_SUCCESS) die(err_code(err), __LINE__, __FILE__);
-        err = clSetKernelArg(kernel, 1, sizeof(cl_mem), &d_board_tock);
-        if (err != CL_SUCCESS) die(err_code(err), __LINE__, __FILE__);
+        err |= clSetKernelArg(kernel, 1, sizeof(cl_mem), &d_board_tock);
+        checkError(err, "Setting kernel args");
     }
 
     // Copy back the memory to the host
     err = clEnqueueReadBuffer(queue, d_board_tick, CL_TRUE, 0, sizeof(char) * nx * ny, h_board, 0, NULL, NULL);
-    if (err != CL_SUCCESS)
-        die(err_code(err), __LINE__, __FILE__);
+    checkError(err, "Copying from buffer d_board_tick");
 
     // Display the final state
     printf("Finishing state\n");
@@ -235,13 +221,13 @@ void load_board(char* board, const char* file, const unsigned int nx, const unsi
 
     int retval;
     unsigned int x, y, s;
-    while ((retval = fscanf(fp, "%d %d %d\n", &x, &y, &s)) != EOF)
+    while ((retval = fscanf(fp, "%u %u %u\n", &x, &y, &s)) != EOF)
     {
         if (retval != 3)
             die("Expected 3 values per line in input file.", __LINE__, __FILE__);
-        if (x < 0 || x > nx - 1)
+        if (x > nx - 1)
             die("Input x-coord out of range.", __LINE__, __FILE__);
-        if (y < 0 || y > ny - 1)
+        if (y > ny - 1)
             die("Input y-coord out of range.", __LINE__, __FILE__);
         if (s != ALIVE)
             die("Alive value should be 1.", __LINE__, __FILE__);

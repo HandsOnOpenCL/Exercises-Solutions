@@ -25,12 +25,9 @@ endif
 
 CCFLAGS += -D DEVICE=$(DEVICE)
 
-gameoflife: gameoflife.c err_code.o
-	$(CC) $^ $(CCFLAGS) $(LIBS) -o $@
+gameoflife: gameoflife.c
+	$(CC) $^ $(CCFLAGS) $(LIBS) -I $(COMMON_DIR) -o $@
 
-
-err_code.o: $(COMMON_DIR)/err_code.c
-	$(CC) -c $^ $(CCFLAGS) -o $@
 
 clean:
 	rm -f gameoflife *.o

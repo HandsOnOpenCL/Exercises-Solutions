@@ -5,7 +5,7 @@ endif
 
 CPP_COMMON = ../../Cpp_common
 
-CCFLAGS=-std=c++11 -O3
+CCFLAGS=-O3
 
 INC = -I $(CPP_COMMON)
 
@@ -31,11 +31,8 @@ CCFLAGS += -D DEVICE=$(DEVICE)
 
 all: gameoflife
 
-gameoflife: gameoflife.cpp err_code.o
+gameoflife: gameoflife.cpp
 	$(CPPC) $^ $(INC) $(CCFLAGS) $(LIBS) -o $@
-
-err_code.o: $(CPP_COMMON)/err_code.c
-	$(CPPC) -c $^ $(CCFLAGS) -o $@
 
 clean:
 	rm -f gameoflife *.o

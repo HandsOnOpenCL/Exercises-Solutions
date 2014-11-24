@@ -34,12 +34,12 @@
  * Forward declarations of utility functions
  ************************************************************************************/
 void die(const std::string message, const int line, const std::string file);
-void load_board(std::vector<char>& board, const std::string file, const unsigned int nx, const unsigned int ny);
+void load_board(std::vector<char>& board, const char* file, const unsigned int nx, const unsigned int ny);
 void print_board(const std::vector<char>& board, const unsigned int nx, const unsigned int ny);
 void save_board(const std::vector<char>& board, const unsigned int nx, const unsigned int ny);
-void load_params(const std::string file, unsigned int *nx, unsigned int *ny, unsigned int *iterations);
+void load_params(const char* file, unsigned int *nx, unsigned int *ny, unsigned int *iterations);
 
-extern int err_code(cl_int);
+#include "err_code.h"
 
 /*************************************************************************************
  * Main function
@@ -89,7 +89,9 @@ int main(int argc, char **argv)
             throw error;
         }
 
-        auto accelerate_life = cl::make_kernel<cl::Buffer, cl::Buffer, unsigned int, unsigned int, cl::LocalSpaceArg>(program, "accelerate_life");
+        cl::make_kernel
+            <cl::Buffer, cl::Buffer, unsigned int, unsigned int, cl::LocalSpaceArg>
+            accelerate_life(program, "accelerate_life");
 
         // Allocate memory for boards
         std::vector<char> h_board(nx * ny);
@@ -98,7 +100,7 @@ int main(int argc, char **argv)
 
         // Load in the starting state to host board and copy to device
         load_board(h_board, argv[1], nx, ny);
-        cl::copy(queue, begin(h_board), end(h_board), d_board_tick);
+        cl::copy(queue, h_board.begin(), h_board.end(), d_board_tick);
 
         // Display the starting state
         std::cout << "Starting state\n";
@@ -125,7 +127,7 @@ int main(int argc, char **argv)
         }
 
         // Copy back the memory to the host
-        cl::copy(queue, d_board_tick, begin(h_board), end(h_board));
+        cl::copy(queue, d_board_tick, h_board.begin(), h_board.end());
 
         // Display the final state
         std::cout << "Finishing state\n";
@@ -150,7 +152,7 @@ int main(int argc, char **argv)
  ************************************************************************************/
 
 // Function to load the params file and set up the X and Y dimensions
-void load_params(const std::string file, unsigned int *nx, unsigned int *ny, unsigned int *iterations)
+void load_params(const char* file, unsigned int *nx, unsigned int *ny, unsigned int *iterations)
 {
     std::ifstream fp(file);
     if (!fp.is_open())
@@ -165,7 +167,7 @@ void load_params(const std::string file, unsigned int *nx, unsigned int *ny, uns
 
 // Function to load in a file which lists the alive cells
 // Each line of the file is expected to be: x y 1
-void load_board(std::vector<char>& board, const std::string file, const unsigned int nx, const unsigned int ny)
+void load_board(std::vector<char>& board, const char* file, const unsigned int nx, const unsigned int ny)
 {
     std::ifstream fp(file);
     if (!fp.is_open())
