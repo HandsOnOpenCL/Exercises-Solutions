@@ -47,7 +47,7 @@ void getDeviceName(cl::Device& device, std::string& name)
   // Special case for AMD
 #ifdef CL_DEVICE_BOARD_NAME_AMD
   device.getInfo(CL_DEVICE_VENDOR, &name);
-  if (strstr(name, "Advanced Micro Devices"))
+  if (strstr(name.c_str(), "Advanced Micro Devices"))
     info = CL_DEVICE_BOARD_NAME_AMD;
 #endif
 
