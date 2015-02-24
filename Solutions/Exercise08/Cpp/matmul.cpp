@@ -293,7 +293,7 @@ int main(int argc, char *argv[])
 
             queue.finish();
 
-            run_time = static_cast<double>(timer.getTimeMilliseconds()) / 1000.0;
+            run_time = static_cast<double>(timer.getTimeMilliseconds()) / 1000.0 - start_time;
 
             cl::copy(queue, d_c, h_C.begin(), h_C.end());
 
