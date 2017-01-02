@@ -99,7 +99,7 @@ __kernel void mmul(
        // the contribution to C(i,j) from this block
        #pragma unroll
        for (kloc=0; kloc<blksz; kloc++)
-          Ctmp += Awrk[jloc*blksz+kloc] * Bwrk[kloc*blksz+iloc];
+          Ctmp += Awrk[iloc*blksz+kloc] * Bwrk[kloc*blksz+jloc];
 
        barrier(CLK_LOCAL_MEM_FENCE);
        Abase += Ainc;
@@ -107,6 +107,6 @@ __kernel void mmul(
     }
  
     // update global C matrix 
-    C[j*N+i] = Ctmp;
+    C[i*N+j] = Ctmp;
 
 }
