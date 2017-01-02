@@ -43,26 +43,34 @@ void seq_mat_mul_sdot(int N, std::vector<float>& A, std::vector<float>& B, std::
 
 //------------------------------------------------------------------------------
 //
-//  Function to initialize the input matrices A and B
+//  Function to initialize the input matrices A and B.
+//  Matrices are initialized to small but non-constant values. The values need
+//    to be relatively small to avoid signle-precision floating point errors
+//    in long sums.
 //
 //------------------------------------------------------------------------------
+
+
+
 void initmat(int N, std::vector<float>& A, std::vector<float>& B, std::vector<float>& C)
 {
-    int i, j;
+  int i, j;
 
-    /* Initialize matrices */
+  /* Initialize matrices */
 
-    for (i = 0; i < N; i++)
-        for (j = 0; j < N; j++)
-            A[i*N+j] = AVAL;
+  int vv = 1.0;
 
-    for (i = 0; i < N; i++)
-        for (j = 0; j < N; j++)
-            B[i*N+j] = BVAL;
+  for (i = 0; i < N; i++)
+    for (j = 0; j < N; j++)
+      A[i*N+j] = static_cast<float>((vv++) % 17);
 
-    for (i = 0; i < N; i++)
-        for (j = 0; j < N; j++)
-            C[i*N+j] = 0.0f;
+  for (i = 0; i < N; i++)
+    for (j = 0; j < N; j++)
+      B[i*N+j] = static_cast<float>((vv++) % 11);
+
+  for (i = 0; i < N; i++)
+    for (j = 0; j < N; j++)
+      C[i*N+j] = static_cast<float>((vv++) % 19);
 }
 
 //------------------------------------------------------------------------------
@@ -98,6 +106,7 @@ void trans(int N, std::vector<float>& B, std::vector<float>& Btrans)
 //  Function to compute errors of the product matrix
 //
 //------------------------------------------------------------------------------
+
 float error(int N, std::vector<float>& C)
 {
    int i,j;
@@ -112,6 +121,23 @@ float error(int N, std::vector<float>& C)
         }
     }
     return errsq;
+}
+
+// Compare two matrices, which are expected to be identical, and return the error:
+
+float error (int N, std::vector<float>& C1, std::vector<float>& C2)
+{
+  int i,j;
+  float cval, errsq, err;
+  cval  = (float) N * AVAL * BVAL;
+  errsq = 0.0f;
+  for   (i = 0; i < N; i++) {
+    for (j = 0; j < N; j++) {
+      err = C1[i*N+j] - C2[i*N+j];
+      errsq += err * err;
+    }
+  }
+  return errsq;
 }
 
 //------------------------------------------------------------------------------
@@ -132,3 +158,15 @@ void results(int N, std::vector<float>& C, double run_time)
            printf("\n Errors in multiplication: %f\n",errsq);
 }
 
+// Compare two matrices:
+
+void results (int N, std::vector<float>& C1, std::vector<float>& C2, double run_time)
+{
+  float mflops;
+  float errsq;
+  mflops = 2.0 * N * N * N/(1000000.0f * run_time);
+  printf(" %.2f seconds at %.1f MFLOPS \n",  run_time,mflops);
+  errsq = error(N, C1, C2);
+  if (std::isnan(errsq) || errsq > TOL)
+    printf("\n Errors in multiplication: %f\n",errsq);
+}

@@ -45,8 +45,12 @@ int main(int argc, char *argv[])
     std::vector<float> h_A(size); // Host memory for Matrix A
     std::vector<float> h_B(size); // Host memory for Matrix B
     std::vector<float> h_C(size); // Host memory for Matrix C
+    std::vector<float> C0 (size); // Result computed sequantially on the host for
+                                  //   later error checking.
 
     cl::Buffer d_a, d_b, d_c;   // Matrices in device memory
+
+
 
 //--------------------------------------------------------------------------------
 // Create a context and queue
@@ -84,7 +88,7 @@ int main(int argc, char *argv[])
 // Run sequential matmul
 //--------------------------------------------------------------------------------
 
-        initmat(N, h_A, h_B, h_C);
+        initmat(N, h_A, h_B, C0);
 
         printf("\n===== Sequential, matrix mult (dot prod), order %d on host CPU ======\n",ORDER);
         for(int i = 0; i < COUNT; i++)
@@ -92,10 +96,10 @@ int main(int argc, char *argv[])
             zero_mat(N, h_C);
             start_time = static_cast<double>(timer.getTimeMilliseconds()) / 1000.0;
 
-            seq_mat_mul_sdot(N, h_A, h_B, h_C);
+            seq_mat_mul_sdot(N, h_A, h_B, C0);
 
             run_time  = static_cast<double>(timer.getTimeMilliseconds()) / 1000.0 - start_time;
-            results(N, h_C, run_time);
+            results(N, C0, C0, run_time);
         }
 
 //--------------------------------------------------------------------------------
@@ -144,7 +148,7 @@ int main(int argc, char *argv[])
 
             cl::copy(queue, d_c, h_C.begin(), h_C.end());
 
-            results(N, h_C, run_time);
+            results(N, h_C, C0, run_time);
 
         } // end for loop
 
@@ -177,7 +181,7 @@ int main(int argc, char *argv[])
 
             cl::copy(queue, d_c, h_C.begin(), h_C.end());
 
-            results(N, h_C, run_time);
+            results(N, h_C, C0, run_time);
 
         } // end for loop
 
@@ -211,7 +215,7 @@ int main(int argc, char *argv[])
 
             cl::copy(queue, d_c, h_C.begin(), h_C.end());
 
-            results(N, h_C, run_time);
+            results(N, h_C, C0, run_time);
 
         } // end for loop
 
@@ -248,7 +252,7 @@ int main(int argc, char *argv[])
 
             cl::copy(queue, d_c, h_C.begin(), h_C.end());
 
-            results(N, h_C, run_time);
+            results(N, h_C, C0, run_time);
 
         } // end for loop
 
@@ -297,7 +301,7 @@ int main(int argc, char *argv[])
 
             cl::copy(queue, d_c, h_C.begin(), h_C.end());
 
-            results(N, h_C, run_time);
+            results(N, h_C, C0, run_time);
 
         } // end for loop
     } catch (cl::Error err)

@@ -55,6 +55,9 @@ float error(int N, std::vector<float>& C);
 //  Function to analyze and output results 
 //
 //------------------------------------------------------------------------------
+
 void results(int N, std::vector<float>& C, double run_time);
+    
+void results(int N, std::vector<float>& C1, std::vector<float>& C2, double run_time);
     
 #endif
