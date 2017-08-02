@@ -15,12 +15,13 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include <sys/types.h>
 #ifdef __APPLE__
 #include <OpenCL/opencl.h>
 #include <unistd.h>
 #else
-#include <CL/cl.h>
+#include <CL/opencl.h>
 #endif
 
 #include "err_code.h"
@@ -30,13 +31,16 @@
 #ifndef DEVICE
 #define DEVICE CL_DEVICE_TYPE_DEFAULT
 #endif
-
-extern int output_device_info(cl_device_id );
+#define GLOBAL_DIM 1
 
 //------------------------------------------------------------------------------
 
 #define TOL    (0.001)   // tolerance used in floating point comparisons
 #define LENGTH (1024)    // length of vectors a, b, c and d
+
+//------------------------------------------------------------------------------
+
+extern int output_device_info(cl_device_id );
 
 //------------------------------------------------------------------------------
 //
@@ -49,7 +53,7 @@ extern int output_device_info(cl_device_id );
 // output: d float vector of length count holding the sum a + b + c
 //
 
-const char *KernelSource = "\n" \
+const char *kernelSource = "\n" \
 "__kernel void vadd(                                                 \n" \
 "   __global float* a,                                                  \n" \
 "   __global float* b,                                                  \n" \
@@ -77,7 +81,7 @@ int main(int argc, char** argv)
     float*       h_d = (float *)malloc(dataSize);       // d vector (result)
     unsigned int correct;           // number of correct results
 
-    size_t global;                  // global domain size
+    size_t globalSize[GLOBAL_DIM];      // global domain size
 
     cl_device_id     device_id;     // compute device id
     cl_context       context;       // compute context
@@ -91,6 +95,8 @@ int main(int argc, char** argv)
     cl_mem d_d;                     // device memory used for the output d vector
 
     // Fill vectors a and b with random float values
+    // initialize random seed
+    srand (time(NULL));
     int i = 0;
     for(i = 0; i < LENGTH; i++){
         h_a[i] = rand() / (float)RAND_MAX;
@@ -112,14 +118,14 @@ int main(int argc, char** argv)
     }
 
     // Get all platforms
-    cl_platform_id Platform[numPlatforms];
-    err = clGetPlatformIDs(numPlatforms, Platform, NULL);
+    cl_platform_id platforms[numPlatforms];
+    err = clGetPlatformIDs(numPlatforms, platforms, NULL);
     checkError(err, "Getting platforms");
 
     // Secure a GPU
     for (i = 0; i < numPlatforms; i++)
     {
-        err = clGetDeviceIDs(Platform[i], DEVICE, 1, &device_id, NULL);
+        err = clGetDeviceIDs(platforms[i], DEVICE, 1, &device_id, NULL);
         if (err == CL_SUCCESS)
         {
             break;
@@ -133,15 +139,15 @@ int main(int argc, char** argv)
     checkError(err, "Outputting device info");
 
     // Create a compute context
-    context = clCreateContext(0, 1, &device_id, NULL, NULL, &err);
+    context = clCreateContext(NULL, 1, &device_id, NULL, NULL, &err);
     checkError(err, "Creating context");
 
     // Create a command queue
-    commands = clCreateCommandQueue(context, device_id, 0, &err);
+    commands = clCreateCommandQueueWithProperties(context, device_id, NULL, &err);
     checkError(err, "Creating command queue");
 
     // Create the compute program from the source buffer
-    program = clCreateProgramWithSource(context, 1, (const char **) & KernelSource, NULL, &err);
+    program = clCreateProgramWithSource(context, 1, (const char **) &kernelSource, NULL, &err);
     checkError(err, "Creating program");
 
     // Build the program
@@ -149,10 +155,22 @@ int main(int argc, char** argv)
     if (err != CL_SUCCESS)
     {
         size_t len;
-        char buffer[2048];
+        char *buffer;
 
-        printf("Error: Failed to build program executable!\n%s\n", err_code(err));
-        clGetProgramBuildInfo(program, device_id, CL_PROGRAM_BUILD_LOG, sizeof(buffer), buffer, &len);
+        fprintf(stderr, "Error: Failed to build program executable!\n%s\n", err_code(err));
+        /* get log size*/
+        err = clGetProgramBuildInfo(program, device_id, CL_PROGRAM_BUILD_LOG, 0, NULL, &len);
+        checkError(err, "Getting build log size");
+
+        buffer = (char *) malloc(len);
+        if(NULL == buffer)
+        {
+            fprintf(stderr, "Allocating memory for build log failed!\n");
+            return EXIT_FAILURE;
+        }
+
+        err = clGetProgramBuildInfo(program, device_id, CL_PROGRAM_BUILD_LOG, len, buffer, NULL);
+        checkError(err, "Getting build log");
         printf("%s\n", buffer);
         return EXIT_FAILURE;
     }
@@ -174,25 +192,25 @@ int main(int argc, char** argv)
     d_d  = clCreateBuffer(context,  CL_MEM_WRITE_ONLY, dataSize, NULL, &err);
     checkError(err, "Creating buffer d_d");
 
-    const int count = LENGTH;
+    const unsigned int count = LENGTH;
 
     // Enqueue kernel
     // Set the arguments to our compute kernel
-    err  = clSetKernelArg(ko_vadd, 0, sizeof(cl_mem), &d_a);
-    err |= clSetKernelArg(ko_vadd, 1, sizeof(cl_mem), &d_b);
-    err |= clSetKernelArg(ko_vadd, 2, sizeof(cl_mem), &d_c);
-    err |= clSetKernelArg(ko_vadd, 3, sizeof(cl_mem), &d_d);
-    err |= clSetKernelArg(ko_vadd, 4, sizeof(unsigned int), &count);
+    err  = clSetKernelArg(ko_vadd, 0, sizeof(d_a), &d_a);
+    err |= clSetKernelArg(ko_vadd, 1, sizeof(d_b), &d_b);
+    err |= clSetKernelArg(ko_vadd, 2, sizeof(d_c), &d_c);
+    err |= clSetKernelArg(ko_vadd, 3, sizeof(d_d), &d_d);
+    err |= clSetKernelArg(ko_vadd, 4, sizeof(count), &count);
     checkError(err, "Setting kernel arguments");
 
     // Execute the kernel over the entire range of our 1d input data set
     // letting the OpenCL runtime choose the work-group size
-    global = count;
-    err = clEnqueueNDRangeKernel(commands, ko_vadd, 1, NULL, &global, NULL, 0, NULL, NULL);
+    globalSize[0] = count;
+    err = clEnqueueNDRangeKernel(commands, ko_vadd, GLOBAL_DIM, NULL, globalSize, NULL, 0, NULL, NULL);
     checkError(err, "Enqueueing kernel 1st time");
 
    // Read back the result from the compute device
-    err = clEnqueueReadBuffer( commands, d_d, CL_TRUE, 0, sizeof(float) * count, h_d, 0, NULL, NULL );
+    err = clEnqueueReadBuffer(commands, d_d, CL_TRUE, 0, sizeof(float) * count, h_d, 0, NULL, NULL );
     checkError(err, "Reading back d_f");
 
     // Test the results
