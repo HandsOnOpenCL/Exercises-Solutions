@@ -96,17 +96,17 @@ int main(void)
             cl_ulong mem_size;
             err = clGetDeviceInfo(device[j], CL_DEVICE_LOCAL_MEM_SIZE, sizeof(cl_ulong), &mem_size, NULL);
             checkError(err, "Getting device local memory size");
-            printf("\t\tLocal Memory Size: %lu KB\n", mem_size/1024);
+            printf("\t\tLocal Memory Size: %llu KB\n", mem_size/1024);
 
             // Get global memory size
             err = clGetDeviceInfo(device[j], CL_DEVICE_GLOBAL_MEM_SIZE, sizeof(cl_ulong), &mem_size, NULL);
             checkError(err, "Getting device global memory size");
-            printf("\t\tGlobal Memory Size: %lu MB\n", mem_size/(1024*1024));
+            printf("\t\tGlobal Memory Size: %llu MB\n", mem_size/(1024*1024));
 
             // Get maximum buffer alloc. size
             err = clGetDeviceInfo(device[j], CL_DEVICE_MAX_MEM_ALLOC_SIZE, sizeof(cl_ulong), &mem_size, NULL);
             checkError(err, "Getting device max allocation size");
-            printf("\t\tMax Alloc Size: %lu MB\n", mem_size/(1024*1024));
+            printf("\t\tMax Alloc Size: %llu MB\n", mem_size/(1024*1024));
 
             // Get work-group size information
             size_t size;

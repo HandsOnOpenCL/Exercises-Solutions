@@ -76,10 +76,10 @@ __kernel void mmul(
     // Setup the upper-left-corner (base address) for the A and
     // B blocks plus the increments to advance base addresses as
     // we loop over blocks
-          int Abase = Iblk*N*blksz;    
+          int Abase = Jblk*N*blksz;    
     const int Ainc  = blksz;
 
-          int Bbase = Jblk*blksz;
+          int Bbase = Iblk*blksz;
     const int Binc  = blksz*N;
 
 
