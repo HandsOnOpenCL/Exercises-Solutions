@@ -34,6 +34,8 @@ int main(int argc, char *argv[])
     float *h_A;             // A matrix
     float *h_B;             // B matrix
     float *h_C;             // C = A*B matrix
+    float *C0;              // Result computed sequantially on the host for
+                            //   later error checking.
     int N;                  // A[N][N], B[N][N], C[N][N]
     int size;               // number of elements in each matrix
 
@@ -58,7 +60,7 @@ int main(int argc, char *argv[])
     h_A = (float *)malloc(size * sizeof(float));
     h_B = (float *)malloc(size * sizeof(float));
     h_C = (float *)malloc(size * sizeof(float));
-
+    C0  = (float *)malloc(size * sizeof(float));
 
 
 //--------------------------------------------------------------------------------
@@ -105,10 +107,10 @@ int main(int argc, char *argv[])
         zero_mat(N, h_C);
         start_time = wtime();
 
-        seq_mat_mul_sdot(N, h_A, h_B, h_C);
+        seq_mat_mul_sdot(N, h_A, h_B, C0);
 
         run_time  = wtime() - start_time;
-        results(N, h_C, run_time);
+        results(N, C0, C0, run_time);
     }
 
 //--------------------------------------------------------------------------------
@@ -195,7 +197,7 @@ int main(int argc, char *argv[])
             0, NULL, NULL);
         checkError(err, "Reading back d_c");
 
-        results(N, h_C, run_time);
+        results(N, h_C, C0, run_time);
 
     } // end for loop
 
@@ -262,7 +264,7 @@ int main(int argc, char *argv[])
             0, NULL, NULL);
         checkError(err, "Reading back d_c");
 
-        results(N, h_C, run_time);
+        results(N, h_C, C0, run_time);
 
     } // end for loop
 
@@ -331,7 +333,7 @@ int main(int argc, char *argv[])
             0, NULL, NULL);
         checkError(err, "Reading back d_c");
 
-        results(N, h_C, run_time);
+        results(N, h_C, C0, run_time);
 
     } // end for loop
 
@@ -401,7 +403,7 @@ int main(int argc, char *argv[])
             0, NULL, NULL);
         checkError(err, "Reading back d_c");
 
-        results(N, h_C, run_time);
+        results(N, h_C, C0, run_time);
 
     } // end for loop
 
@@ -478,7 +480,7 @@ int main(int argc, char *argv[])
             0, NULL, NULL);
         checkError(err, "Reading back d_c");
 
-        results(N, h_C, run_time);
+        results(N, h_C, C0, run_time);
 
     } // end for loop
 
@@ -489,6 +491,7 @@ int main(int argc, char *argv[])
     free(h_A);
     free(h_B);
     free(h_C);
+    free(C0);
     clReleaseMemObject(d_a);
     clReleaseMemObject(d_b);
     clReleaseMemObject(d_c);

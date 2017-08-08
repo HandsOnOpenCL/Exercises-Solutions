@@ -4,6 +4,7 @@
 
 # C
 *.o
+*~
 
 # Produced binarys
 Exercises/Exercise01/C/DeviceInfo

@@ -30,16 +30,19 @@ N = ORDER;
 size = N * N
 
 
+
 # A matrix
-h_A = numpy.empty(size).astype(numpy.float32)
-h_A.fill(AVAL)
+h_A = initMat (N, 7)
 
 # B matrix
-h_B = numpy.empty(size).astype(numpy.float32)
-h_B.fill(BVAL)
+h_B = initMat (N, 11)
 
 # C matrix
 h_C = numpy.empty(size).astype(numpy.float32)
+
+## C0 is the product of h_A and h_B for later comparisons:
+
+C0 = numpy.matmul(h_A.reshape([N,N]), h_B.reshape([N,N])).reshape(N*N);
 
 print "\n===== Sequential, matrix mult (dot prod), order", ORDER, "on host CPU ======\n"
 
@@ -59,11 +62,10 @@ context = cl.create_some_context()
 queue = cl.CommandQueue(context)
 
 # Reset host buffers - just to play it safe
-h_A = numpy.empty(size).astype(numpy.float32)
-h_A.fill(AVAL)
-h_B = numpy.empty(size).astype(numpy.float32)
-h_B.fill(BVAL)
+h_A = initMat (N,  7)
+h_B = initMat (N, 11);
 h_C = numpy.empty(size).astype(numpy.float32)
+C0  = numpy.matmul(h_A.reshape([N,N]), h_B.reshape([N,N])).reshape(N*N);
 
 
 #--------------------------------------------------------------------------------
@@ -92,7 +94,7 @@ for i in range(COUNT):
     run_time = time() - start_time
 
     cl.enqueue_copy(queue, h_C, d_c)
-    results(N, h_C, run_time)
+    results(N, h_C, C0, run_time)
 
 #--------------------------------------------------------------------------------
 # OpenCL matrix multiplication ... C row per work item
@@ -114,7 +116,7 @@ for i in range(COUNT):
     run_time = time() - start_time
 
     cl.enqueue_copy(queue, h_C, d_c)
-    results(N, h_C, run_time)
+    results(N, h_C, C0, run_time)
 
 #--------------------------------------------------------------------------------
 # OpenCL matrix multiplication ... C row per work item, A row in pivate memory
@@ -136,7 +138,7 @@ for i in range(COUNT):
     run_time = time() - start_time
 
     cl.enqueue_copy(queue, h_C, d_c)
-    results(N, h_C, run_time)
+    results(N, h_C, C0, run_time)
 
 #--------------------------------------------------------------------------------
 # OpenCL matrix multiplication ... C row per work item, A row pivate, B col local
@@ -160,7 +162,7 @@ for i in range(COUNT):
     run_time = time() - start_time
 
     cl.enqueue_copy(queue, h_C, d_c)
-    results(N, h_C, run_time)
+    results(N, h_C, C0, run_time)
 
 #--------------------------------------------------------------------------------
 # OpenCL matrix multiplication ... blocked
@@ -190,5 +192,4 @@ for i in range(COUNT):
     run_time = time() - start_time
 
     cl.enqueue_copy(queue, h_C, d_c)
-    results(N, h_C, run_time)
-
+    results(N, h_C, C0, run_time)

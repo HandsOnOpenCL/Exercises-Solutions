@@ -46,7 +46,7 @@ void trans(int N, float *B, float *Btrans);
 //  Function to compute errors of the product matrix
 //
 //------------------------------------------------------------------------------
-float error(int N, float *C);
+float error(int N, float *C1, float *C2);
 
 
 //------------------------------------------------------------------------------
@@ -54,6 +54,6 @@ float error(int N, float *C);
 //  Function to analyze and output results 
 //
 //------------------------------------------------------------------------------
-void results(int N, float *C, double run_time);
+void results(int N, float *C1, float *C2, double run_time);
     
 #endif
