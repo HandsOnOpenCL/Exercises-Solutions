@@ -47,21 +47,23 @@ void seq_mat_mul_sdot(int N, float *A, float *B, float *C)
 //------------------------------------------------------------------------------
 void initmat(int N, float *A, float *B, float *C)
 {
-    int i, j;
+  int i, j;
 
-    /* Initialize matrices */
+  /* Initialize matrices */
 
-	for (i = 0; i < N; i++)
-		for (j = 0; j < N; j++)
-			A[i*N+j] = AVAL;
+  int vv = 1;
 
-	for (i = 0; i < N; i++)
-		for (j = 0; j < N; j++)
-			B[i*N+j] = BVAL;
+  for (i = 0; i < N; i++)
+    for (j = 0; j < N; j++)
+      A[i*N+j] = (float) ((vv++) % 17);
 
-	for (i = 0; i < N; i++)
-		for (j = 0; j < N; j++)
-			C[i*N+j] = 0.0f;
+  for (i = 0; i < N; i++)
+    for (j = 0; j < N; j++)
+      B[i*N+j] = (float) ((vv++) % 11);
+
+  for (i = 0; i < N; i++)
+    for (j = 0; j < N; j++)
+      C[i*N+j] = (float) ((vv++) % 19);
 }
 
 //------------------------------------------------------------------------------
@@ -97,20 +99,19 @@ void trans(int N, float *B, float *Btrans)
 //  Function to compute errors of the product matrix
 //
 //------------------------------------------------------------------------------
-float error(int N, float *C)
+float error(int N, float *C1, float *C2)
 {
-   int i,j;
-   float cval, errsq, err;
-   cval = (float) N * AVAL * BVAL;
-   errsq = 0.0f;
-
-    for (i = 0; i < N; i++) {
-        for (j = 0; j < N; j++) {
-            err = C[i*N+j] - cval;
-            errsq += err * err;
-        }
+  int i,j;
+  float cval, errsq, err;
+  cval  = (float) N * AVAL * BVAL;
+  errsq = 0.0f;
+  for   (i = 0; i < N; i++) {
+    for (j = 0; j < N; j++) {
+      err = C1[i*N+j] - C2[i*N+j];
+      errsq += err * err;
     }
-    return errsq;
+  }
+  return errsq;
 }
 
 //------------------------------------------------------------------------------
@@ -118,14 +119,14 @@ float error(int N, float *C)
 //  Function to analyze and output results
 //
 //------------------------------------------------------------------------------
-void results(int N, float *C, double run_time)
+void results(int N, float *C1, float *C2, double run_time)
 {
     float mflops;
     float errsq;
 
     mflops = 2.0 * N * N * N/(1000000.0f * run_time);
     printf(" %.2f seconds at %.1f MFLOPS \n",  run_time,mflops);
-    errsq = error(N, C);
+    errsq = error(N, C1, C2);
     if (isnan(errsq) || errsq > TOL) {
         printf("\n Errors in multiplication: %f\n",errsq);
         exit(1);

@@ -58,7 +58,7 @@ void initmat(int N, std::vector<float>& A, std::vector<float>& B, std::vector<fl
 
   /* Initialize matrices */
 
-  int vv = 1.0;
+  int vv = 1;
 
   for (i = 0; i < N; i++)
     for (j = 0; j < N; j++)
