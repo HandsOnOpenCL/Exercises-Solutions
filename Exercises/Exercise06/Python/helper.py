@@ -1,3 +1,4 @@
+from __future__ import print_function
 
 from definitions import *
 import numpy
@@ -25,7 +26,7 @@ def error(N, C):
 # Function to analyze and output results
 def results(N, C, run_time):
     mflops = 2.0 * N * N * N/(1000000.0* run_time)
-    print run_time, "seconds at", mflops, "MFLOPS"
+    print(run_time, "seconds at", mflops, "MFLOPS")
     errsq = error(N, C)
     if numpy.isnan(errsq) or errsq > TOL:
-        print "Errors in multiplication:", errsq
+        print("Errors in multiplication:", errsq)
