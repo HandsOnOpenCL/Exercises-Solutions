@@ -243,11 +243,12 @@ int main(int argc, char *argv[])
         // Execute the kernel over the rows of the C matrix ... computing
         // a dot product for each element of the product matrix.
         const size_t global = N;
+        const size_t local = ORDER / 16;
         err = clEnqueueNDRangeKernel(
             commands,
             kernel,
             1, NULL,
-            &global, NULL,
+            &global, &local,
             0, NULL, NULL);
         checkError(err, "Enqueueing kernel");
 

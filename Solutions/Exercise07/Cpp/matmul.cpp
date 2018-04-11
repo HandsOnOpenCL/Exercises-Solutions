@@ -168,7 +168,8 @@ int main(int argc, char *argv[])
             start_time = static_cast<double>(timer.getTimeMilliseconds()) / 1000.0;
 
             cl::NDRange global(N);
-            crow_mmul(cl::EnqueueArgs(queue, global),
+            cl::NDRange local(ORDER / 16);
+            crow_mmul(cl::EnqueueArgs(queue, global, local),
                     N, d_a, d_b, d_c);
 
             queue.finish();
