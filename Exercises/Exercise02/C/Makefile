@@ -5,7 +5,7 @@ endif
 
 CCFLAGS=-O3 -lm
 
-LIBS = -lOpenCL -fopenmp
+LIBS = -lOpenCL
 
 COMMON_DIR = ../../C_common
 
