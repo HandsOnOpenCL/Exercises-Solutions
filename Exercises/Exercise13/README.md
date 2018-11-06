@@ -8,8 +8,8 @@ Goal
 Procedure
 ---------
 * Examine the CUDA kernel and identify which parts need changing
-    * Change them to the OpenCL equivalents
-* Examine the Host code and part the commands to the OpenCL equivalents
+* Change them to the OpenCL equivalents
+* Examine the Host code and port the commands to the OpenCL equivalents
 
 Expected output
 ---------------

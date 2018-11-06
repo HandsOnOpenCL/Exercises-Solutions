@@ -15,7 +15,7 @@
 
 #define __CL_ENABLE_EXCEPTIONS
 
-#include "cl.hpp"
+#include "CL/cl.hpp"
 
 #include "util.hpp" // utility library
 
@@ -32,6 +32,11 @@
 // pick up device type from compiler command line or from the default type
 #ifndef DEVICE
 #define DEVICE CL_DEVICE_TYPE_DEFAULT
+#endif
+
+// Set the filepath if not already set
+#ifndef EX5_VADD_CL_PATH
+#define EX5_VADD_CL_PATH "vadd.cl"
 #endif
 
 //------------------------------------------------------------------------------
@@ -64,7 +69,7 @@ int main(void)
 
         // Load in kernel source, creating a program object for the context
 
-        cl::Program program(context, util::loadProgram("vadd.cl"), true);
+        cl::Program program(context, util::loadProgram(EX5_VADD_CL_PATH), true);
 
         // Get the command queue
         cl::CommandQueue queue(context);
