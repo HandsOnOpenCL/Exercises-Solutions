@@ -87,8 +87,6 @@ vadd = program.vadd
 vadd.set_scalar_arg_dtypes([None, None, None, numpy.uint32])
 vadd(queue, h_a.shape, None, d_a, d_b, d_c, LENGTH)
 
-# Wait for the commands to finish before reading back
-queue.finish()
 rtime = time() - rtime
 print "The kernel ran in", rtime, "seconds"
 
