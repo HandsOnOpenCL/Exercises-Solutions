@@ -111,7 +111,7 @@ int main(int argc, char** argv)
     }
 
     // Get all platforms
-    cl_platform_id Platform[numPlatforms];
+    cl_platform_id *Platform = malloc(numPlatforms * sizeof(cl_platform_id));
     err = clGetPlatformIDs(numPlatforms, Platform, NULL);
     checkError(err, "Getting platforms");
 
@@ -124,6 +124,8 @@ int main(int argc, char** argv)
             break;
         }
     }
+
+    free(Platform);
 
     if (device_id == NULL)
         checkError(err, "Finding a device");

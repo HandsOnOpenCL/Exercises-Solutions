@@ -44,9 +44,9 @@ void accelerate_life(const char* tick, char* tock, const int nx, const int ny)
     // wrapping around if required
     unsigned int x_l, x_r, y_u, y_d;
 
-    unsigned int j;
+    int i, j;
     #pragma omp parallel for private(j, idx, x_l, x_r, y_u, y_d)
-    for (unsigned int i = 0; i < ny; i++)
+    for (i = 0; i < ny; i++)
     {
         for (j = 0; j < nx; j++)
         {
@@ -101,11 +101,11 @@ void accelerate_life(const char* tick, char* tock, const int nx, const int ny)
 
 int main(int argc, char **argv)
 {
-
     // Check we have a starting state file
     if (argc != 3)
     {
         printf("Usage:\n./gameoflife input.dat input.params\n");
+        // ./gameoflife ../Exercise13/Examples/Acorn/acorn.dat ../Exercise13/Examples/Acorn/input.params
         return EXIT_FAILURE;
     }
 
