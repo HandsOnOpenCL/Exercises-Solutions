@@ -31,7 +31,6 @@ unsigned getDeviceList(std::vector<cl::Device>& devices)
   // Enumerate devices
   for (int i = 0; i < platforms.size(); i++)
   {
-    cl_uint num = 0;
     std::vector<cl::Device> plat_devices;
     platforms[i].getDevices(CL_DEVICE_TYPE_ALL, &plat_devices);
     devices.insert(devices.end(), plat_devices.begin(), plat_devices.end());
@@ -45,11 +44,11 @@ void getDeviceName(cl::Device& device, std::string& name)
   cl_device_info info = CL_DEVICE_NAME;
 
   // Special case for AMD
-#ifdef CL_DEVICE_BOARD_NAME_AMD
-  device.getInfo(CL_DEVICE_VENDOR, &name);
-  if (strstr(name.c_str(), "Advanced Micro Devices"))
-    info = CL_DEVICE_BOARD_NAME_AMD;
-#endif
+  #ifdef CL_DEVICE_BOARD_NAME_AMD
+    device.getInfo(CL_DEVICE_VENDOR, &name);
+    if (strstr(name.c_str(), "Advanced Micro Devices"))
+      info = CL_DEVICE_BOARD_NAME_AMD;
+  #endif
 
   device.getInfo(info, &name);
 }
