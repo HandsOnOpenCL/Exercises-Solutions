@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
     int nsteps;
     float step_size;
     size_t nwork_groups;
-    size_t max_size, work_group_size = 8;
+    size_t work_group_size = 8;
     float pi_res;
 
     cl_mem d_partial_sums;
@@ -145,7 +145,7 @@ int main(int argc, char *argv[])
 
     nsteps = work_group_size * niters * nwork_groups;
     step_size = 1.0f/(float)nsteps;
-    h_psum = calloc(sizeof(float), nwork_groups);
+    h_psum = (float*)calloc(sizeof(float), nwork_groups);
     if (!h_psum)
     {
         printf("Error: could not allocate host memory for h_psum\n");
