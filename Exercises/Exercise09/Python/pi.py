@@ -11,16 +11,16 @@
 # History: Written in C by Tim Mattson, 11/99
 #          Ported to Python by Tom Deakin, July 2013
 #
-
+from __future__ import print_function
 from time import time
 
 num_steps = 100000000
 
-print "\nNote: Wanted to do", num_steps, "steps, but this is very slow in Python."
+print("\nNote: Wanted to do", num_steps, "steps, but this is very slow in Python.")
 
 num_steps = 1000000
 
-print "Doing", num_steps, "steps instead."
+print("Doing", num_steps, "steps instead.")
 
 integral_sum = 0.0
 
@@ -36,5 +36,5 @@ pi = step * integral_sum
 
 run_time = time() - start_time;
 
-print "\npi with", num_steps, "steps is", pi, "in", run_time, "seconds\n"
+print("\npi with", num_steps, "steps is", pi, "in", run_time, "seconds\n")
 

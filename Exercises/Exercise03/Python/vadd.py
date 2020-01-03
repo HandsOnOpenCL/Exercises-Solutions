@@ -8,6 +8,7 @@
 #          C version Updated by Tom Deakin and Simon McIntosh-Smith, October 2012
 #          Ported to Python by Tom Deakin, July 2013
 #
+from __future__ import print_function
 
 # Import the Python OpenCL API
 import pyopencl as cl
@@ -90,7 +91,7 @@ vadd(queue, h_a.shape, None, d_a, d_b, d_c, LENGTH)
 # Wait for the commands to finish before reading back
 queue.finish()
 rtime = time() - rtime
-print "The kernel ran in", rtime, "seconds"
+print("The kernel ran in", rtime, "seconds")
 
 # Read back the results from the compute device
 cl.enqueue_copy(queue, h_c, d_c)
@@ -106,7 +107,7 @@ for a, b, c in zip(h_a, h_b, h_c):
     if tmp*tmp < TOL*TOL:
         correct += 1
     else:
-        print "tmp", tmp, "h_a", a, "h_b", b, "h_c", c
+        print("tmp", tmp, "h_a", a, "h_b", b, "h_c", c)
 
 # Summarize results
-print "C = A+B:", correct, "out of", LENGTH, "results were correct."
+print("C = A+B:", correct, "out of", LENGTH, "results were correct.")
